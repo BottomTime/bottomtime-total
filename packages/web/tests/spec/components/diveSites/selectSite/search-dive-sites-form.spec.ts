@@ -12,10 +12,12 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import FormLocationPicker from 'src/components/common/form-location-picker.vue';
+import { GeolocationKey } from 'src/geolocation';
+import { MockGeolocation } from 'tests/mock-geolocation';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../../src/api-client';
-import GoogleMap from '../../../../../src/components/common/google-map.vue';
 import SearchDiveSitesForm from '../../../../../src/components/diveSites/selectSite/search-dive-sites-form.vue';
 import SelectDiveSiteListItem from '../../../../../src/components/diveSites/selectSite/select-dive-site-list-item.vue';
 import { createRouter } from '../../../../fixtures/create-router';
@@ -25,7 +27,6 @@ import StarRatingStub from '../../../../star-rating-stub.vue';
 const SearchButton = '[data-testid="search-sites"]';
 const ResultsCounts = '[data-testid="search-sites-counts"]';
 const ResultsList = '[data-testid="search-sites-results-list"]';
-const RadiusSlider = '[data-testid="site-search-radius"]';
 const QueryInput = '[data-testid="site-search-query"]';
 const NoResultsMessage = '[data-testid="search-sites-no-results"]';
 const LoadMoreButton = '[data-testid="search-sites-load-more"]';
@@ -36,6 +37,7 @@ describe('SearchDiveSitesForm component', () => {
   let results: ApiList<DiveSiteDTO>;
 
   let pinia: Pinia;
+  let geolocation: MockGeolocation;
   let opts: ComponentMountingOptions<typeof SearchDiveSitesForm>;
 
   beforeAll(() => {
@@ -47,11 +49,16 @@ describe('SearchDiveSitesForm component', () => {
 
   beforeEach(() => {
     pinia = createPinia();
+    geolocation = new MockGeolocation();
     opts = {
+      props: {
+        multiSelect: false,
+      },
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [GeolocationKey as symbol]: geolocation,
         },
         stubs: {
           teleport: true,
@@ -91,11 +98,16 @@ describe('SearchDiveSitesForm component', () => {
       });
 
     const wrapper = mount(SearchDiveSitesForm, opts);
-    await wrapper
-      .getComponent(GoogleMap)
-      .vm.$emit('click', { lat: 45, lon: -123 });
+    await flushPromises();
+
     await wrapper.get(QueryInput).setValue('Oregon');
-    await wrapper.get(RadiusSlider).setValue(280);
+    await wrapper
+      .getComponent(FormLocationPicker)
+      .vm.$emit('update:modelValue', {
+        lat: 45,
+        lon: -123,
+        radius: 280,
+      });
     await wrapper.get(SearchButton).trigger('click');
     await flushPromises();
 
@@ -158,11 +170,16 @@ describe('SearchDiveSitesForm component', () => {
       });
 
     const wrapper = mount(SearchDiveSitesForm, opts);
-    await wrapper
-      .getComponent(GoogleMap)
-      .vm.$emit('click', { lat: 45, lon: -123 });
+    await flushPromises();
+
     await wrapper.get(QueryInput).setValue('Oregon');
-    await wrapper.get(RadiusSlider).setValue(280);
+    await wrapper
+      .getComponent(FormLocationPicker)
+      .vm.$emit('update:modelValue', {
+        lat: 45,
+        lon: -123,
+        radius: 280,
+      });
     await wrapper.get(SearchButton).trigger('click');
     await flushPromises();
 

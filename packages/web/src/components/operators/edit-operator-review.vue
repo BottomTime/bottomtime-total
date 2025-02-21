@@ -48,10 +48,10 @@ import { helpers, minValue } from '@vuelidate/validators';
 
 import { reactive } from 'vue';
 
-import FormButton from './form-button.vue';
-import FormField from './form-field.vue';
-import FormTextArea from './form-text-area.vue';
-import StarRating from './star-rating.vue';
+import FormButton from '../common/form-button.vue';
+import FormField from '../common/form-field.vue';
+import FormTextArea from '../common/form-text-area.vue';
+import StarRating from '../common/star-rating.vue';
 
 interface EditOperatorReviewProps {
   review: OperatorReviewDTO;

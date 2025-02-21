@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="">
+  <form @submit.prevent="" @keyup.escape.prevent="emit('cancel')">
     <fieldset class="space-y-3" :disabled="isSaving">
       <div class="grid grid-cols-2">
         <FormField
@@ -38,13 +38,21 @@
       <div class="flex gap-3 justify-center">
         <FormButton
           type="primary"
+          control-id="dive-site-review-save"
+          test-id="dive-site-review-save"
           :is-loading="isSaving"
           submit
           @click="onSave"
         >
           Save
         </FormButton>
-        <FormButton @click="$emit('cancel')">Cancel</FormButton>
+        <FormButton
+          control-id="dive-site-review-cancel"
+          test-id="dive-site-review-cancel"
+          @click="emit('cancel')"
+        >
+          Cancel
+        </FormButton>
       </div>
     </fieldset>
   </form>
@@ -54,15 +62,15 @@
 import { DiveSiteReviewDTO } from '@bottomtime/api';
 
 import useVuelidate from '@vuelidate/core';
-import { helpers, minValue } from '@vuelidate/validators';
+import { between, helpers } from '@vuelidate/validators';
 
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 
-import DifficultyInput from './difficulty-input.vue';
-import FormButton from './form-button.vue';
-import FormField from './form-field.vue';
-import FormTextArea from './form-text-area.vue';
-import StarRating from './star-rating.vue';
+import DifficultyInput from '../common/difficulty-input.vue';
+import FormButton from '../common/form-button.vue';
+import FormField from '../common/form-field.vue';
+import FormTextArea from '../common/form-text-area.vue';
+import StarRating from '../common/star-rating.vue';
 
 interface EditDiveSiteReviewProps {
   review: DiveSiteReviewDTO;
@@ -79,7 +87,7 @@ const props = withDefaults(defineProps<EditDiveSiteReviewProps>(), {
   isSaving: false,
 });
 const state = reactive<EditDiveSiteReviewState>({
-  rating: props.review?.rating ?? 0,
+  rating: props.review?.rating ?? -1,
   difficulty: props.review?.difficulty ?? 0,
   comments: props.review?.comments ?? '',
 });
@@ -91,7 +99,7 @@ const emit = defineEmits<{
 const v$ = useVuelidate<EditDiveSiteReviewState>(
   {
     rating: {
-      required: helpers.withMessage('Rating is required', minValue(1)),
+      required: helpers.withMessage('Rating is required', between(0, 5)),
     },
   },
   state,
@@ -108,4 +116,13 @@ async function onSave(): Promise<void> {
     comments: state.comments,
   });
 }
+
+watch(
+  () => props.review,
+  (review) => {
+    state.rating = review?.rating ?? -1;
+    state.difficulty = review?.difficulty ?? 0;
+    state.comments = review?.comments ?? '';
+  },
+);
 </script>

@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PreviewDiveSite component will render with a full dive site 1`] = `
+"<div class="flex flex-col xl:flex-row gap-2 items-center">
+  <figure class="min-w-[64px] min-h-[64px]"><img class="w-[64px] h-[64px] rounded-full shadow-sm shadow-grey-800/60" alt="" src="/img/flag-marker.svg"></figure>
+  <article class="grow flex flex-col gap-4">
+    <div class="flex flex-col lg:flex-row justify-between items-center">
+      <div class="flex gap-2 items-baseline"><button class="text-xl font-title capitalize hover:text-link-hover" data-testid="btn-site-name">webbed, defiant polyester</button><a href="/diveSites/e25add45-3bf3-4be5-9859-7ea516f63f00" target="_blank"><span><i class="fa-solid fa-up-right-from-square fa-sm"></i></span><span class="sr-only">Open site "webbed, defiant polyester" in new tab</span></a></div>
+      <div rating="5" readonly="">0</div>
+    </div>
+    <div class="grid grid-cols-4 gap-1.5 text-sm"><label class="font-bold text-right">Location:</label>
+      <div class="col-span-3">
+        <div class="inline">
+          <p class="capitalize">Waldorf</p>
+          <p class="capitalize">ME</p>
+          <p class="capitalize">JO</p>
+        </div>
+        <p class="space-x-1"><a href="https://www.google.com/maps/search/?api=1&amp;query=72.6789,-105.3306" target="_blank" rel="noopener noreferrer">
+            <p class="space-x-1 inline-block"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span>72.67890N, -105.33060W</span></p>
+          </a></p>
+      </div><label class="font-bold text-right">Shore Dive:</label>
+      <p>Yes</p><label class="font-bold text-right">Free To Dive:</label>
+      <p>Yes</p><label class="font-bold text-right">Depth:</label>
+      <p><span>21.62 m</span></p><label class="font-bold text-right">Water:</label>
+      <p>Fresh water</p><label class="font-bold text-right">Difficulty:</label>
+      <p class="col-span-3 space-x-2"><span>4.4/5.0 </span><span class="italic">Challenging. Experienced divers only</span></p>
+    </div>
+  </article>
+</div>"
+`;
+
+exports[`PreviewDiveSite component will render with a partial dive site 1`] = `
+"<div class="flex flex-col xl:flex-row gap-2 items-center">
+  <figure class="min-w-[64px] min-h-[64px]"><img class="w-[64px] h-[64px] rounded-full shadow-sm shadow-grey-800/60" alt="" src="/img/flag-marker.svg"></figure>
+  <article class="grow flex flex-col gap-4">
+    <div class="flex flex-col lg:flex-row justify-between items-center">
+      <div class="flex gap-2 items-baseline"><button class="text-xl font-title capitalize hover:text-link-hover" data-testid="btn-site-name">remorseful, spanish demon</button><a href="/diveSites/90b06d4a-605c-49d0-8738-cf557cf34b0a" target="_blank"><span><i class="fa-solid fa-up-right-from-square fa-sm"></i></span><span class="sr-only">Open site "remorseful, spanish demon" in new tab</span></a></div>
+      <div readonly="">0</div>
+    </div>
+    <div class="grid grid-cols-4 gap-1.5 text-sm"><label class="font-bold text-right">Location:</label>
+      <div class="col-span-3">
+        <div class="inline">
+          <p class="capitalize">Hudsonstad</p>
+          <p class="capitalize">NV</p>
+          <p class="capitalize">HM</p>
+        </div>
+        <!--v-if-->
+      </div><label class="font-bold text-right">Shore Dive:</label>
+      <p>Unspecified</p><label class="font-bold text-right">Free To Dive:</label>
+      <p>Unspecified</p><label class="font-bold text-right">Depth:</label>
+      <p><span>Unspecified</span></p><label class="font-bold text-right">Water:</label>
+      <p>Unspecified</p><label class="font-bold text-right">Difficulty:</label>
+      <p class="col-span-3 space-x-2">
+        <!--v-if--><span class="italic">Not rated</span>
+      </p>
+    </div>
+  </article>
+</div>"
+`;

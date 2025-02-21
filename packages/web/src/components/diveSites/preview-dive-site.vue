@@ -1,7 +1,11 @@
 <template>
-  <div class="flex flex-col gap-3">
-    <figure class="min-w-[64px] min-h-[64px] hidden">
-      <!-- TODO: Icon? Logo? Map? -->
+  <div class="flex flex-col xl:flex-row gap-2 items-center">
+    <figure class="min-w-[64px] min-h-[64px]">
+      <img
+        class="w-[64px] h-[64px] rounded-full shadow-sm shadow-grey-800/60"
+        alt=""
+        src="/img/flag-marker.svg"
+      />
     </figure>
 
     <article class="grow flex flex-col gap-4">

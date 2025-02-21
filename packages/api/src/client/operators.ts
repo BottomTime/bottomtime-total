@@ -7,6 +7,7 @@ import {
   DiveSiteDTO,
   ImageBoundaryDTO,
   ListAvatarURLsResponseDTO,
+  ListOperatorDiveSitesParams,
   ListTeamMembersResponseSchema,
   OperatorDTO,
   OperatorSchema,
@@ -159,10 +160,13 @@ export class OperatorsApiClient {
     await this.apiClient.delete(`/api/operators/${operatorSlug}/logo`);
   }
 
-  async listDiveSites(operatorSlug: string): Promise<ApiList<DiveSiteDTO>> {
+  async listDiveSites(
+    operatorSlug: string,
+    options?: ListOperatorDiveSitesParams,
+  ): Promise<ApiList<DiveSiteDTO>> {
     const { data } = await this.apiClient.get(
       `/api/operators/${operatorSlug}/sites`,
-      {},
+      options,
       SearchDiveSitesResponseSchema,
     );
     return data;

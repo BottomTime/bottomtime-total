@@ -31,7 +31,7 @@
       </FormField>
 
       <FormField label="Location" :responsive="false">
-        <FormLocationPicker v-model="state.location" />
+        <FormLocationPicker v-model="state.location" show-radius />
       </FormField>
 
       <FormField label="Minimum rating" :responsive="false">

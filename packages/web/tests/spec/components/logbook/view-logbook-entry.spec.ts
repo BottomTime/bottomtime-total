@@ -17,9 +17,9 @@ describe('ViewLogbookEntry component', () => {
     opts = {
       global: {
         plugins: [pinia],
-        stubs: {
-          StarRating: StarRatingStub,
-        },
+        // stubs: {
+        //   StarRating: StarRatingStub,
+        // },
       },
     };
   });

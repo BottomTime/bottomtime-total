@@ -1,8 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Search Dive Sites Form will allow a user to clear the location 1`] = `"20.422207555692225, -87.015536937484"`;
+exports[`Search Dive Sites Form will allow a user to cancel out of the location dialog 1`] = `"Unspecified"`;
 
-exports[`Search Dive Sites Form will allow a user to clear the location 2`] = `
+exports[`Search Dive Sites Form will allow a user to clear the location 1`] = `"20.42221N, -87.01554W"`;
+
+exports[`Search Dive Sites Form will allow a user to clear the location 2`] = `"Unspecified"`;
+
+exports[`Search Dive Sites Form will allow a user to clear the location 3`] = `
 [
   [
     {
@@ -10,7 +14,7 @@ exports[`Search Dive Sites Form will allow a user to clear the location 2`] = `
       "freeToDive": undefined,
       "location": undefined,
       "query": undefined,
-      "radius": 50,
+      "radius": undefined,
       "rating": undefined,
       "shoreAccess": undefined,
       "waterType": undefined,
@@ -53,7 +57,7 @@ exports[`Search Dive Sites Form will allow a user to refresh with minimal search
       "freeToDive": undefined,
       "location": undefined,
       "query": undefined,
-      "radius": 50,
+      "radius": undefined,
       "rating": undefined,
       "shoreAccess": undefined,
       "waterType": undefined,

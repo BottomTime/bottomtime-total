@@ -5,7 +5,7 @@
         v-if="operator.logo"
         :src="operator.logo"
         alt=""
-        class="w-[64px] h-[64px] rounded-full"
+        class="w-[64px] h-[64px] rounded-full shadow-sm shadow-grey-800/60"
       />
     </figure>
 

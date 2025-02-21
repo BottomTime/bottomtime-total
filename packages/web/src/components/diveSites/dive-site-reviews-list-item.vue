@@ -32,7 +32,11 @@
     </article>
 
     <div v-if="canEdit" class="min-w-fit">
-      <FormButton rounded="left" @click="$emit('edit', review)">
+      <FormButton
+        :id="`edit-review-${review.id}`"
+        rounded="left"
+        @click="$emit('edit', review)"
+      >
         <span>
           <i class="fa-solid fa-pen"></i>
         </span>
@@ -41,6 +45,7 @@
         </span>
       </FormButton>
       <FormButton
+        :id="`delete-review-${review.id}`"
         type="danger"
         rounded="right"
         @click="$emit('delete', review)"
@@ -64,10 +69,10 @@ import { computed } from 'vue';
 
 import { useCurrentUser } from '../../store';
 import DifficultyText from '../common/difficulty-text.vue';
-import EditDiveSiteReview from '../common/edit-dive-site-review.vue';
 import FormButton from '../common/form-button.vue';
 import StarRating from '../common/star-rating.vue';
 import UserAvatar from '../users/user-avatar.vue';
+import EditDiveSiteReview from './edit-dive-site-review.vue';
 
 interface DiveSiteReviewsListItemProps {
   editMode?: boolean;

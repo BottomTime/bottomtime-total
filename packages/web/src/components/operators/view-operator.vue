@@ -309,7 +309,6 @@ import { useOops } from '../../oops';
 import { SocialMediaNetwork, getSocialMediaProfileUrl } from '../../socials';
 import { useCurrentUser, useToasts } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
-import EditOperatorReview from '../common/edit-operator-review.vue';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormSelect from '../common/form-select.vue';
@@ -319,6 +318,7 @@ import StarRating from '../common/star-rating.vue';
 import TextHeading from '../common/text-heading.vue';
 import TransitionList from '../common/transition-list.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import EditOperatorReview from './edit-operator-review.vue';
 import OperatorReviewsListItem from './operator-reviews-list-item.vue';
 
 const client = useClient();

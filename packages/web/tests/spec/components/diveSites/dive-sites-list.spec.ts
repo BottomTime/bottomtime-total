@@ -40,7 +40,7 @@ describe('Dive Sites List component', () => {
 
   it('will indicate when there are no results to show', () => {
     opts.props = {
-      data: {
+      sites: {
         data: [],
         totalCount: 0,
       },
@@ -54,7 +54,7 @@ describe('Dive Sites List component', () => {
 
   it('will display the results', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
@@ -72,7 +72,7 @@ describe('Dive Sites List component', () => {
 
   it('will emit the site-selected event when a site is clicked', async () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
@@ -87,19 +87,19 @@ describe('Dive Sites List component', () => {
 
   it('will display load more if some results are not shown', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
     };
     const wrapper = mount(DiveSitesList, opts);
 
-    expect(wrapper.find(LoadMore).isVisible()).toBe(true);
+    expect(wrapper.get(LoadMore).isVisible()).toBe(true);
   });
 
   it('will emit load more event when load more is clicked', async () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
@@ -113,7 +113,7 @@ describe('Dive Sites List component', () => {
 
   it('will not display load more if all results are shown', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: 10,
       },
@@ -125,7 +125,7 @@ describe('Dive Sites List component', () => {
 
   it('will show a loading spinner if actively loading more results', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },

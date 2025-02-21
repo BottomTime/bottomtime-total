@@ -41,7 +41,7 @@
         <a
           v-else
           class="space-x-1"
-          test-id="load-more"
+          data-testid="load-more"
           @click="$emit('load-more')"
         >
           <span>

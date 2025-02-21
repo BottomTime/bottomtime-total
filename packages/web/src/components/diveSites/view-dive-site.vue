@@ -124,6 +124,8 @@
             />
             <FormButton
               v-if="state.canSubmitReview"
+              id="site-reviews-submit"
+              data-testid="site-reviews-submit"
               type="primary"
               @click="onSubmitReview"
             >
@@ -155,7 +157,7 @@
         <LoadingSpinner message="Fetching dive site reviews..." />
       </div>
 
-      <TransitionList v-else class="px-2">
+      <TransitionList v-else class="px-2" data-testid="site-reviews-list">
         <li
           v-if="state.showEditReview && state.currentReview?.id === ''"
           ref="newReviewElement"
@@ -202,7 +204,12 @@
           v-if="state.isLoadingMoreReviews"
           message="Fetching more reviews..."
         />
-        <a v-else class="space-x-1" @click="onLoadMore">
+        <a
+          v-else
+          class="space-x-1"
+          data-testid="site-reviews-load-more"
+          @click="onLoadMore"
+        >
           <span>
             <i class="fa-solid fa-arrow-down"></i>
           </span>
@@ -234,7 +241,6 @@ import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
 import DepthText from '../common/depth-text.vue';
 import DifficultyText from '../common/difficulty-text.vue';
-import EditDiveSiteReview from '../common/edit-dive-site-review.vue';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormSelect from '../common/form-select.vue';
@@ -247,6 +253,7 @@ import TransitionList from '../common/transition-list.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import DiveSiteReviewsListItem from './dive-site-reviews-list-item.vue';
+import EditDiveSiteReview from './edit-dive-site-review.vue';
 
 dayjs.extend(relativeTime);
 
@@ -276,7 +283,7 @@ const DefaultReview: DiveSiteReviewDTO = {
   createdOn: Date.now(),
   creator: currentUser.user?.profile ?? DefaultProfile,
   id: '',
-  rating: 0,
+  rating: -1,
 };
 
 const SortOptions: SelectOption[] = [
@@ -360,9 +367,7 @@ async function onSubmitReview(): Promise<void> {
 
   await nextTick();
 
-  if (newReviewElement.value?.scrollIntoView) {
-    newReviewElement.value.scrollIntoView({ behavior: 'smooth' });
-  }
+  newReviewElement.value?.scrollIntoView?.({ behavior: 'smooth' });
 }
 
 async function onEditReview(review: DiveSiteReviewDTO): Promise<void> {
@@ -373,7 +378,7 @@ async function onEditReview(review: DiveSiteReviewDTO): Promise<void> {
 
   const index = state.reviews.data.findIndex((r) => r.id === review.id);
   if (index > -1) {
-    reviewElements.value[index].scrollIntoView({ behavior: 'smooth' });
+    reviewElements.value[index].scrollIntoView?.({ behavior: 'smooth' });
   }
 }
 

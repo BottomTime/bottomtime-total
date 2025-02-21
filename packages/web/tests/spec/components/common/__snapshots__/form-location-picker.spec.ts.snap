@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormLocationPicker component will allow a location to be set by clicking the map 1`] = `"44.19983N, -76.53093W"`;
+
+exports[`FormLocationPicker component will allow a location to be set manually 1`] = `"44.19983N, -76.53093W"`;
+
+exports[`FormLocationPicker component will allow a user to cancel manual edit 1`] = `"Unspecified"`;
+
+exports[`FormLocationPicker component will render without a location 1`] = `"Unspecified"`;
+
+exports[`FormLocationPicker component will validate latitude and longitude 1`] = `"Latitude is requiredLongitude is required"`;
+
+exports[`FormLocationPicker component will validate latitude and longitude 2`] = `"Latitude must be a valid number between -90 and 90Longitude must be a valid number between -180 and 180"`;

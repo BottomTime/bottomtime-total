@@ -34,8 +34,20 @@ export function greaterThan(min: number): (val: unknown) => boolean {
   return (val) => !helpers.req(val) || (typeof val === 'number' && val > min);
 }
 
+export function latitude(val: unknown): boolean {
+  return (
+    !helpers.req(val) || (typeof val === 'number' && val >= -90 && val <= 90)
+  );
+}
+
 export function lessThan(max: number): (val: unknown) => boolean {
   return (val) => !helpers.req(val) || (typeof val === 'number' && val < max);
+}
+
+export function longitude(val: unknown): boolean {
+  return (
+    !helpers.req(val) || (typeof val === 'number' && val >= -180 && val <= 180)
+  );
 }
 
 export function maxDate(date?: Date): (val: unknown) => boolean {

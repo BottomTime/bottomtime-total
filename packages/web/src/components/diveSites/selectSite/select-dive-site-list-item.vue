@@ -118,8 +118,8 @@ watch(
     // The scrollIntoView method ought to work in most browsers but will blow up in tests.
     // Hence, the try/catch.
     try {
-      if (val && listItemElement.value?.scrollIntoView) {
-        listItemElement.value?.scrollIntoView({
+      if (val) {
+        listItemElement.value?.scrollIntoView?.({
           behavior: 'smooth',
           block: 'center',
         });

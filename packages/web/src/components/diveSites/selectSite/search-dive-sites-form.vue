@@ -5,64 +5,24 @@
         class="space-y-4"
         :disabled="state.isSearching || isAddingSites"
       >
-        <FormSearchBox
-          v-model="state.search"
-          control-id="siteSearchQuery"
-          test-id="site-search-query"
-          placeholder="Search for a dive site..."
-          autofocus
-          @search="onSearch"
-        />
+        <FormField label="Search">
+          <FormSearchBox
+            v-model="state.search"
+            control-id="siteSearchQuery"
+            test-id="site-search-query"
+            placeholder="Search for a dive site..."
+            autofocus
+            @search="onSearch"
+          />
+        </FormField>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <div>
-            <GoogleMap
-              :center="state.mapCenter"
-              :marker="state.location"
-              :sites="state.sites?.data"
-              @click="onLocationChange"
-              @site-selected="onSiteHighlighted"
-            />
-
-            <p class="text-sm text-center italic" italic>
-              Click a place on the map to center your search around that point.
-            </p>
-          </div>
-
-          <div class="flex flex-col gap-4 justify-center">
-            <div class="flex flex-col items-center">
-              <label class="font-bold">Location</label>
-              <p class="space-x-3">
-                <GpsCoordinatesText :coordinates="state.location" />
-                <FormButton
-                  v-if="state.location"
-                  type="link"
-                  control-id="site-search-clear-location"
-                  test-id="site-search-clear-location"
-                  @click="onLocationChange"
-                >
-                  Clear location
-                </FormButton>
-              </p>
-            </div>
-
-            <div v-if="state.location" class="text-center">
-              <label class="font-bold" for="site-search-radius">Distance</label>
-              <div class="flex gap-3 items-baseline">
-                <FormSlider
-                  v-model="state.radius"
-                  control-id="site-search-radius"
-                  test-id="site-search-radius"
-                  :min="10"
-                  :max="500"
-                  :step="10"
-                  :show-value="false"
-                />
-                <span class="text-right min-w-12">{{ state.radius }}km</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <FormField label="Location">
+          <FormLocationPicker
+            v-model="state.location"
+            class="max-w-[360px]"
+            show-radius
+          />
+        </FormField>
 
         <div class="text-center">
           <FormButton
@@ -169,6 +129,7 @@ import {
   ApiList,
   DiveSiteDTO,
   GpsCoordinates,
+  GpsCoordinatesWithRadius,
   SearchDiveSitesParamsDTO,
 } from '@bottomtime/api';
 
@@ -179,10 +140,9 @@ import { useGeolocation } from '../../../geolocation';
 import { useOops } from '../../../oops';
 import FormBox from '../../common/form-box.vue';
 import FormButton from '../../common/form-button.vue';
+import FormField from '../../common/form-field.vue';
+import FormLocationPicker from '../../common/form-location-picker.vue';
 import FormSearchBox from '../../common/form-search-box.vue';
-import FormSlider from '../../common/form-slider.vue';
-import GoogleMap from '../../common/google-map.vue';
-import GpsCoordinatesText from '../../common/gps-coordinates-text.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
 import NavLink from '../../common/nav-link.vue';
 import TransitionList from '../../common/transition-list.vue';
@@ -196,9 +156,8 @@ interface SelectDiveSiteListProps {
 interface SelectDiveSiteListState {
   isLoadingMore: boolean;
   isSearching: boolean;
-  location?: GpsCoordinates;
+  location?: GpsCoordinatesWithRadius;
   mapCenter?: GpsCoordinates;
-  radius: number;
   search: string;
   selectedSite?: string;
   sites?: ApiList<DiveSiteDTO & { selected?: boolean }>;
@@ -221,22 +180,20 @@ withDefaults(defineProps<SelectDiveSiteListProps>(), {
 const state = reactive<SelectDiveSiteListState>({
   isLoadingMore: false,
   isSearching: false,
-  radius: 100,
   search: '',
 });
 
 const sitesSelected = computed(
   () => state.sites?.data.some((site) => site.selected) ?? false,
 );
-function onLocationChange(location?: GpsCoordinates): void {
-  state.location = location;
-}
 
 function getSearchParams(): SearchDiveSitesParamsDTO {
   return {
     query: state.search || undefined,
-    location: state.location,
-    radius: state.location ? state.radius : undefined,
+    location: state.location
+      ? { lat: state.location.lat, lon: state.location.lon }
+      : undefined,
+    radius: state.location?.radius,
     limit: 30,
   };
 }
@@ -255,10 +212,11 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMore = true;
 
   await oops(async () => {
-    const results = await client.diveSites.searchDiveSites({
+    const search = {
       ...getSearchParams(),
       skip: state.sites?.data.length,
-    });
+    };
+    const results = await client.diveSites.searchDiveSites(search);
     state.sites!.data.push(...results.data);
     state.sites!.totalCount = results.totalCount;
   });
@@ -280,9 +238,10 @@ function onAddCheckedSites(): void {
   emit('add', state.sites?.data.filter((site) => site.selected) ?? []);
 }
 
-onMounted(async () => {
-  const userLocation = await geolocation.getCurrentLocation();
-  state.location = userLocation;
-  state.mapCenter = userLocation;
+onMounted(() => {
+  geolocation.getCurrentLocation().then((location) => {
+    state.location = location;
+    state.mapCenter = location;
+  });
 });
 </script>
