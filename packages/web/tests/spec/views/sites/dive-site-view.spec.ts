@@ -23,7 +23,7 @@ import {
   BasicUser,
   UserWithEmptyProfile,
 } from '../../../fixtures/users';
-import StarRatingStub from '../../../star-rating-stub.vue';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 describe('Dive Site View', () => {
   let fetcher: Fetcher;

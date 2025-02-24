@@ -11,7 +11,7 @@ import { Pinia, createPinia } from 'pinia';
 import DiveSitesListItem from '../../../../src/components/diveSites/dive-sites-list-item.vue';
 import DiveSitesList from '../../../../src/components/diveSites/dive-sites-list.vue';
 import SearchResults from '../../../fixtures/dive-sites-search-results.json';
-import StarRatingStub from '../../../star-rating-stub.vue';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 const NoResults = '[data-testid="no-results"]';
 const LoadMore = '[data-testid="load-more"]';

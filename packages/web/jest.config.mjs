@@ -84,6 +84,7 @@ export default {
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
     '^tests/(.*)$': '<rootDir>/tests/$1',
+    '^lodash-es$': 'lodash',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

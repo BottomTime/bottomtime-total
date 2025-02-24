@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 ${height} ${width} shadow-inner shadow-grey-800`"
+    :class="`relative rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 ${height} ${width} shadow-inner shadow-grey-800`"
   >
     <span class="relative">
       <img
@@ -21,6 +21,26 @@
     <span v-if="showName" :class="`pr-2 font-bold ${fontSize}`">
       {{ profile?.name || `@${profile?.username}` }}
     </span>
+
+    <div
+      v-if="profile"
+      class="absolute top-[100%] bg-secondary-dark p-1 rounded-sm shadow-lg shadow-grey-800/60 text-sm"
+    >
+      <div>
+        <label class="font-bold text-right">Joined:</label>
+        <span>{{ dayjs(profile?.memberSince).fromNow() }}</span>
+      </div>
+
+      <div>
+        <label class="font-bold text-right">Username:</label>
+        <span>@{{ profile.username }}</span>
+      </div>
+
+      <div>
+        <label class="font-bold text-right">Location:</label>
+        <span>{{ profile.location || 'Not specified' }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -28,6 +48,7 @@
 /* eslint-disable deprecation/deprecation */
 import { AccountTier, AvatarSize, SuccinctProfileDTO } from '@bottomtime/api';
 
+import dayjs from 'dayjs';
 import { computed } from 'vue';
 
 import { getAvatarURL } from '../../avatars';

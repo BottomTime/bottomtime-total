@@ -31,7 +31,7 @@ import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import LogEntryTestData from '../../../fixtures/log-entries.json';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
-import StarRatingStub from '../../../star-rating-stub.vue';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 const ProfileData: ProfileDTO = {
   accountTier: AccountTier.Basic,

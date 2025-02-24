@@ -29,7 +29,7 @@ import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,
 } from '../../../fixtures/sites';
-import StarRatingStub from '../../../star-rating-stub.vue';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 const SubmitReviewButton = '#site-reviews-submit';
 const LoadMoreButton = '[data-testid="site-reviews-load-more"]';

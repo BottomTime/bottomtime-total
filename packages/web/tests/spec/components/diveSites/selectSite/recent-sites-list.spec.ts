@@ -21,7 +21,7 @@ import { useCurrentUser } from '../../../../../src/store';
 import { createRouter } from '../../../../fixtures/create-router';
 import TestDiveSites from '../../../../fixtures/dive-sites-search-results.json';
 import { BasicUser } from '../../../../fixtures/users';
-import StarRatingStub from '../../../../star-rating-stub.vue';
+import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
 
 describe('RecentSitesList component', () => {
   let fetcher: Fetcher;

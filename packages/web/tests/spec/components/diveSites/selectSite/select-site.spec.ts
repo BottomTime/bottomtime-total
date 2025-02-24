@@ -21,7 +21,7 @@ import { createRouter } from 'tests/fixtures/create-router';
 import { PartialOperator } from 'tests/fixtures/operators';
 import { BasicUser } from 'tests/fixtures/users';
 import { MockGeolocation } from 'tests/mock-geolocation';
-import StarRatingStub from 'tests/star-rating-stub.vue';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 import { Router } from 'vue-router';
 
 const TestSite: DiveSiteDTO = {

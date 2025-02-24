@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditOperatorInfo component will render correctly if optional properties are omitted 1`] = `"Unspecified"`;
+
+exports[`EditOperatorInfo component will render correctly with all properties set 1`] = `"13.85680N, 54.68580E"`;

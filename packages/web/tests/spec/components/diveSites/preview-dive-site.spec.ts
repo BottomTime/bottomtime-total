@@ -6,7 +6,7 @@ import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,
 } from 'tests/fixtures/sites';
-import StarRatingStub from 'tests/star-rating-stub.vue';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 
 describe('PreviewDiveSite component', () => {
   let pinia: Pinia;

@@ -21,11 +21,8 @@ import {
   mount,
 } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import localized from 'dayjs/plugin/localizedFormat';
-import tz from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
+import 'tests/dayjs';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
@@ -43,11 +40,7 @@ import {
   BasicUser,
   UserWithEmptyProfile,
 } from '../../../fixtures/users';
-import StarRatingStub from '../../../star-rating-stub.vue';
-
-dayjs.extend(localized);
-dayjs.extend(utc);
-dayjs.extend(tz);
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 const TestData: LogEntryDTO = {
   creator: {

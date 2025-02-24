@@ -9,7 +9,7 @@ import {
 import DifficultyInput from 'src/components/common/difficulty-input.vue';
 import EditDiveSiteReview from 'src/components/diveSites/edit-dive-site-review.vue';
 import { BasicUser } from 'tests/fixtures/users';
-import StarRatingStub from 'tests/star-rating-stub.vue';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 
 const TestReview: DiveSiteReviewDTO = {
   createdOn: new Date('2021-01-01T00:00:00Z').valueOf(),

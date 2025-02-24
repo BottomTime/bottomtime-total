@@ -67,7 +67,13 @@
       </p>
 
       <div>
-        <FormButton type="primary" size="sm" @click="onAddTeamMember">
+        <FormButton
+          type="primary"
+          size="sm"
+          control-id="btn-add-team-member"
+          test-id="btn-add-team-member"
+          @click="onAddTeamMember"
+        >
           <p class="space-x-1">
             <i class="fa-solid fa-plus"></i>
             <span>Add Team Member</span>

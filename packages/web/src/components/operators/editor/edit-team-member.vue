@@ -24,11 +24,19 @@
           type="primary"
           submit
           :is-loading="isSaving"
+          control-id="btn-team-member-save"
+          testid="btn-team-member-save"
           @click="onSave"
         >
           Save Team Member
         </FormButton>
-        <FormButton @click="$emit('cancel')">Cancel</FormButton>
+        <FormButton
+          control-id="btn-team-member-cancel"
+          test-id="btn-team-member-cancel"
+          @click="$emit('cancel')"
+        >
+          Cancel
+        </FormButton>
       </div>
     </fieldset>
   </form>

@@ -46,7 +46,11 @@
     </article>
 
     <div v-if="editable" class="min-w-24 text-right">
-      <FormButton rounded="left" @click="$emit('edit', teamMember)">
+      <FormButton
+        :test-id="`btn-edit-team-member-${teamMember.member.username}`"
+        rounded="left"
+        @click="$emit('edit', teamMember)"
+      >
         <span>
           <i class="fa-solid fa-pencil"></i>
         </span>

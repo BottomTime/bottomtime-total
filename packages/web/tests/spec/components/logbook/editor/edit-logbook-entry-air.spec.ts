@@ -29,7 +29,7 @@ import {
 } from '../../../../fixtures/log-entries';
 import TankData from '../../../../fixtures/tanks.json';
 import { BasicUser } from '../../../../fixtures/users';
-import StarRatingStub from '../../../../star-rating-stub.vue';
+import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
 
 dayjs.extend(utc);
 dayjs.extend(tz);

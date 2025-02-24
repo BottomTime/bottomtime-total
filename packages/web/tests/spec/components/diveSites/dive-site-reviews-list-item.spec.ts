@@ -12,7 +12,7 @@ import DiveSiteReviewsListItem from 'src/components/diveSites/dive-site-reviews-
 import { useCurrentUser } from 'src/store';
 import 'tests/dayjs';
 import { AdminUser, BasicUser } from 'tests/fixtures/users';
-import StarRatingStub from 'tests/star-rating-stub.vue';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 
 const TestReview: DiveSiteReviewDTO = {
   createdOn: new Date('2021-01-01T00:00:00Z').valueOf(),

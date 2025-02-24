@@ -65,18 +65,19 @@
         <figure v-if="operator.id" class="px-2 py-6">
           <!-- Manage Logo -->
           <div
-            v-if="operator.logo"
+            v-if="state.logo"
             class="flex flex-col gap-2 justify-center items-center"
           >
             <img
-              :src="`${operator.logo}/128x128`"
-              class="rounded-md w-[128px] h-[128px]"
+              :src="`${operator.logo}/128x128?t=${state.logoUpdated}`"
+              class="rounded-lg min-w-[128px] min-h-[128px]"
             />
             <div class="flex justify-center">
               <FormButton
                 class="text-nowrap"
                 size="xs"
                 rounded="left"
+                control-id="btn-change-logo"
                 test-id="btn-change-logo"
                 @click="onChangeLogo"
               >
@@ -90,6 +91,7 @@
                 size="xs"
                 type="danger"
                 rounded="right"
+                control-id="btn-delete-logo"
                 test-id="btn-delete-logo"
                 @click="onDeleteLogo"
               >
@@ -111,6 +113,7 @@
             <FormButton
               class="text-nowrap"
               size="xs"
+              control-id="btn-upload-logo"
               test-id="btn-upload-logo"
               @click="onChangeLogo"
             >
@@ -246,9 +249,14 @@
                     control-id="operator-address"
                     test-id="operator-address"
                     :maxlength="500"
+                    :invalid="v$.address.$error"
                     @place-changed="onChangeAddress"
                   />
-                  <p v-if="v$.address.$error" class="text-sm text-danger">
+                  <p
+                    v-if="v$.address.$error"
+                    class="text-sm text-danger"
+                    data-testid="operator-address-error"
+                  >
                     {{ v$.address.$errors[0]?.$message }}
                   </p>
                   <FormLocationPicker v-model="formData.gps" class="px-2" />
@@ -414,10 +422,23 @@
         </article>
       </div>
 
+      <div v-if="v$.$error" class="text-sm text-danger">
+        <p>Please correct the following errors before proceeding</p>
+        <ul
+          class="italic list-inside list-disc px-4"
+          data-testid="operator-errors"
+        >
+          <li v-for="error in v$.$errors" :key="error.$uid">
+            {{ error.$message }}
+          </li>
+        </ul>
+      </div>
+
       <div class="flex justify-center gap-3">
         <FormButton
           type="primary"
           :is-loading="isSaving"
+          control-id="btn-save-operator"
           test-id="btn-save-operator"
           submit
           @click="onSave"
@@ -491,6 +512,7 @@ interface EditOperatorInfoState {
   autoUpdateSlug: boolean;
   isSavingLogo: boolean;
   logo: string;
+  logoUpdated: number;
   showAddressDialog: boolean;
   showChangeLogoDialog: boolean;
   showConfirmChangeSlugDialog: boolean;
@@ -549,6 +571,7 @@ const state = reactive<EditOperatorInfoState>({
   autoUpdateSlug: !props.operator.id,
   isSavingLogo: false,
   logo: props.operator.logo ?? '',
+  logoUpdated: Date.now(),
   showAddressDialog: false,
   showChangeLogoDialog: false,
   showConfirmChangeSlugDialog: false,
@@ -570,8 +593,7 @@ const newShopUrl = computed(() =>
 );
 
 async function isSlugAvailable(slug: string): Promise<boolean> {
-  if (!helpers.req(slug)) return true;
-  if (slug === props.operator?.slug) return true;
+  if (!slug || slug === props.operator.slug) return true;
 
   let available = true;
   await oops(
@@ -660,6 +682,7 @@ async function onSaveLogo(file: File, coords: Coordinates): Promise<void> {
     state.logo = logos.root;
     emit('logo-changed', logos.root);
 
+    state.logoUpdated = Date.now();
     state.showChangeLogoDialog = false;
     toasts.toast({
       id: 'logo-changed',
@@ -681,8 +704,6 @@ function onCancelDeleteLogo() {
 
 async function onConfirmDeleteLogo(): Promise<void> {
   await oops(async () => {
-    if (!props.operator) return;
-
     await client.operators.deleteLogo(props.operator.slug);
 
     state.logo = '';
@@ -732,6 +753,7 @@ function onConfirmSave() {
 }
 
 function onCancelSave() {
+  formData.slug = props.operator.slug;
   state.showConfirmChangeSlugDialog = false;
 }
 
@@ -741,6 +763,15 @@ watch(
     if (state.autoUpdateSlug) {
       formData.slug = slugify(name, { lower: true, strict: true });
     }
+  },
+);
+
+watch(
+  () => props.operator,
+  (data) => {
+    Object.assign(formData, formDataFromDto(data));
+    state.autoUpdateSlug = !data.id;
+    state.logo = data.logo ?? '';
   },
 );
 </script>

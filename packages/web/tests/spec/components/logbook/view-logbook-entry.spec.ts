@@ -5,7 +5,7 @@ import { Pinia, createPinia } from 'pinia';
 import ViewLogbookEntry from '../../../../src/components/logbook/view-logbook-entry.vue';
 import '../../../dayjs';
 import { FullLogEntry, MinimalLogEntry } from '../../../fixtures/log-entries';
-import StarRatingStub from '../../../star-rating-stub.vue';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 describe('ViewLogbookEntry component', () => {
   let pinia: Pinia;

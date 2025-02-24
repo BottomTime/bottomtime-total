@@ -27,6 +27,8 @@
 
       <div class="flex gap-3 justify-center">
         <FormButton
+          control-id="operator-review-save"
+          test-id="operator-review-save"
           type="primary"
           :is-loading="isSaving"
           submit
@@ -34,7 +36,12 @@
         >
           Save
         </FormButton>
-        <FormButton @click="$emit('cancel')">Cancel</FormButton>
+        <FormButton
+          control-id="operator-review-cancel"
+          test-id="operator-review-cancel"
+          @click="$emit('cancel')"
+          >Cancel</FormButton
+        >
       </div>
     </fieldset>
   </form>
@@ -46,7 +53,7 @@ import { OperatorReviewDTO } from '@bottomtime/api';
 import useVuelidate from '@vuelidate/core';
 import { helpers, minValue } from '@vuelidate/validators';
 
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
@@ -67,8 +74,8 @@ const props = withDefaults(defineProps<EditOperatorReviewProps>(), {
   isSaving: false,
 });
 const state = reactive<EditOperatorReviewState>({
-  rating: props.review?.rating ?? 0,
-  comments: props.review?.comments ?? '',
+  rating: props.review.rating,
+  comments: props.review.comments ?? '',
 });
 const emit = defineEmits<{
   (e: 'save', review: OperatorReviewDTO): void;
@@ -94,4 +101,12 @@ async function onSave(): Promise<void> {
     comments: state.comments,
   });
 }
+
+watch(
+  () => props.review,
+  (review) => {
+    state.rating = review.rating;
+    state.comments = review.comments ?? '';
+  },
+);
 </script>

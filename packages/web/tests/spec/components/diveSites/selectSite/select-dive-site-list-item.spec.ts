@@ -10,7 +10,7 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 import { Pinia, createPinia } from 'pinia';
 
 import SelectDiveSiteListItem from '../../../../../src/components/diveSites/selectSite/select-dive-site-list-item.vue';
-import StarRatingStub from '../../../../star-rating-stub.vue';
+import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
 
 const PartialDiveSite: DiveSiteDTO = {
   createdOn: new Date('2024-05-27T14:51:25.767Z').valueOf(),
