@@ -18,6 +18,7 @@ import EditTeamMember from 'src/components/operators/editor/edit-team-member.vue
 import EditTeamMembers from 'src/components/operators/editor/edit-team-members.vue';
 import TeamMemberListItem from 'src/components/operators/team-member-list-item.vue';
 import SearchProfiles from 'src/components/users/profiles/search-profiles.vue';
+import { ConfirmDialog, DrawerPanel } from 'tests/constants';
 import 'tests/dayjs';
 import { PartialOperator } from 'tests/fixtures/operators';
 import {
@@ -79,7 +80,10 @@ describe('EditTeamMembers component', () => {
 
     listTeamMembersSpy = jest
       .spyOn(client.operators, 'listTeamMembers')
-      .mockResolvedValue(TeamMembers);
+      .mockResolvedValue({
+        data: [...TeamMembers.data],
+        totalCount: TeamMembers.totalCount,
+      });
   });
 
   it('will mount and display a list of team members', async () => {
@@ -129,8 +133,20 @@ describe('EditTeamMembers component', () => {
     expect(newItem.props('teamMember')).toEqual(newTeamMember);
   });
 
+  it('will allow a user to cancel adding a team member', async () => {
+    const saveSpy = jest.spyOn(client.operators, 'addOrUpdateTeamMember');
+    const wrapper = mount(EditTeamMembers, opts);
+    await flushPromises();
+
+    await wrapper.get(AddTeamMemberButton).trigger('click');
+    await wrapper.get(DrawerPanel.CloseButton).trigger('click');
+
+    expect(saveSpy).not.toHaveBeenCalled();
+    expect(wrapper.findComponent(SearchProfiles).exists()).toBe(false);
+  });
+
   it('will allow a user to update an existing member', async () => {
-    const newTitle = 'Master of Diving';
+    const newTitle = 'Master of Everything';
     const newJoined = '2022-08-09';
     const expected = {
       ...TeamMembers.data[0],
@@ -156,5 +172,65 @@ describe('EditTeamMembers component', () => {
       expected,
     );
     expect(item.props('teamMember')).toEqual(expected);
+  });
+
+  it('will allow a user to cancel updating a team member', async () => {
+    const saveSpy = jest.spyOn(client.operators, 'addOrUpdateTeamMember');
+    const wrapper = mount(EditTeamMembers, opts);
+    await flushPromises();
+
+    const item = wrapper.getComponent(TeamMemberListItem);
+    await item
+      .get(
+        `[data-testid="btn-edit-team-member-${TeamMembers.data[0].member.username}"]`,
+      )
+      .trigger('click');
+    await wrapper.get(DrawerPanel.CloseButton).trigger('click');
+
+    expect(saveSpy).not.toHaveBeenCalled();
+    expect(wrapper.findComponent(EditTeamMember).exists()).toBe(false);
+  });
+
+  it('will allow a user to remove a team member', async () => {
+    const removeSpy = jest
+      .spyOn(client.operators, 'removeTeamMembers')
+      .mockResolvedValue(1);
+    const wrapper = mount(EditTeamMembers, opts);
+    await flushPromises();
+
+    await wrapper
+      .get(
+        `[data-testid="btn-remove-team-member-${TeamMembers.data[0].member.username}"]`,
+      )
+      .trigger('click');
+    await wrapper.get(ConfirmDialog.Confirm).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find(ConfirmDialog.Cancel).exists()).toBe(false);
+    expect(removeSpy).toHaveBeenCalledWith(
+      PartialOperator.slug,
+      TeamMembers.data[0].member.username,
+    );
+    expect(wrapper.findAllComponents(TeamMemberListItem)).toHaveLength(
+      TeamMembers.data.length - 1,
+    );
+  });
+
+  it('will allow a user to cancel removing a team member', async () => {
+    const removeSpy = jest.spyOn(client.operators, 'removeTeamMembers');
+    const wrapper = mount(EditTeamMembers, opts);
+    await flushPromises();
+
+    await wrapper
+      .get(
+        `[data-testid="btn-remove-team-member-${TeamMembers.data[0].member.username}"]`,
+      )
+      .trigger('click');
+    await wrapper.get(ConfirmDialog.Cancel).trigger('click');
+
+    expect(removeSpy).not.toHaveBeenCalled();
+    expect(wrapper.findAllComponents(TeamMemberListItem)).toHaveLength(
+      TeamMembers.data.length,
+    );
   });
 });

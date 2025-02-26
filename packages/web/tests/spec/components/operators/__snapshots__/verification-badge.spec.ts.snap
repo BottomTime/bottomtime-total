@@ -76,6 +76,6 @@ exports[`VerificationBadge component will render badge correctly for verificatio
 
 exports[`VerificationBadge component will render badge correctly for verification status: verified 1`] = `
 "<div data-testid="verification-status">
-  <div class="inline-block bg-success rounded-full px-2 h-5 flex items-center w-fit shadow-sm shadow-grey-600 text-xs text-xl" data-testid="operator-verified"><span><i class="fa-solid fa-check"></i></span><span>Verified!</span></div>
+  <div class="inline-block bg-success rounded-full px-2 h-5 flex items-center min-w-fit shadow-sm shadow-grey-600 text-xs text-xl" data-testid="operator-verified"><span><i class="fa-solid fa-check"></i></span><span>Verified!</span></div>
 </div>"
 `;

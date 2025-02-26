@@ -15,6 +15,7 @@ import { Pinia, createPinia } from 'pinia';
 import { ApiClientKey } from 'src/api-client';
 import DiveSitesListItem from 'src/components/diveSites/dive-sites-list-item.vue';
 import OfferedByOperatorList from 'src/components/diveSites/selectSite/offered-by-operator-list.vue';
+import 'tests/dayjs';
 import SiteData from 'tests/fixtures/dive-sites-search-results.json';
 import { PartialOperator } from 'tests/fixtures/operators';
 import StarRatingStub from 'tests/stubs/star-rating-stub.vue';

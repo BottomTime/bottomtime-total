@@ -5,6 +5,7 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 import { Pinia, createPinia } from 'pinia';
 import { ApiClientKey } from 'src/api-client';
 import ViewOperator from 'src/components/operators/view-operator.vue';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 
 import { FullOperator, PartialOperator } from '../../../fixtures/operators';
 
@@ -28,6 +29,9 @@ describe('ViewOperator component', () => {
         plugins: [pinia],
         provide: {
           [ApiClientKey as symbol]: client,
+        },
+        stubs: {
+          StarRating: StarRatingStub,
         },
       },
     };

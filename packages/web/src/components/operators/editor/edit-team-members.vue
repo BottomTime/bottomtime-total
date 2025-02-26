@@ -56,52 +56,76 @@
     <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
-  <FormBox>
-    <div class="flex justify-between items-baseline">
-      <p>
-        <span>Showing </span>
-        <span class="font-bold">{{ state.teamMembers.data.length }}</span>
-        <span> of </span>
-        <span class="font-bold">{{ state.teamMembers.totalCount }}</span>
-        <span> team members</span>
-      </p>
+  <div class="space-y-4">
+    <p class="text-lg text-center">
+      Manage the team members that work at your dive shop. Team members are
+      displayed on your shop's profile page and can be used to show off your
+      staff's experience and qualifications.
+    </p>
 
-      <div>
-        <FormButton
-          type="primary"
-          size="sm"
-          control-id="btn-add-team-member"
-          test-id="btn-add-team-member"
-          @click="onAddTeamMember"
-        >
-          <p class="space-x-1">
-            <i class="fa-solid fa-plus"></i>
-            <span>Add Team Member</span>
-          </p>
-        </FormButton>
+    <FormBox>
+      <div class="flex justify-between items-baseline">
+        <p>
+          <span>Showing </span>
+          <span class="font-bold">{{ state.teamMembers.data.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ state.teamMembers.totalCount }}</span>
+          <span> team members</span>
+        </p>
+
+        <div>
+          <FormButton
+            type="primary"
+            size="sm"
+            control-id="btn-add-team-member"
+            test-id="btn-add-team-member"
+            @click="onAddTeamMember"
+          >
+            <p class="space-x-1">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add Team Member</span>
+            </p>
+          </FormButton>
+        </div>
       </div>
-    </div>
-  </FormBox>
+    </FormBox>
 
-  <LoadingSpinner
-    v-if="state.isLoading"
-    class="text-center text-lg my-8"
-    message="Fetching team members..."
-  />
-  <TransitionList v-else class="px-2">
-    <TeamMemberListItem
-      v-for="teamMember in state.teamMembers.data"
-      :key="teamMember.member.username"
-      :team-member="teamMember"
-      editable
-      @select="onEditTeamMember"
-      @edit="onEditTeamMember"
-      @remove="onRemoveTeamMember"
+    <LoadingSpinner
+      v-if="state.isLoading"
+      class="text-center text-lg my-8"
+      message="Fetching team members..."
     />
-    <li v-if="!state.teamMembers.data.length" class="text-center my-8 text-lg">
-      No one has been added to your team yet. 😢
-    </li>
-  </TransitionList>
+    <TransitionList v-else class="px-2">
+      <TeamMemberListItem
+        v-for="teamMember in state.teamMembers.data"
+        :key="teamMember.member.username"
+        :team-member="teamMember"
+        editable
+        @select="onEditTeamMember"
+        @edit="onEditTeamMember"
+        @remove="onRemoveTeamMember"
+      />
+      <li
+        v-if="!state.teamMembers.data.length"
+        class="text-center my-8 text-lg"
+      >
+        No one has been added to your team yet. 😢
+      </li>
+    </TransitionList>
+
+    <!-- <div class="text-center text-lg my-4">
+    <LoadingSpinner
+      v-if="state.isLoadingMore"
+      message="Fetching more team members..."
+    />
+    <a v-else class="space-x-1" @click="onLoadMore">
+      <span>
+        <i class="fa-solid fa-arrow-down"></i>
+      </span>
+      <span>Load more</span>
+    </a>
+  </div> -->
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -136,6 +160,7 @@ interface EditTeamMembersProps {
 interface EditTeamMembersState {
   isAddingTeamMember: boolean;
   isLoading: boolean;
+  isLoadingMore: boolean;
   isRemoving: boolean;
   isUpdating: boolean;
   newTeamMember?: TeamMemberDTO;
@@ -156,6 +181,7 @@ const props = withDefaults(defineProps<EditTeamMembersProps>(), {
 const state = reactive<EditTeamMembersState>({
   isAddingTeamMember: false,
   isLoading: true,
+  isLoadingMore: false,
   isRemoving: false,
   isUpdating: false,
   showConfirmRemoveTeamMember: false,
@@ -294,6 +320,21 @@ async function onConfirmEditTeamMember(
 
   state.isUpdating = false;
 }
+
+// async function onLoadMore(): Promise<void> {
+//   state.isLoadingMore = true;
+
+//   await oops(async () => {
+//     const teamMembers = await client.operators.listTeamMembers(
+//       props.operator.slug,
+//       {},
+//     );
+
+//     state.teamMembers.data.push(...teamMembers.data);
+//   });
+
+//   state.isLoadingMore = false;
+// }
 
 onMounted(async () => {
   await oops(async () => {

@@ -44,7 +44,7 @@
     </p>
 
     <FormBox class="flex justify-between items-baseline">
-      <p>
+      <p data-testid="operator-site-counts">
         <span>Showing </span>
         <span class="font-bold">{{ state.sites.data.length }}</span>
         <span> of </span>
@@ -59,6 +59,8 @@
             <span class="sr-only">Refresh sites list</span>
           </FormButton>
           <FormButton
+            control-id="btn-remove-sites"
+            test-id="btn-remove-sites"
             type="danger"
             size="sm"
             rounded="right"
@@ -71,6 +73,8 @@
         </div>
 
         <FormButton
+          control-id="btn-add-sites"
+          test-id="btn-add-sites"
           class="space-x-1"
           type="primary"
           size="sm"
@@ -84,7 +88,13 @@
       </div>
     </FormBox>
 
-    <DiveSitesList :sites="state.sites" :show-map="false" />
+    <DiveSitesList
+      :sites="state.sites"
+      :show-map="false"
+      :is-loading-more="state.isLoadingMore"
+      multi-select
+      @load-more="onLoadMore"
+    />
   </div>
 </template>
 
@@ -112,6 +122,7 @@ interface EditOperatorSitesProps {
 interface EditOperatorSitesState {
   isAddingSites: boolean;
   isLoading: boolean;
+  isLoadingMore: boolean;
   isRemovingSites: boolean;
   showAddSite: boolean;
   showConfirmRemoveSites: boolean;
@@ -126,6 +137,7 @@ const props = defineProps<EditOperatorSitesProps>();
 const state = reactive<EditOperatorSitesState>({
   isAddingSites: false,
   isLoading: true,
+  isLoadingMore: false,
   isRemovingSites: false,
   showAddSite: false,
   showConfirmRemoveSites: false,
@@ -221,6 +233,22 @@ async function refreshSitesList(): Promise<void> {
   });
 
   state.isLoading = false;
+}
+
+async function onLoadMore(): Promise<void> {
+  state.isLoadingMore = true;
+
+  await oops(async () => {
+    const moreSites = await client.operators.listDiveSites(
+      props.operator.slug,
+      { skip: state.sites.data.length },
+    );
+
+    state.sites.data.push(...moreSites.data);
+    state.sites.totalCount = moreSites.totalCount;
+  });
+
+  state.isLoadingMore = false;
 }
 
 onMounted(refreshSitesList);

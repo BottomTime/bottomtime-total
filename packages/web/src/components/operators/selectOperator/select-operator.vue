@@ -7,6 +7,8 @@
     <RecentOperatorsList
       v-if="state.activeTab === SelectOperatorTabs.Recent"
       :current-operator="currentOperator"
+      @switch-to-search="state.activeTab = SelectOperatorTabs.Search"
+      @operator-selected="(operator) => $emit('operator-selected', operator)"
     />
 
     <SearchOperatorsForm

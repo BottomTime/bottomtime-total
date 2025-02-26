@@ -13,7 +13,7 @@ body * {
   @apply transition-colors duration-[35ms];
 }
 
-a {
+a:not(.no-style) {
   @apply font-bold text-link hover:text-link-hover cursor-pointer;
 }
 

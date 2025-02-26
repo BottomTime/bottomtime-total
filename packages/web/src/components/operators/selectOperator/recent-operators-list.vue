@@ -41,7 +41,7 @@
           </span>
           <span class="italic">
             You don't have any recently used dive shops to dispaly. Try
-            searching for one!
+            <a @click="$emit('switch-to-search')">searching for one</a>!
           </span>
         </li>
       </TransitionList>
@@ -81,6 +81,7 @@ const route = useRoute();
 const props = defineProps<RecentOperatorsListProps>();
 defineEmits<{
   (e: 'operator-selected', operator: OperatorDTO): void;
+  (e: 'switch-to-search'): void;
 }>();
 const state = reactive<RecentOperatorsListState>({
   isLoading: true,

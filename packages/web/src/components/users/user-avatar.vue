@@ -1,6 +1,9 @@
 <template>
-  <div
-    :class="`relative rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 ${height} ${width} shadow-inner shadow-grey-800`"
+  <a
+    :href="`/profile/${profile?.username}`"
+    target="_blank"
+    rel="noopener noreferrer"
+    :class="`no-style group relative rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 ${height} ${width} shadow-inner shadow-grey-800 cursor-pointer`"
   >
     <span class="relative">
       <img
@@ -24,24 +27,22 @@
 
     <div
       v-if="profile"
-      class="absolute top-[100%] bg-secondary-dark p-1 rounded-sm shadow-lg shadow-grey-800/60 text-sm"
+      class="absolute top-[105%] left-2 min-w-44 opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 flex flex-wrap bg-secondary-dark p-1 rounded-md shadow-lg shadow-grey-800/60 text-xs z-[55] transition-opacity ease-in-out duration-200"
     >
-      <div>
-        <label class="font-bold text-right">Joined:</label>
-        <span>{{ dayjs(profile?.memberSince).fromNow() }}</span>
-      </div>
+      <label class="font-bold text-right w-2/5">Joined:</label>
+      <span class="w-3/5 px-1 text-pretty">
+        {{ dayjs(profile?.memberSince).fromNow() }}
+      </span>
 
-      <div>
-        <label class="font-bold text-right">Username:</label>
-        <span>@{{ profile.username }}</span>
-      </div>
+      <label class="font-bold text-right w-2/5">Username:</label>
+      <span class="w-3/5 px-1 text-pretty">@{{ profile.username }}</span>
 
-      <div>
-        <label class="font-bold text-right">Location:</label>
-        <span>{{ profile.location || 'Not specified' }}</span>
-      </div>
+      <label class="font-bold text-right w-2/5">Location:</label>
+      <span class="w-3/5 px-1 text-pretty">
+        {{ profile.location || 'Not specified' }}
+      </span>
     </div>
-  </div>
+  </a>
 </template>
 
 <script setup lang="ts">

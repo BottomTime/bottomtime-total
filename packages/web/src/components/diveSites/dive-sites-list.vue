@@ -28,6 +28,7 @@
         ref="items"
         :key="site.id"
         :site="site"
+        :selectable="multiSelect"
         @site-selected="$emit('site-selected', site)"
         @toggle-selection="onToggleSiteSelected"
       />

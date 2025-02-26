@@ -18,7 +18,7 @@
       </div>
     </FormBox>
 
-    <div class="w-full md:w-[640px] mx-auto aspect-video">
+    <div v-if="showMap" class="w-full md:w-[640px] mx-auto aspect-video">
       <GoogleMap
         :center="mapCenter"
         :operators="operators.data"
@@ -104,6 +104,7 @@ interface OperatorsListProps {
   isLoadingMore?: boolean;
   mapCenter?: GpsCoordinates;
   operators: ApiList<OperatorDTO>;
+  showMap?: boolean;
 }
 
 const items = ref<InstanceType<typeof OperatorsListItem>[]>([]);
@@ -118,6 +119,7 @@ const isShopOwner = computed(
 withDefaults(defineProps<OperatorsListProps>(), {
   isLoading: false,
   isLoadingMore: false,
+  showMap: true,
 });
 
 const emit = defineEmits<{

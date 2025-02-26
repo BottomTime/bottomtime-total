@@ -44,7 +44,7 @@
             :data-testid="`${testId}-save`"
             @click="onSaveEdit"
           >
-            <a>Save</a>
+            <a>Set</a>
           </button>
           <button
             type="reset"

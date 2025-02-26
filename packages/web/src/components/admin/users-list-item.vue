@@ -2,10 +2,7 @@
   <li class="flex flex-row mt-2 gap-4">
     <!-- Avatar -->
     <div class="w-10 flex-initial mt-4">
-      <UserAvatar
-        :avatar="user.profile?.avatar || undefined"
-        :display-name="user.profile?.name || user.username"
-      />
+      <UserAvatar :profile="user.profile" />
     </div>
 
     <!-- Info Panel -->

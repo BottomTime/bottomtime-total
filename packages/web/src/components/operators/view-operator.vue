@@ -62,9 +62,10 @@
         <span>Verified!</span>
       </PillLabel>
 
-      <p class="text-lg">
-        {{ operator.description }}
-      </p>
+      <MarkdownViewer
+        class="line-clamp-4 hover:line-clamp-none"
+        :model-value="operator.description"
+      />
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="space-y-2 px-3">
@@ -313,6 +314,7 @@ import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormSelect from '../common/form-select.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
+import MarkdownViewer from '../common/markdown-viewer.vue';
 import PillLabel from '../common/pill-label.vue';
 import StarRating from '../common/star-rating.vue';
 import TextHeading from '../common/text-heading.vue';

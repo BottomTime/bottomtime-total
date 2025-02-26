@@ -64,10 +64,12 @@
         </template>
       </div>
 
-      <!-- TODO: This should support markdown for nicer descriptions. -->
-      <p v-if="operator.description" class="text-pretty italic">
-        {{ operator.description }}
-      </p>
+      <MarkdownViewer
+        v-if="operator.description"
+        class="text-sm text-pretty"
+        :model-value="operator.description"
+        collapse
+      />
 
       <address class="text-sm space-y-3">
         <div>
@@ -253,6 +255,7 @@ import { RouterLink } from 'vue-router';
 import { SocialMediaNetwork, getSocialMediaProfileUrl } from '../../socials';
 import { useCurrentUser } from '../../store';
 import FormButton from '../common/form-button.vue';
+import MarkdownViewer from '../common/markdown-viewer.vue';
 import PillLabel from '../common/pill-label.vue';
 
 interface OperatorsListItemProps {

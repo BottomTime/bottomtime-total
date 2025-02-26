@@ -23,7 +23,7 @@
           </p>
 
           <p v-if="teamMember.joined">
-            Since {{ dayjs(teamMember.joined).fromNow() }}
+            Joined {{ dayjs(teamMember.joined).fromNow() }}
           </p>
         </div>
       </div>
@@ -33,7 +33,7 @@
       </div>
 
       <div class="flex gap-12 justify-evenly">
-        <div v-if="teamMember.member.location" class="text-center">
+        <div v-if="teamMember.member.experienceLevel" class="text-center">
           <p class="font-bold">Experience Level</p>
           <p>{{ teamMember.member.experienceLevel }}</p>
         </div>
@@ -57,6 +57,7 @@
         <span class="sr-only">Edit team member: {{ displayName }}</span>
       </FormButton>
       <FormButton
+        :test-id="`btn-remove-team-member-${teamMember.member.username}`"
         type="danger"
         rounded="right"
         @click="$emit('remove', teamMember)"

@@ -1,13 +1,42 @@
 <template>
-  <!-- eslint-disable-next-line vue/no-v-html -->
-  <div class="overflow-x-auto space-y-3" v-html="html"></div>
+  <div>
+    <!-- eslint-disable-next-line vue/no-v-html -->
+    <div ref="htmlDiv" :class="divClasses" v-html="html"></div>
+    <a
+      v-if="collapse && canCollapse"
+      class="text-sm space-x-1"
+      @click="isCollapsed = !isCollapsed"
+    >
+      <span v-if="isCollapsed">
+        <i class="fa-solid fa-chevron-down"></i>
+      </span>
+      <span v-else>
+        <i class="fa-solid fa-chevron-up"></i>
+      </span>
+      <span>
+        {{ isCollapsed ? 'Show more' : 'Show less' }}
+      </span>
+    </a>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import showdown from 'showdown';
-import { computed } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
-const markdown = defineModel<string>({ default: '' });
+interface MarkdownViewerProps {
+  collapse?: boolean;
+}
+
+const htmlDiv = ref<HTMLDivElement | null>(null);
+const isCollapsed = ref(true);
+const canCollapse = ref(false);
+const props = withDefaults(defineProps<MarkdownViewerProps>(), {
+  collapse: false,
+});
+const markdown = defineModel<string>({
+  default: '',
+});
 
 // Apply Tailwind classes to generated HTML elements.
 const classMap: Record<string, string> = {
@@ -28,6 +57,12 @@ const classMap: Record<string, string> = {
   ul: 'list-disc list-inside pl-2',
 };
 
+const divClasses = computed(() => ({
+  'overflow-x-auto': true,
+  'space-y-3': true,
+  'line-clamp-4': props.collapse && isCollapsed.value,
+}));
+
 const bindings = Object.keys(classMap).map((key) => ({
   type: 'output',
   regex: new RegExp(`<${key}(.*)>`, 'g'),
@@ -45,4 +80,19 @@ const converter = new showdown.Converter({
 });
 
 const html = computed(() => converter.makeHtml(markdown.value));
+
+watch(
+  markdown,
+  async () => {
+    if (props.collapse) {
+      isCollapsed.value = true;
+      await nextTick();
+      if (htmlDiv.value) {
+        canCollapse.value =
+          htmlDiv.value.scrollHeight > htmlDiv.value.clientHeight;
+      }
+    }
+  },
+  { immediate: true },
+);
 </script>

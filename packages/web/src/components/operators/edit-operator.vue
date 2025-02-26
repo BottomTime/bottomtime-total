@@ -81,20 +81,21 @@
     @tab-changed="onTabChanged"
   >
     <EditOperatorInfo
-      v-if="state.activeTab === TabKey.ShopInfo && operator"
+      v-if="state.activeTab === TabKey.ShopInfo"
       :operator="operator"
       :is-saving="isSaving"
       @delete="(operator) => emit('delete', operator)"
       @save="(data) => emit('save', data)"
+      @logo-changed="(logo) => emit('logo-changed', logo)"
     />
 
     <EditOperatorSites
-      v-else-if="state.activeTab === TabKey.DiveSites && operator"
+      v-else-if="state.activeTab === TabKey.DiveSites"
       :operator="operator"
     />
 
     <EditTeamMembers
-      v-else-if="state.activeTab === TabKey.TeamMembers && operator"
+      v-else-if="state.activeTab === TabKey.TeamMembers"
       :operator="operator"
       :is-saving="isSaving"
     />
@@ -126,7 +127,7 @@ enum TabKey {
 
 interface EditOperatorProps {
   isSaving?: boolean;
-  operator?: OperatorDTO;
+  operator: OperatorDTO;
 }
 
 interface EditOperatorState {

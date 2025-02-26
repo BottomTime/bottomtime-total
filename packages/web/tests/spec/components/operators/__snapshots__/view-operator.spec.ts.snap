@@ -9,8 +9,14 @@ exports[`ViewOperator component will render with all properties 1`] = `
   </div>
   <article class="space-y-3">
     <!--v-if-->
-    <p class="text-lg">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
-      Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+    <div class="line-clamp-4 hover:line-clamp-none">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div class="overflow-x-auto space-y-3">
+        <p>Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
+          Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+      </div>
+      <!--v-if-->
+    </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="space-y-2 px-3">
         <h3 class="text-lg font-bold font-title">Contact Info</h3>
@@ -37,32 +43,7 @@ exports[`ViewOperator component will render with all properties 1`] = `
     <div class="flex flex-col gap-1 items-center md:items-end">
       <div class="flex flex-wrap gap-2 items-baseline">
         <p class="font-bold">Rating:</p>
-        <div class="flex items-baseline gap-1 min-w-fit">
-          <div class="vue3-star-ratings mx-1" style="pointer-events: none;">
-            <div class="vue3-star-ratings__outer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg></div>
-            <div class="vue3-star-ratings__inner"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg></div>
-          </div><span>Not rated</span>
-        </div>
+        <div readonly="">0</div>
       </div>
       <div class="flex flex-col lg:flex-row items-center md:items-end lg:items-baseline gap-3">
         <div><select id="reviews-sort-order" class="bg-grey-200 border-2 border-grey-600 text-grey-950 rounded-lg block py-1 px-2 h-8 dark:bg-grey-300 dark:placeholder-grey-400 disabled:bg-grey-400 disabled:text-grey-700 disabled:dark:bg-grey-500 min-w-36" data-testid="reviews-sort-order" name="reviews-sort-order">
@@ -90,8 +71,14 @@ exports[`ViewOperator component will render with partial properties 1`] = `
   </div>
   <article class="space-y-3">
     <!--v-if-->
-    <p class="text-lg">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
-      Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+    <div class="line-clamp-4 hover:line-clamp-none">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div class="overflow-x-auto space-y-3">
+        <p>Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
+          Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+      </div>
+      <!--v-if-->
+    </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="space-y-2 px-3">
         <h3 class="text-lg font-bold font-title">Contact Info</h3>
@@ -111,32 +98,7 @@ exports[`ViewOperator component will render with partial properties 1`] = `
     <div class="flex flex-col gap-1 items-center md:items-end">
       <div class="flex flex-wrap gap-2 items-baseline">
         <p class="font-bold">Rating:</p>
-        <div class="flex items-baseline gap-1 min-w-fit">
-          <div class="vue3-star-ratings mx-1" style="pointer-events: none;">
-            <div class="vue3-star-ratings__outer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg></div>
-            <div class="vue3-star-ratings__inner"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.002 512.002" class="vue3-star-ratings__icon">
-                <path d="M511.267 197.258a14.995 14.995 0 00-12.107-10.209l-158.723-23.065-70.985-143.827a14.998 14.998 0 00-26.901 0l-70.988 143.827-158.72 23.065a14.998 14.998 0 00-8.312 25.585l114.848 111.954-27.108 158.083a14.999 14.999 0 0021.763 15.812l141.967-74.638 141.961 74.637a15 15 0 0021.766-15.813l-27.117-158.081 114.861-111.955a14.994 14.994 0 003.795-15.375z"></path>
-              </svg></div>
-          </div><span>Not rated</span>
-        </div>
+        <div readonly="">0</div>
       </div>
       <div class="flex flex-col lg:flex-row items-center md:items-end lg:items-baseline gap-3">
         <div><select id="reviews-sort-order" class="bg-grey-200 border-2 border-grey-600 text-grey-950 rounded-lg block py-1 px-2 h-8 dark:bg-grey-300 dark:placeholder-grey-400 disabled:bg-grey-400 disabled:text-grey-700 disabled:dark:bg-grey-500 min-w-36" data-testid="reviews-sort-order" name="reviews-sort-order">

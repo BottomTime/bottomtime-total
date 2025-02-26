@@ -3,6 +3,7 @@
     <FormCheckbox
       v-if="selectable"
       :model-value="site.selected"
+      :test-id="`select-site-${site.id}`"
       @update:model-value="$emit('toggle-selection', site)"
     />
     <div class="flex flex-col gap-0 grow relative">
