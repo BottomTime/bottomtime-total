@@ -59,7 +59,7 @@ import {
   ListLogEntriesParamsDTO,
 } from '@bottomtime/api';
 
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
@@ -81,22 +81,28 @@ interface LogbookSearchState {
   minRating?: number;
 }
 
+function getFormStateFromParams(
+  params: ListLogEntriesParamsDTO,
+): LogbookSearchState {
+  return {
+    query: params.query || '',
+    startDate: params.startDate ? new Date(params.startDate) : undefined,
+    endDate: params.endDate ? new Date(params.endDate) : undefined,
+    minRating: params.minRating,
+    location: params.location
+      ? {
+          lat: params.location.lat,
+          lon: params.location.lon,
+          radius: params.radius ?? 50,
+        }
+      : undefined,
+  };
+}
+
 const props = defineProps<LogbookSearchProps>();
-const state = reactive<LogbookSearchState>({
-  query: props.params.query || '',
-  startDate: props.params.startDate
-    ? new Date(props.params.startDate)
-    : undefined,
-  endDate: props.params.endDate ? new Date(props.params.endDate) : undefined,
-  minRating: props.params.minRating,
-  location: props.params.location
-    ? {
-        lat: props.params.location.lat,
-        lon: props.params.location.lon,
-        radius: props.params.radius ?? 50,
-      }
-    : undefined,
-});
+const state = reactive<LogbookSearchState>(
+  getFormStateFromParams(props.params),
+);
 
 const emit = defineEmits<{
   (e: 'search', options: ListLogEntriesParamsDTO): void;
@@ -123,4 +129,11 @@ function onSearch() {
 function onClearMinRating() {
   state.minRating = undefined;
 }
+
+watch(
+  () => props.params,
+  (params) => {
+    Object.assign(state, getFormStateFromParams(params));
+  },
+);
 </script>
