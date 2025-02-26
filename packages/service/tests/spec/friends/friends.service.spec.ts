@@ -327,7 +327,7 @@ describe('Friends Service', () => {
 
       expect(friendRequest.direction).toBe(FriendRequestDirection.Outgoing);
       expect(friendRequest.friendId).toBe(destinationUser.id);
-      expect(friendRequest.friend.id).toBe(destinationUser.id);
+      expect(friendRequest.friend.userId).toBe(destinationUser.id);
       expect(friendRequest.created.valueOf()).toBeCloseTo(Date.now(), -3);
       expect(friendRequest.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,

@@ -4,7 +4,7 @@
   >
     <div class="min-w-[64px]">
       <UserAvatar
-        :avatar="friend.avatar"
+        :profile="friend"
         :display-name="friend.name || friend.username"
         size="medium"
       />

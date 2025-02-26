@@ -3,11 +3,7 @@
     class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center"
   >
     <div class="min-w-[64px]">
-      <UserAvatar
-        :avatar="request.friend.avatar"
-        :display-name="request.friend.name || request.friend.username"
-        size="medium"
-      />
+      <UserAvatar :profile="request.friend" size="medium" />
     </div>
 
     <div class="grow flex flex-col space-y-1">
