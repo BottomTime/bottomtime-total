@@ -96,13 +96,22 @@
     </div>
 
     <div v-if="editMode" class="min-w-fit">
-      <FormButton rounded="left" @click="$emit('edit', entry)">
+      <FormButton
+        :test-id="`edit-entry-${entry.id}`"
+        rounded="left"
+        @click="$emit('edit', entry)"
+      >
         <span>
           <i class="fa-solid fa-pen"></i>
         </span>
         <span class="sr-only">Edit</span>
       </FormButton>
-      <FormButton type="danger" rounded="right" @click="$emit('delete', entry)">
+      <FormButton
+        :test-id="`delete-entry-${entry.id}`"
+        type="danger"
+        rounded="right"
+        @click="$emit('delete', entry)"
+      >
         <span>
           <i class="fa-solid fa-trash"></i>
         </span>

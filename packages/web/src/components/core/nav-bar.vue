@@ -88,40 +88,40 @@
                 class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left z-[42]"
               >
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/friends"
                 >
                   Friends
                 </a>
                 <a
                   v-if="currentUser.user?.accountTier >= AccountTier.ShopOwner"
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   :href="`/shops?owner=${currentUser.user?.username}`"
                 >
                   My Dive Shops
                 </a>
                 <hr />
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/profile"
                 >
                   Profile
                 </a>
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/account"
                 >
                   Account
                 </a>
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/settings"
                 >
                   Settings
                 </a>
                 <hr />
                 <a
-                  class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   @click="onLogout"
                 >
                   Logout

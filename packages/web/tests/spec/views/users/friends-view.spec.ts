@@ -62,11 +62,6 @@ describe('Friends view', () => {
         component: FriendsView,
       },
     ]);
-
-    friendsData = ListFriendsResposneSchema.parse(TestFriendsData);
-    friendRequestsData = ListFriendRequestsResponseSchema.parse(
-      TestFriendRequestData,
-    );
   });
 
   beforeEach(async () => {
@@ -252,7 +247,7 @@ describe('Friends view', () => {
       .mockResolvedValue();
 
     await wrapper
-      .get(`[data-testid="cancel-request-${request.friend.id}"]`)
+      .get(`[data-testid="cancel-request-${request.friend.userId}"]`)
       .trigger('click');
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
@@ -261,7 +256,7 @@ describe('Friends view', () => {
 
     expect(
       wrapper
-        .find(`[data-testid="select-request-${request.friend.id}"]`)
+        .find(`[data-testid="select-request-${request.friend.userId}"]`)
         .exists(),
     ).toBe(false);
     expect(wrapper.find(RequestsCount).text()).toBe(
@@ -279,7 +274,7 @@ describe('Friends view', () => {
       .mockResolvedValue();
 
     await wrapper
-      .get(`[data-testid="cancel-request-${request.friend.id}"]`)
+      .get(`[data-testid="cancel-request-${request.friend.userId}"]`)
       .trigger('click');
     await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
     await flushPromises();
@@ -288,7 +283,7 @@ describe('Friends view', () => {
 
     expect(
       wrapper
-        .find(`[data-testid="select-request-${request.friend.id}"]`)
+        .find(`[data-testid="select-request-${request.friend.userId}"]`)
         .isVisible(),
     ).toBe(true);
     expect(wrapper.find(RequestsCount).text()).toBe(
@@ -354,7 +349,7 @@ describe('Friends view', () => {
     const request = friendRequestsData.data[9];
 
     await wrapper
-      .get(`[data-testid="select-request-${request.friend.id}"]`)
+      .get(`[data-testid="select-request-${request.friend.userId}"]`)
       .trigger('click');
     await flushPromises();
 
@@ -381,7 +376,7 @@ describe('Friends view', () => {
     const request = friendRequestsData.data[9];
 
     await wrapper
-      .get(`[data-testid="select-request-${request.friend.id}"]`)
+      .get(`[data-testid="select-request-${request.friend.userId}"]`)
       .trigger('click');
     await flushPromises();
 
@@ -476,7 +471,7 @@ describe('Friends view', () => {
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
     await wrapper
-      .get(`[data-testid="dismiss-request-${request.friend.id}"]`)
+      .get(`[data-testid="dismiss-request-${request.friend.userId}"]`)
       .trigger('click');
     await flushPromises();
 

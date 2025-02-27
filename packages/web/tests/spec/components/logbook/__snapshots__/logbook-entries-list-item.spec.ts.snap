@@ -1,51 +1,95 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`LobbookEntriesListItem component will render correctly for partial logbook entry data 1`] = `
+exports[`LogbookEntriesListItem component will render correctly for partial logbook entry data 1`] = `
 "<li class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
-  <div class="min-w-16 flex">
-    <!--v-if-->
+  <div class="min-w-16 flex"><label for="toggle-1d3d41c9-794a-4280-8335-65f503a3bee7" class="flex space-x-3 items-center"><input id="toggle-1d3d41c9-794a-4280-8335-65f503a3bee7" type="checkbox" data-testid="toggle-1d3d41c9-794a-4280-8335-65f503a3bee7" class="form-checkbox h-4 w-4 text-primary rounded-md">
+      <div></div>
+    </label>
     <!--v-if-->
   </div>
   <div class="flex flex-col gap-3 grow">
-    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-1d3d41c9-794a-4280-8335-65f503a3bee7" type="button">
-        <!--v-if-->January 31, 2023 9:16 AM
-      </button><span class="italic text-sm">America/Los_Angeles</span></p>
-    <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">
-      <div class="flex space-x-2">
-        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Duration: </p>
+    <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline">
+      <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><a id="1d3d41c9-794a-4280-8335-65f503a3bee7" class="text-2xl" href="#1d3d41c9-794a-4280-8335-65f503a3bee7" data-testid="select-1d3d41c9-794a-4280-8335-65f503a3bee7">January 31, 2023 9:16 AM</a><span class="italic text-sm">(America/Los_Angeles)</span></p>
+      <div readonly="">0</div>
+    </div>
+    <!--v-if-->
+    <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6">
+      <div class="text-center col-span-2 md:col-span-4 xl:col-span-2"><label class="font-bold">Dive Site</label>
+        <p class="italic">Unspecified</p>
+      </div>
+      <div class="text-center"><label class="font-bold">Duration</label>
         <p class="italic"><span>0:00:44.10</span></p>
       </div>
-      <!--v-if-->
+      <div class="text-center"><label class="font-bold">Bottom time</label>
+        <p class="italic"><span>Unspecified</span></p>
+      </div>
+      <div class="text-center"><label class="font-bold">Max Depth</label>
+        <p class="italic">Unspecified</p>
+      </div>
+      <div class="text-center"><label class="font-bold">Average Depth</label>
+        <p class="italic">Unspecified</p>
+      </div>
     </div>
-    <div>
-      <!--v-if-->
-    </div>
+    <!--v-if-->
   </div>
+  <div class="min-w-fit"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="edit-entry-1d3d41c9-794a-4280-8335-65f503a3bee7" type="button">
+      <!--v-if--><span><i class="fa-solid fa-pen"></i></span><span class="sr-only">Edit</span>
+    </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-entry-1d3d41c9-794a-4280-8335-65f503a3bee7" type="button">
+      <!--v-if--><span><i class="fa-solid fa-trash"></i></span><span class="sr-only">Delete</span>
+    </button></div>
 </li>"
 `;
 
-exports[`LobbookEntriesListItem component will render correctly with full logbook entry data 1`] = `
+exports[`LogbookEntriesListItem component will render correctly with full logbook entry data 1`] = `
 "<li class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
-  <div class="min-w-16 flex">
-    <!--v-if-->
+  <div class="min-w-16 flex"><label for="toggle-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" class="flex space-x-3 items-center"><input id="toggle-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" type="checkbox" data-testid="toggle-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" class="form-checkbox h-4 w-4 text-primary rounded-md">
+      <div></div>
+    </label>
     <p class="font-bold">#12</p>
   </div>
   <div class="flex flex-col gap-3 grow">
-    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" type="button">
-        <!--v-if-->January 31, 2023 9:16 AM
-      </button><span class="italic text-sm">Europe/Dublin</span></p>
-    <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">
-      <div class="flex space-x-2">
-        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Bottom time / Duration: </p>
-        <p class="italic"><span>0:35:3.00</span> / <span>0:40:55.00</span></p>
+    <div class="flex flex-col md:flex-row justify-between items-center md:items-baseline">
+      <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><a id="4ca3e53c-1364-40b2-a6db-ce8e92380b1f" class="text-2xl" href="#4ca3e53c-1364-40b2-a6db-ce8e92380b1f" data-testid="select-4ca3e53c-1364-40b2-a6db-ce8e92380b1f">January 31, 2023 9:16 AM</a><span class="italic text-sm">(Europe/Dublin)</span></p>
+      <div readonly="">3.8</div>
+    </div>
+    <div class="text-pretty">This was a great dive!</div>
+    <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6">
+      <div class="text-center col-span-2 md:col-span-4 xl:col-span-2"><label class="font-bold">Dive Site</label>
+        <div class="italic capitalize">
+          <p>Catalina Island</p>
+          <p>California</p>
+        </div>
       </div>
-      <div class="flex space-x-2">
-        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Max depth: </p><span class="italic">10.15 m</span>
+      <div class="text-center"><label class="font-bold">Duration</label>
+        <p class="italic"><span>0:40:55.00</span></p>
+      </div>
+      <div class="text-center"><label class="font-bold">Bottom time</label>
+        <p class="italic"><span>0:35:3.00</span></p>
+      </div>
+      <div class="text-center"><label class="font-bold">Max Depth</label>
+        <p><span class="italic">10.15 m</span></p>
+      </div>
+      <div class="text-center"><label class="font-bold">Average Depth</label>
+        <p><span class="italic">8.32 m</span></p>
       </div>
     </div>
-    <div>
-      <p class="flex space-x-2"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span class="capitalize">Catalina Island</span><span>(California)</span></p>
+    <div class="flex justify-center">
+      <div class="flex flex-wrap gap-2 text-sm">
+        <p class="rounded-full flex gap-1 items-center bg-secondary text-grey-900 px-1.5 py-1 shadow-sm shadow-grey-500 cursor-default"><span>#Wreck dive</span>
+          <!--v-if-->
+        </p>
+        <p class="rounded-full flex gap-1 items-center bg-secondary text-grey-900 px-1.5 py-1 shadow-sm shadow-grey-500 cursor-default"><span>#Night dive</span>
+          <!--v-if-->
+        </p>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
     </div>
   </div>
+  <div class="min-w-fit"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="edit-entry-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" type="button">
+      <!--v-if--><span><i class="fa-solid fa-pen"></i></span><span class="sr-only">Edit</span>
+    </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-entry-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" type="button">
+      <!--v-if--><span><i class="fa-solid fa-trash"></i></span><span class="sr-only">Delete</span>
+    </button></div>
 </li>"
 `;

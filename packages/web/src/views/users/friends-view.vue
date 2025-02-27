@@ -73,7 +73,7 @@
       >
         <li class="bg-blue-600 rounded-t-md">Friends</li>
         <li class="rounded-b-md">
-          <a href="/friendRequests"> Friend Requests </a>
+          <a href="/friendRequests" class="no-style"> Friend Requests </a>
         </li>
       </ul>
 
@@ -387,7 +387,7 @@ async function onConfirmUnfriend(): Promise<void> {
       );
 
       const index = state.friends.data.findIndex(
-        (f) => f.id === state.currentFriend?.id,
+        (f) => f.userId === state.currentFriend?.userId,
       );
       if (index > -1) {
         state.friends.data.splice(index, 1);
@@ -405,7 +405,7 @@ async function onConfirmUnfriend(): Promise<void> {
     {
       [404]: () => {
         const index = state.friends.data.findIndex(
-          (f) => f.id === state.currentFriend?.id,
+          (f) => f.userId === state.currentFriend?.userId,
         );
         if (index > -1) {
           state.friends.data.splice(index, 1);
@@ -475,7 +475,7 @@ async function onConfirmCancelRequest(): Promise<void> {
         });
 
         const index = state.friendRequests.data.findIndex(
-          (r) => r.friendId === state.currentRequest?.friend.id,
+          (r) => r.friendId === state.currentRequest?.friend.userId,
         );
         if (index > -1) {
           state.friendRequests.data.splice(index, 1);
@@ -498,7 +498,7 @@ async function onDismissRequest(dto: FriendRequestDTO): Promise<void> {
       await client.friends.cancelFriendRequest(currentUser.user.username, dto);
 
       const index = state.friendRequests.data.findIndex(
-        (r) => r.friendId === dto.friend.id,
+        (r) => r.friendId === dto.friend.userId,
       );
 
       if (index > -1) {
@@ -509,7 +509,7 @@ async function onDismissRequest(dto: FriendRequestDTO): Promise<void> {
     {
       [404]: () => {
         const index = state.friendRequests.data.findIndex(
-          (r) => r.friendId === dto.friend.id,
+          (r) => r.friendId === dto.friend.userId,
         );
 
         if (index > -1) {

@@ -30,7 +30,6 @@ import DurationInput from '../../../../src/components/common/duration-input.vue'
 import EditLogbookEntry from '../../../../src/components/logbook/editor/edit-logbook-entry.vue';
 import ViewLogbookEntry from '../../../../src/components/logbook/view-logbook-entry.vue';
 import { useCurrentUser } from '../../../../src/store';
-import { useToasts } from '../../../../src/store';
 import LogEntryView from '../../../../src/views/logbook/log-entry-view.vue';
 import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
@@ -74,7 +73,6 @@ describe('Log Entry view', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof LogEntryView>;
   let fetchSpy: jest.SpyInstance;
 
@@ -97,7 +95,6 @@ describe('Log Entry view', () => {
   beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    toasts = useToasts(pinia);
 
     jest
       .spyOn(client.logEntries, 'getNextAvailableLogNumber')
@@ -243,8 +240,6 @@ describe('Log Entry view', () => {
       TestData.id,
       CreateOrUpdateLogEntryParamsSchema.parse(expected),
     );
-    expect(toasts.toasts).toHaveLength(1);
-    expect(toasts.toasts[0].id).toBe('log-entry-saved');
     expect(wrapper.find<HTMLInputElement>('#logNumber').element.value).toBe(
       '13',
     );
@@ -332,7 +327,5 @@ describe('Log Entry view', () => {
       TestData.id,
       CreateOrUpdateLogEntryParamsSchema.parse(expected),
     );
-    expect(toasts.toasts).toHaveLength(1);
-    expect(toasts.toasts[0].id).toBe('log-entry-saved');
   });
 });

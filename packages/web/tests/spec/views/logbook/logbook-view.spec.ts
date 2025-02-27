@@ -18,6 +18,8 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { FeaturesServiceKey } from 'src/featrues';
+import { ConfigCatClientMock } from 'tests/config-cat-client-mock';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
@@ -45,6 +47,7 @@ const ProfileData: ProfileDTO = {
 describe('Logbook view', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
+  let features: ConfigCatClientMock;
   let router: Router;
   let entryData: ApiList<LogEntryDTO>;
 
@@ -62,6 +65,7 @@ describe('Logbook view', () => {
         component: LogbookView,
       },
     ]);
+    features = new ConfigCatClientMock({});
 
     entryData = ListLogEntriesResponseSchema.parse(LogEntryTestData);
   });
@@ -79,6 +83,7 @@ describe('Logbook view', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [FeaturesServiceKey as symbol]: features,
         },
         stubs: {
           teleport: true,
@@ -359,8 +364,8 @@ describe('Logbook view', () => {
     await flushPromises();
 
     expect(router.currentRoute.value.query).toEqual({
-      startDate: '2024-05-08T19:29:31.551Z',
-      endDate: '2025-05-08T19:29:31.551Z',
+      startDate: new Date('2024-05-08T19:29:31.551Z').valueOf().toString(),
+      endDate: new Date('2025-05-08T19:29:31.551Z').valueOf().toString(),
       query: 'yolo',
     });
   });

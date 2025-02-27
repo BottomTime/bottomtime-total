@@ -75,7 +75,7 @@
         class="w-full md:w-60 text-md md:text-lg *:p-3 hover:*:bg-blue-700 flex flex-col align-middle bg-gradient-to-b from-blue-700 to-blue-900 rounded-md text-grey-50"
       >
         <li class="rounded-t-md">
-          <a href="/friends"> Friends </a>
+          <a class="no-style" href="/friends"> Friends </a>
         </li>
         <li class="bg-blue-600 rounded-b-md">Friend Requests</li>
       </ul>
@@ -182,7 +182,7 @@ async function onConfirmAcceptRequest() {
       );
 
       const index = state.results.data.findIndex(
-        (r) => r.friendId === state.currentRequest?.friend.id,
+        (r) => r.friendId === state.currentRequest?.friend.userId,
       );
       if (index > -1) {
         state.results.data[index].accepted = true;
@@ -209,7 +209,7 @@ async function onConfirmAcceptRequest() {
         });
 
         const index = state.results.data.findIndex(
-          (r) => r.friendId === state.currentRequest?.friend.id,
+          (r) => r.friendId === state.currentRequest?.friend.userId,
         );
         if (index > -1) {
           state.results.data.splice(index, 1);
@@ -249,7 +249,7 @@ async function onConfirmDeclineRequest() {
       );
 
       const index = state.results.data.findIndex(
-        (r) => r.friendId === state.currentRequest?.friend.id,
+        (r) => r.friendId === state.currentRequest?.friend.userId,
       );
       if (index > -1) {
         state.results.data[index].accepted = false;
@@ -277,7 +277,7 @@ async function onConfirmDeclineRequest() {
         });
 
         const index = state.results.data.findIndex(
-          (r) => r.friendId === state.currentRequest?.friend.id,
+          (r) => r.friendId === state.currentRequest?.friend.userId,
         );
         if (index > -1) {
           state.results.data.splice(index, 1);
@@ -294,7 +294,7 @@ async function onConfirmDeclineRequest() {
 
 function onDismissFriendRequest(dto: FriendRequestDTO) {
   const index = state.results.data.findIndex(
-    (r) => r.friendId === dto.friend.id,
+    (r) => r.friendId === dto.friend.userId,
   );
   if (index > -1) {
     state.results.data.splice(index, 1);

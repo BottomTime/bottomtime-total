@@ -30,7 +30,7 @@
     <ul v-if="friends.data.length" data-testid="friends-list">
       <FriendsListItem
         v-for="friend in friends.data"
-        :key="friend.id"
+        :key="friend.userId"
         :friend="friend"
         @select="(friend) => $emit('select', friend)"
         @unfriend="(friend) => $emit('unfriend', friend)"
