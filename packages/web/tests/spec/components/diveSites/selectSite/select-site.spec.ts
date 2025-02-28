@@ -9,7 +9,6 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { ApiClientKey } from 'src/api-client';
 import CreateSiteWizard from 'src/components/diveSites/create-site-wizard.vue';
-import DiveSitesListItem from 'src/components/diveSites/dive-sites-list-item.vue';
 import OfferedByOperatorList from 'src/components/diveSites/selectSite/offered-by-operator-list.vue';
 import RecentSitesList from 'src/components/diveSites/selectSite/recent-sites-list.vue';
 import SearchDiveSitesForm from 'src/components/diveSites/selectSite/search-dive-sites-form.vue';

@@ -41,7 +41,7 @@ export class Agencies1738598201592 implements MigrationInterface {
       `ALTER TABLE "user_certifications" ADD "agencyId" uuid`,
     );
     await queryRunner.query(
-      `ALTER TABLE "certifications" DROP COLUMN "agencyId"`,
+      `ALTER TABLE "certifications" DROP COLUMN "agencyId" CASCADE`,
     );
     await queryRunner.query(`ALTER TABLE "certifications" ADD "agencyId" uuid`);
     await queryRunner.query(
