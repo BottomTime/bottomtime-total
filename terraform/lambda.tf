@@ -173,11 +173,11 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 }
 
 ### REVIEW AGGREGATION FUNCTION
-data "archive_file" "review_aggregator" {
-  type        = "zip"
-  output_path = "${path.module}/archive/review_aggregator.zip"
-  source_dir  = "${path.module}/../packages/review-aggregator/dist/"
-}
+# data "archive_file" "review_aggregator" {
+#   type        = "zip"
+#   output_path = "${path.module}/archive/review_aggregator.zip"
+#   source_dir  = "${path.module}/../packages/review-aggregator/dist/"
+# }
 
 # resource "aws_lambda_function" "review_aggregator" {
 #   function_name = "bottomtime-keepalive-${var.env}"
