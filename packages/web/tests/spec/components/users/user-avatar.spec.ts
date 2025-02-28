@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 
-import 'tests/dayjs';
 import { BasicUser } from 'tests/fixtures/users';
 
 import UserAvatar from '../../../../src/components/users/user-avatar.vue';

@@ -13,7 +13,6 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
-import 'tests/dayjs';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';

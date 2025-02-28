@@ -4,7 +4,6 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import EditTeamMember from 'src/components/operators/editor/edit-team-member.vue';
 import UserAvatar from 'src/components/users/user-avatar.vue';
-import 'tests/dayjs';
 import { BasicUser } from 'tests/fixtures/users';
 
 const TestTeamMember: TeamMemberDTO = {

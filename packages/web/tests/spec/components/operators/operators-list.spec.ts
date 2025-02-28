@@ -12,7 +12,6 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
-import 'tests/dayjs';
 import { createRouter } from 'tests/fixtures/create-router';
 import { Router } from 'vue-router';
 

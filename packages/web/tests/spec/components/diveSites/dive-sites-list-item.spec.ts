@@ -2,7 +2,6 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import DiveSitesListItem from 'src/components/diveSites/dive-sites-list-item.vue';
-import 'tests/dayjs';
 
 import {
   DiveSiteWithFullProperties,

@@ -19,7 +19,6 @@ import EditTeamMembers from 'src/components/operators/editor/edit-team-members.v
 import TeamMemberListItem from 'src/components/operators/team-member-list-item.vue';
 import SearchProfiles from 'src/components/users/profiles/search-profiles.vue';
 import { ConfirmDialog, DrawerPanel } from 'tests/constants';
-import 'tests/dayjs';
 import { PartialOperator } from 'tests/fixtures/operators';
 import {
   BasicUser,

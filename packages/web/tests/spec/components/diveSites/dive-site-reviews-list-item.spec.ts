@@ -10,7 +10,6 @@ import { Pinia, createPinia } from 'pinia';
 import DifficultyInput from 'src/components/common/difficulty-input.vue';
 import DiveSiteReviewsListItem from 'src/components/diveSites/dive-site-reviews-list-item.vue';
 import { useCurrentUser } from 'src/store';
-import 'tests/dayjs';
 import { AdminUser, BasicUser } from 'tests/fixtures/users';
 import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 

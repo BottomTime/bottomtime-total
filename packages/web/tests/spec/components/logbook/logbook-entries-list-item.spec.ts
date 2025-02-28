@@ -1,7 +1,6 @@
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
-import 'tests/dayjs';
 import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 
 import LogbookEntriesListItem from '../../../../src/components/logbook/logbook-entries-list-item.vue';

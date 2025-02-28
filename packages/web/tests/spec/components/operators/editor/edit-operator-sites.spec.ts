@@ -19,7 +19,6 @@ import SelectSite from 'src/components/diveSites/selectSite/select-site.vue';
 import EditOperatorSites from 'src/components/operators/editor/edit-operator-sites.vue';
 import { GeolocationKey } from 'src/geolocation';
 import { ConfirmDialog, DrawerPanel } from 'tests/constants';
-import 'tests/dayjs';
 import SiteData from 'tests/fixtures/dive-sites-search-results.json';
 import { PartialOperator } from 'tests/fixtures/operators';
 import { MockGeolocation } from 'tests/mock-geolocation';
