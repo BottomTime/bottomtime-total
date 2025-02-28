@@ -50,7 +50,7 @@ describe('Friends API client', () => {
     expect(result.totalCount).toBe(friendsData.totalCount);
     expect(result.data).toHaveLength(friendsData.data.length);
     result.data.forEach((friend, index) => {
-      expect(friend.id).toBe(friendsData.data[index].id);
+      expect(friend.userId).toBe(friendsData.data[index].userId);
       expect(friend.username).toBe(friendsData.data[index].username);
       expect(friend.avatar).toBe(friendsData.data[index].avatar);
       expect(friend.location).toBe(friendsData.data[index].location);
@@ -84,7 +84,7 @@ describe('Friends API client', () => {
     expect(result.totalCount).toBe(friendsData.totalCount);
     expect(result.data).toHaveLength(friendsData.data.length);
     result.data.forEach((friend, index) => {
-      expect(friend.id).toBe(friendsData.data[index].id);
+      expect(friend.userId).toBe(friendsData.data[index].userId);
       expect(friend.username).toBe(friendsData.data[index].username);
       expect(friend.avatar).toBe(friendsData.data[index].avatar);
       expect(friend.location).toBe(friendsData.data[index].location);
