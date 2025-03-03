@@ -1,3 +1,5 @@
+import { AccountTier, LogBookSharing, ProfileDTO } from '@bottomtime/api';
+
 import { ComputedRef } from 'vue';
 
 export type Breadcrumb = {
@@ -15,6 +17,14 @@ export type Coordinates = {
 
 export const DateTimeFormat = 'yyyy-MMM-dd hh:mm:ss a';
 
+export const DefaultProfile: ProfileDTO = {
+  accountTier: AccountTier.Basic,
+  logBookSharing: LogBookSharing.Private,
+  memberSince: 0,
+  username: '',
+  userId: '',
+};
+
 export type SelectOption = {
   disabled?: boolean;
   label?: string;
@@ -25,6 +35,7 @@ export type TabInfo = {
   key: string;
   label: string;
   disabled?: boolean;
+  visible?: boolean;
 };
 
 export enum ToastType {
@@ -39,3 +50,5 @@ export type Toast = {
   message: string;
   type: ToastType;
 };
+
+export type Selectable<T> = T & { selected?: boolean };

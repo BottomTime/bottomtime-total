@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { BooleanString, SortOrder } from './constants';
-import { LogBookSharing } from './users';
+import { SuccinctProfileSchema } from './users';
 
 export enum FriendsSortBy {
   Username = 'username',
@@ -16,15 +16,8 @@ export enum FriendRequestDirection {
 }
 
 // Data Transfer Objects
-export const FriendSchema = z.object({
-  id: z.string().uuid(),
+export const FriendSchema = SuccinctProfileSchema.extend({
   friendsSince: z.number(),
-  username: z.string(),
-  memberSince: z.number(),
-  logBookSharing: z.nativeEnum(LogBookSharing),
-  avatar: z.string().optional(),
-  name: z.string().optional(),
-  location: z.string().optional(),
 });
 export type FriendDTO = z.infer<typeof FriendSchema>;
 

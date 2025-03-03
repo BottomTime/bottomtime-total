@@ -27,7 +27,7 @@ const ShopOwnerUser: UserDTO = {
 };
 
 const SearchInput = 'input#operator-search';
-const CoordsText = '[data-testid="operator-location-coords"]';
+const CoordsText = '[data-testid="operator-location-gps"]';
 const RadiusSlider = '[data-testid="operator-location-radius"]';
 const ShowMyShopsCheckbox = 'input#operator-show-mine';
 const ShowInactiveCheckbox = 'input#operator-show-inactive';
@@ -62,8 +62,10 @@ describe('OperatorsSearchForm component', () => {
     expect(
       wrapper.get<HTMLInputElement>(ShowInactiveCheckbox).element.checked,
     ).toBe(false);
-    expect(wrapper.find(CoordsText).exists()).toBe(false);
-    expect(wrapper.find(RadiusSlider).exists()).toBe(false);
+    expect(wrapper.find(CoordsText).text()).toBe('Unspecified');
+    expect(wrapper.find<HTMLInputElement>(RadiusSlider).element.value).toBe(
+      '50',
+    );
     expect(wrapper.find(ShowMyShopsCheckbox).exists()).toBe(false);
     expect(wrapper.find(VerificationSelect).exists()).toBe(false);
   });
@@ -96,9 +98,7 @@ describe('OperatorsSearchForm component', () => {
     expect(wrapper.get<HTMLInputElement>(SearchInput).element.value).toBe(
       params.query,
     );
-    expect(wrapper.get(CoordsText).text()).toBe(
-      `${params.location!.lat}, ${params.location!.lon}`,
-    );
+    expect(wrapper.get(CoordsText).text()).toMatchSnapshot();
     expect(wrapper.get<HTMLInputElement>(RadiusSlider).element.value).toBe(
       params.radius!.toString(),
     );
@@ -146,12 +146,16 @@ describe('OperatorsSearchForm component', () => {
     currentUser.user = ShopOwnerUser;
     const wrapper = mount(OperatorsSearchForm, opts);
     await wrapper.get(SearchInput).setValue('Cozumel');
+    await wrapper.get('[data-testid="operator-location-set"]').trigger('click');
     await wrapper
-      .get('[data-testid="operator-location-select-btn"]')
+      .get('[data-testid="operator-location-lat"]')
+      .setValue('20.42');
+    await wrapper
+      .get('[data-testid="operator-location-lon"]')
+      .setValue('-87.32');
+    await wrapper
+      .get('[data-testid="operator-location-save"]')
       .trigger('click');
-    await wrapper.get('input#latitude').setValue('20.42');
-    await wrapper.get('input#longitude').setValue('-87.32');
-    await wrapper.get('[data-testid="confirm-location"]').trigger('click');
     await flushPromises();
     await wrapper.get(RadiusSlider).setValue('170');
     await wrapper.get(ShowMyShopsCheckbox).setValue(true);

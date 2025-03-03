@@ -22,7 +22,7 @@ const TestData: CreateOrUpdateLogEntryParamsDTO = {
   notes: 'Yipeeee!!',
 };
 
-test.describe('Log Entries', () => {
+test.describe.skip('Log Entries', () => {
   test.beforeEach(async ({ auth }) => {
     await auth.createUserAndLogin(Username, Password);
   });

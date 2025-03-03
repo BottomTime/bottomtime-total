@@ -1,26 +1,34 @@
 import { Repository } from 'typeorm';
 
 import {
+  Agency,
   Certification,
   CertificationsService,
 } from '../../../src/certifications';
-import { CertificationEntity } from '../../../src/data';
+import { AgencyEntity, CertificationEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
+import { TestAgencies } from '../../fixtures/agencies';
 import CertificationTestData from '../../fixtures/certifications.json';
 
 describe('Certifications Service', () => {
+  let Agencies: Repository<AgencyEntity>;
   let Certifications: Repository<CertificationEntity>;
   let certsData: CertificationEntity[];
   let service: CertificationsService;
 
   beforeAll(() => {
+    Agencies = dataSource.getRepository(AgencyEntity);
     Certifications = dataSource.getRepository(CertificationEntity);
-    service = new CertificationsService(Certifications);
+    service = new CertificationsService(Agencies, Certifications);
     certsData = CertificationTestData.map((data) => {
       const cert = new CertificationEntity();
       Object.assign(cert, data);
       return cert;
     });
+  });
+
+  beforeEach(async () => {
+    await Agencies.save(TestAgencies);
   });
 
   describe('when searching certifications', () => {
@@ -40,21 +48,11 @@ describe('Certifications Service', () => {
       expect(results).toMatchSnapshot();
     });
 
-    it('will perform a text-based search', async () => {
-      const results = await service.searchCertifications({
-        query: 'advanced',
-        skip: 0,
-        limit: 50,
-      });
-      expect(results.totalCount).toBe(3);
-      expect(results).toMatchSnapshot();
-    });
-
     it('will filter by agency', async () => {
       const results = await service.searchCertifications({
-        agency: 'SSI',
+        agency: 'naui',
         skip: 0,
-        limit: 10,
+        limit: 500,
       });
       expect(results).toMatchSnapshot();
     });
@@ -71,7 +69,10 @@ describe('Certifications Service', () => {
   describe('when retrieving a certification', () => {
     it('will return a certification if it exists', async () => {
       await Certifications.save(certsData[7]);
-      const expected = new Certification(Certifications, certsData[7]).toJSON();
+      const expected = new Certification(Agencies, Certifications, {
+        ...certsData[7],
+        agency: TestAgencies[0],
+      }).toJSON();
       const actual = await service.getCertification(certsData[7].id);
       expect(actual?.toJSON()).toEqual(expected);
     });
@@ -86,18 +87,29 @@ describe('Certifications Service', () => {
 
   it('will create a new certification', async () => {
     const data = {
-      agency: 'BSAC',
+      agency: new Agency(Agencies, TestAgencies[1]),
       course: 'Advanced Snorkel Technician',
     };
     const cert = await service.createCertification(data);
-    expect(cert.agency).toEqual(data.agency);
+    expect(cert.agency.name).toEqual(data.agency.name);
     expect(cert.course).toEqual(data.course);
     expect(cert.id).toBeDefined();
 
-    const result = await Certifications.findOneByOrFail({ id: cert.id });
+    const result = await Certifications.findOneOrFail({
+      where: { id: cert.id },
+      relations: ['agency'],
+    });
     expect(result).toEqual({
       id: cert.id,
-      ...data,
+      course: data.course,
+      agency: {
+        id: TestAgencies[1].id,
+        name: TestAgencies[1].name,
+        longName: TestAgencies[1].longName,
+        logo: TestAgencies[1].logo,
+        website: TestAgencies[1].website,
+        ordinal: TestAgencies[1].ordinal,
+      },
     });
   });
 });

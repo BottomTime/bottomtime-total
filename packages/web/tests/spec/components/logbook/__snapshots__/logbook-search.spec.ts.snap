@@ -1,13 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LogbookSearch component will render correctly with no params 1`] = `
-"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 sticky top-20 flex flex-col gap-3">
+"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-md shadow-grey-800 sticky top-16 flex flex-col gap-3">
   <form>
     <div class="space-y-0 mb-2 last:mb-4" responsive="false">
-      <!--v-if-->
+      <div><label><span class="font-bold">Search:</span>
+          <!--v-if-->
+        </label></div>
       <div class="grow w-full pl-2">
-        <div class="relative">
-          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
+        <div class="relative m-1">
+          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border-2 border-grey-600 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search log entries..." data-testid="search-query">
             <!--v-if-->
           </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
         </div>
@@ -24,7 +26,7 @@ exports[`LogbookSearch component will render correctly with no params 1`] = `
           <div>
             <!---->
             <div class="dp__input_wrap">
-              <!----><input id="dp-input-searchStartDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries after..." autocomplete="off" aria-label="Datepicker input" value="">
+              <!----><input id="dp-input-searchStartDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border-2 border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries after..." autocomplete="off" aria-label="Datepicker input" value="">
               <div>
                 <!----><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="dp__icon dp__input_icon dp__input_icons">
                   <path d="M29.333 8c0-2.208-1.792-4-4-4h-18.667c-2.208 0-4 1.792-4 4v18.667c0 2.208 1.792 4 4 4h18.667c2.208 0 4-1.792 4-4v-18.667zM26.667 8v18.667c0 0.736-0.597 1.333-1.333 1.333 0 0-18.667 0-18.667 0-0.736 0-1.333-0.597-1.333-1.333 0 0 0-18.667 0-18.667 0-0.736 0.597-1.333 1.333-1.333 0 0 18.667 0 18.667 0 0.736 0 1.333 0.597 1.333 1.333z"></path>
@@ -56,7 +58,7 @@ exports[`LogbookSearch component will render correctly with no params 1`] = `
           <div>
             <!---->
             <div class="dp__input_wrap">
-              <!----><input id="dp-input-searchEndDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries before..." autocomplete="off" aria-label="Datepicker input" value="">
+              <!----><input id="dp-input-searchEndDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border-2 border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries before..." autocomplete="off" aria-label="Datepicker input" value="">
               <div>
                 <!----><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="dp__icon dp__input_icon dp__input_icons">
                   <path d="M29.333 8c0-2.208-1.792-4-4-4h-18.667c-2.208 0-4 1.792-4 4v18.667c0 2.208 1.792 4 4 4h18.667c2.208 0 4-1.792 4-4v-18.667zM26.667 8v18.667c0 0.736-0.597 1.333-1.333 1.333 0 0-18.667 0-18.667 0-0.736 0-1.333-0.597-1.333-1.333 0 0 0-18.667 0-18.667 0-0.736 0.597-1.333 1.333-1.333 0 0 18.667 0 18.667 0 0.736 0 1.333 0.597 1.333 1.333z"></path>
@@ -74,6 +76,42 @@ exports[`LogbookSearch component will render correctly with no params 1`] = `
               <!---->
             </transition-stub>
           </div>
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <div class="space-y-0 mb-2 last:mb-4" responsive="false">
+      <div><label><span class="font-bold">Location:</span>
+          <!--v-if-->
+        </label></div>
+      <div class="grow w-full pl-2">
+        <div class="flex flex-col gap-2 items-center">
+          <div class="w-full aspect-video shadow-md shadow-grey-900 rounded-sm" data-testid="location-picker-map"></div>
+          <div>
+            <p class="flex gap-2 items-baseline flex-wrap text-sm">
+            <p class="space-x-1 inline-block" data-testid="location-picker-gps"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span>Unspecified</span></p><button data-testid="location-picker-set"><a>Set</a></button>
+            <!--v-if-->
+            </p>
+            <div class="flex items-baseline gap-0.5">
+              <div class="flex gap-2 items-baseline align-baseline w-full"><input class="grow appearance-none h-2 rounded-full bg-grey-300 dark:bg-grey-400 cursor-pointer accent-blue-500 hover:dark:accent-blue-400 hover:accent-blue-600" type="range" min="10" max="500" step="10" data-testid="location-picker-radius">
+                <!--v-if-->
+              </div><span>50km</span>
+            </div>
+          </div>
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <div class="space-y-0 mb-2 last:mb-4" responsive="false">
+      <div><label><span class="font-bold">Minimum rating:</span>
+          <!--v-if-->
+        </label></div>
+      <div class="grow w-full pl-2">
+        <div class="flex gap-1 items-baseline">
+          <div show-value="false">0</div>
+          <!--v-if-->
         </div>
         <!--v-if-->
         <!--v-if-->
@@ -87,13 +125,15 @@ exports[`LogbookSearch component will render correctly with no params 1`] = `
 `;
 
 exports[`LogbookSearch component will render correctly with params 1`] = `
-"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 sticky top-20 flex flex-col gap-3">
+"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-md shadow-grey-800 sticky top-16 flex flex-col gap-3">
   <form>
     <div class="space-y-0 mb-2 last:mb-4" responsive="false">
-      <!--v-if-->
+      <div><label><span class="font-bold">Search:</span>
+          <!--v-if-->
+        </label></div>
       <div class="grow w-full pl-2">
-        <div class="relative">
-          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
+        <div class="relative m-1">
+          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border-2 border-grey-600 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search log entries..." data-testid="search-query">
             <!--v-if-->
           </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
         </div>
@@ -110,7 +150,7 @@ exports[`LogbookSearch component will render correctly with params 1`] = `
           <div>
             <!---->
             <div class="dp__input_wrap">
-              <!----><input id="dp-input-searchStartDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries after..." autocomplete="off" aria-label="Datepicker input" value="">
+              <!----><input id="dp-input-searchStartDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border-2 border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries after..." autocomplete="off" aria-label="Datepicker input" value="2023-Dec-31 04:00:00 PM">
               <div>
                 <!----><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="dp__icon dp__input_icon dp__input_icons">
                   <path d="M29.333 8c0-2.208-1.792-4-4-4h-18.667c-2.208 0-4 1.792-4 4v18.667c0 2.208 1.792 4 4 4h18.667c2.208 0 4-1.792 4-4v-18.667zM26.667 8v18.667c0 0.736-0.597 1.333-1.333 1.333 0 0-18.667 0-18.667 0-0.736 0-1.333-0.597-1.333-1.333 0 0 0-18.667 0-18.667 0-0.736 0.597-1.333 1.333-1.333 0 0 18.667 0 18.667 0 0.736 0 1.333 0.597 1.333 1.333z"></path>
@@ -119,8 +159,10 @@ exports[`LogbookSearch component will render correctly with params 1`] = `
                   <path d="M4 14.667h24c0.736 0 1.333-0.597 1.333-1.333s-0.597-1.333-1.333-1.333h-24c-0.736 0-1.333 0.597-1.333 1.333s0.597 1.333 1.333 1.333z"></path>
                 </svg>
               </div>
-              <!---->
-              <!---->
+              <!----><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="dp__icon dp__clear_icon dp__input_icons">
+                <path d="M23.057 7.057l-16 16c-0.52 0.52-0.52 1.365 0 1.885s1.365 0.52 1.885 0l16-16c0.52-0.52 0.52-1.365 0-1.885s-1.365-0.52-1.885 0z"></path>
+                <path d="M7.057 8.943l16 16c0.52 0.52 1.365 0.52 1.885 0s0.52-1.365 0-1.885l-16-16c-0.52-0.52-1.365-0.52-1.885 0s-0.52 1.365 0 1.885z"></path>
+              </svg>
             </div>
           </div>
           <div>
@@ -142,7 +184,7 @@ exports[`LogbookSearch component will render correctly with params 1`] = `
           <div>
             <!---->
             <div class="dp__input_wrap">
-              <!----><input id="dp-input-searchEndDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries before..." autocomplete="off" aria-label="Datepicker input" value="">
+              <!----><input id="dp-input-searchEndDate" data-test="dp-input" class="dp__input dp__input_icon_pad px-1 py-0 border-2 border-grey-600 bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0" inputmode="text" placeholder="Show entries before..." autocomplete="off" aria-label="Datepicker input" value="2024-Jan-31 04:00:00 PM">
               <div>
                 <!----><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="dp__icon dp__input_icon dp__input_icons">
                   <path d="M29.333 8c0-2.208-1.792-4-4-4h-18.667c-2.208 0-4 1.792-4 4v18.667c0 2.208 1.792 4 4 4h18.667c2.208 0 4-1.792 4-4v-18.667zM26.667 8v18.667c0 0.736-0.597 1.333-1.333 1.333 0 0-18.667 0-18.667 0-0.736 0-1.333-0.597-1.333-1.333 0 0 0-18.667 0-18.667 0-0.736 0.597-1.333 1.333-1.333 0 0 18.667 0 18.667 0 0.736 0 1.333 0.597 1.333 1.333z"></path>
@@ -151,8 +193,10 @@ exports[`LogbookSearch component will render correctly with params 1`] = `
                   <path d="M4 14.667h24c0.736 0 1.333-0.597 1.333-1.333s-0.597-1.333-1.333-1.333h-24c-0.736 0-1.333 0.597-1.333 1.333s0.597 1.333 1.333 1.333z"></path>
                 </svg>
               </div>
-              <!---->
-              <!---->
+              <!----><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" class="dp__icon dp__clear_icon dp__input_icons">
+                <path d="M23.057 7.057l-16 16c-0.52 0.52-0.52 1.365 0 1.885s1.365 0.52 1.885 0l16-16c0.52-0.52 0.52-1.365 0-1.885s-1.365-0.52-1.885 0z"></path>
+                <path d="M7.057 8.943l16 16c0.52 0.52 1.365 0.52 1.885 0s0.52-1.365 0-1.885l-16-16c-0.52-0.52-1.365-0.52-1.885 0s-0.52 1.365 0 1.885z"></path>
+              </svg>
             </div>
           </div>
           <div>
@@ -160,6 +204,42 @@ exports[`LogbookSearch component will render correctly with params 1`] = `
               <!---->
             </transition-stub>
           </div>
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <div class="space-y-0 mb-2 last:mb-4" responsive="false">
+      <div><label><span class="font-bold">Location:</span>
+          <!--v-if-->
+        </label></div>
+      <div class="grow w-full pl-2">
+        <div class="flex flex-col gap-2 items-center">
+          <div class="w-full aspect-video shadow-md shadow-grey-900 rounded-sm" data-testid="location-picker-map"></div>
+          <div>
+            <p class="flex gap-2 items-baseline flex-wrap text-sm">
+            <p class="space-x-1 inline-block" data-testid="location-picker-gps"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span>Unspecified</span></p><button data-testid="location-picker-set"><a>Set</a></button>
+            <!--v-if-->
+            </p>
+            <div class="flex items-baseline gap-0.5">
+              <div class="flex gap-2 items-baseline align-baseline w-full"><input class="grow appearance-none h-2 rounded-full bg-grey-300 dark:bg-grey-400 cursor-pointer accent-blue-500 hover:dark:accent-blue-400 hover:accent-blue-600" type="range" min="10" max="500" step="10" data-testid="location-picker-radius">
+                <!--v-if-->
+              </div><span>50km</span>
+            </div>
+          </div>
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </div>
+    <div class="space-y-0 mb-2 last:mb-4" responsive="false">
+      <div><label><span class="font-bold">Minimum rating:</span>
+          <!--v-if-->
+        </label></div>
+      <div class="grow w-full pl-2">
+        <div class="flex gap-1 items-baseline">
+          <div show-value="false">0</div>
+          <!--v-if-->
         </div>
         <!--v-if-->
         <!--v-if-->

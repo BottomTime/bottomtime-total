@@ -26,8 +26,8 @@ export enum DiveSiteReviewsSortBy {
 }
 
 export const CreateOrUpdateDiveSiteReviewSchema = z.object({
-  rating: z.number().min(1).max(5),
-  difficulty: z.number().min(1).max(5).optional(),
+  rating: z.number().min(0).max(5),
+  difficulty: z.number().min(0).max(5).optional(),
   comments: z.string().trim().max(1000).optional(),
 });
 export type CreateOrUpdateDiveSiteReviewDTO = z.infer<
@@ -42,15 +42,17 @@ export const DiveSiteReviewSchema = CreateOrUpdateDiveSiteReviewSchema.extend({
 });
 export type DiveSiteReviewDTO = z.infer<typeof DiveSiteReviewSchema>;
 
-export const ListDiveSiteReviewsParamsSchema = z.object({
-  sortBy: z
-    .nativeEnum(DiveSiteReviewsSortBy)
-    .optional()
-    .default(DiveSiteReviewsSortBy.Rating),
-  sortOrder: z.nativeEnum(SortOrder).optional().default(SortOrder.Descending),
-  skip: z.coerce.number().int().min(0).optional().default(0),
-  limit: z.coerce.number().int().gt(0).max(200).optional().default(50),
-});
+export const ListDiveSiteReviewsParamsSchema = z
+  .object({
+    creator: UsernameSchema,
+    sortBy: z
+      .nativeEnum(DiveSiteReviewsSortBy)
+      .default(DiveSiteReviewsSortBy.Rating),
+    sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Descending),
+    skip: z.coerce.number().int().min(0).default(0),
+    limit: z.coerce.number().int().gt(0).max(200).default(50),
+  })
+  .partial();
 export type ListDiveSiteReviewsParamsDTO = z.infer<
   typeof ListDiveSiteReviewsParamsSchema
 >;
@@ -87,13 +89,14 @@ export const DiveSiteSchema = CreateOrUpdateDiveSiteSchema.extend({
   creator: ProfileSchema,
   createdOn: z.number(),
   updatedOn: z.number().optional(),
-  averageRating: z.number().min(1).max(5).optional(),
-  averageDifficulty: z.number().min(1).max(5).optional(),
+  averageRating: z.number().min(0).max(5).optional(),
+  averageDifficulty: z.number().min(0).max(5).optional(),
 });
 export type DiveSiteDTO = z.infer<typeof DiveSiteSchema>;
 
 export const SuccinctDiveSiteSchema = DiveSiteSchema.pick({
   averageRating: true,
+  depth: true,
   description: true,
   name: true,
   id: true,

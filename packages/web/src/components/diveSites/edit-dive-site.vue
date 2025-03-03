@@ -58,10 +58,12 @@
           <div class="flex flex-wrap gap-3">
             <DepthInput
               v-model="state.depth"
+              :unit="state.depthUnit"
               control-id="depth"
               test-id="depth"
               :invalid="v$.depth.$error"
               allow-bottomless
+              @toggle-unit="onToggleDepthUnit"
             />
           </div>
         </FormField>
@@ -289,7 +291,7 @@
 <script lang="ts" setup>
 import {
   CreateOrUpdateDiveSiteDTO,
-  DepthDTO,
+  DepthUnit,
   DiveSiteDTO,
   GpsCoordinates,
   WaterType,
@@ -303,7 +305,7 @@ import { computed, reactive, ref } from 'vue';
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
 import { useOops } from '../../oops';
-import { useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 import { depth } from '../../validators';
 import DepthInput from '../common/depth-input.vue';
 import FormBox from '../common/form-box.vue';
@@ -323,7 +325,8 @@ type EditDiveSiteProps = {
 type EditDiveSiteFormState = {
   name: string;
   description: string;
-  depth: DepthDTO | string;
+  depth: number | string;
+  depthUnit: DepthUnit;
   location: string;
   directions: string;
   gps: {
@@ -336,6 +339,7 @@ type EditDiveSiteFormState = {
 };
 
 const client = useClient();
+const currentUser = useCurrentUser();
 const oops = useOops();
 const toasts = useToasts();
 
@@ -365,7 +369,7 @@ const v$ = useVuelidate(
     depth: {
       valid: helpers.withMessage(
         'Depth must be a positive number and cannot exceed 300m (~984ft)',
-        depth,
+        (val) => depth({ depth: val, unit: state.depthUnit }),
       ),
     },
     location: {
@@ -413,7 +417,11 @@ function loadFromProps(): EditDiveSiteFormState {
   return {
     name: props.site.name,
     description: props.site.description || '',
-    depth: props.site.depth ?? '',
+    depth: props.site.depth?.depth ?? '',
+    depthUnit:
+      props.site.depth?.unit ||
+      currentUser.user?.settings.depthUnit ||
+      DepthUnit.Meters,
     location: props.site.location,
     directions: props.site.directions || '',
     gps: props.site.gps
@@ -437,7 +445,10 @@ async function createSite(): Promise<void> {
   const data: CreateOrUpdateDiveSiteDTO = {
     name: state.name,
     description: state.description || undefined,
-    depth: typeof state.depth === 'string' ? undefined : state.depth,
+    depth:
+      typeof state.depth === 'string'
+        ? undefined
+        : { depth: state.depth, unit: state.depthUnit },
     location: state.location,
     directions: state.directions || undefined,
     gps: gps.value ?? undefined,
@@ -462,7 +473,10 @@ async function updateSite(): Promise<void> {
   const dto: DiveSiteDTO = { ...props.site };
   dto.name = state.name;
   dto.description = state.description || undefined;
-  dto.depth = typeof state.depth === 'string' ? undefined : state.depth;
+  dto.depth =
+    typeof state.depth === 'string'
+      ? undefined
+      : { depth: state.depth, unit: state.depthUnit };
   dto.location = state.location;
   dto.directions = state.directions || undefined;
   dto.gps = gps.value ?? undefined;
@@ -509,5 +523,9 @@ function onConfirmDiscard(): void {
   Object.assign(state, newState);
   v$.value.$reset();
   showConfirmCancelDialog.value = false;
+}
+
+function onToggleDepthUnit(newUnit: DepthUnit) {
+  state.depthUnit = newUnit;
 }
 </script>

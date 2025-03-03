@@ -86,11 +86,11 @@ export function createTestOperator(
       coordinates: [faker.location.longitude(), faker.location.latitude()],
     },
 
-    facebook: options?.facebook ?? faker.internet.userName(),
-    instagram: options?.instagram ?? faker.internet.userName(),
-    tiktok: options?.tiktok ?? faker.internet.userName(),
-    twitter: options?.twitter ?? faker.internet.userName(),
-    youtube: options?.youtube ?? faker.internet.userName(),
+    facebook: options?.facebook ?? faker.internet.username(),
+    instagram: options?.instagram ?? faker.internet.username(),
+    tiktok: options?.tiktok ?? faker.internet.username(),
+    twitter: options?.twitter ?? faker.internet.username(),
+    youtube: options?.youtube ?? faker.internet.username(),
 
     logo: options?.logo ?? faker.image.url({ width: 128, height: 128 }),
     banner: options?.banner ?? faker.image.url({ width: 1024, height: 256 }),

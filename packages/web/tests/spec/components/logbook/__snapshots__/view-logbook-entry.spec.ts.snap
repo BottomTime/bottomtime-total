@@ -1,19 +1,190 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ViewLogbookEntry component will render correctly for a full log entry 1`] = `
-"<div class="space-y-3" data-testid="logbook-entry">
-  <div class="flex flex-col"><label class="font-bold">Log #:</label><span class="italic" data-testid="entry-logNumber">12</span></div>
-  <div class="flex flex-col"><label class="font-bold">Entry time:</label><span class="italic">January 31, 2023 9:16 AM</span><span class="italic text-sm">(Europe/Dublin)</span></div>
-  <div class="flex flex-col"><label class="font-bold">Max depth:</label><span class="italic">33.3 ft</span></div>
-  <div class="flex flex-col"><label class="font-bold">Bottom time / Duration:</label><span class="italic">77.8 min / 88.3 min</span></div>
+"<div>
+  <ul class="flex flex-row" role="tablist">
+    <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-blue-800 dark:text-blue-300 font-bold rounded-t-md bg-blue-400 dark:bg-blue-800"><button id="tab-general" data-testid="tab-general" disabled="" role="tab" aria-selected="true">General Info</button></li>
+    <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-gray-500"><button id="tab-profile" data-testid="tab-profile" role="tab" aria-selected="false">Dive Profile</button></li>
+  </ul>
+  <div class="bg-blue-400 dark:bg-blue-800 p-3 rounded-b-md rounded-tr-md shadow-md shadow-grey-800" role="tabpanel" aria-labelledby="tab-general">
+    <div class="flex gap-5 justify-between items-center my-2">
+      <div>
+        <h1 class="text-2xl font-bold font-title" data-testid="entry-logNumber"> #12</h1>
+      </div><a href="/profile/jake32" target="_blank" rel="noopener noreferrer" class="no-style group relative rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 h-[32px] w-fit shadow-inner shadow-grey-800 cursor-pointer"><span class="relative"><img class="rounded-full" width="32px" height="32px" alt="" src="https://example.com/avatar.jpg"><!--v-if--></span><span class="pr-2 font-bold text-sm">Jake</span>
+        <div class="absolute top-[105%] left-2 min-w-44 opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 flex flex-wrap bg-secondary-dark p-1 rounded-md shadow-lg shadow-grey-800/60 text-xs z-[55] transition-opacity ease-in-out duration-200"><label class="font-bold text-right w-2/5">Joined:</label><span class="w-3/5 px-1 text-pretty">4 years ago</span><label class="font-bold text-right w-2/5">Username:</label><span class="w-3/5 px-1 text-pretty">@jake32</span><label class="font-bold text-right w-2/5">Location:</label><span class="w-3/5 px-1 text-pretty">Dublin, Ireland</span></div>
+      </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <!-- General Dive Info -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Dive Info</h2>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Entry time:</label><span class="font-mono text-xs">January 31, 2023 5:16 PM</span><span class="font-mono text-xs">Europe/Dublin</span></div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Duration:</label>
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center px-2"><span>Duration</span><span class="font-mono text-xs">0:40:55.00</span></div>
+            <div class="flex flex-col items-center px-2"><span>Bottom Time</span><span class="font-mono text-xs">0:35:3.00</span></div>
+            <div class="flex flex-col items-center px-2"><span>Surface Interval</span><span class="font-mono text-xs">Unspecified</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Depth:</label>
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center px-2"><span>Maximum</span><span class="font-mono text-xs">33.3 ft</span></div>
+            <div class="flex flex-col items-center px-2"><span>Average</span><span class="font-mono text-xs">27.3 ft</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Tags:</label>
+          <div class="flex flex-wrap gap-2 text-sm" value="Wreck dive,Night dive">
+            <p>No tags</p>
+            <!--v-if-->
+          </div>
+        </div>
+      </div><!-- Location -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Location</h2>
+        <div><label class="font-bold">Dive Site:</label>
+          <p class="space-x-3 italic"><span><i class="fas fa-spinner fa-spin"></i></span><span>Fetching dive site data...</span></p>
+        </div>
+        <div><label class="font-bold">Dive shop:</label>
+          <p>Unspecified</p>
+        </div>
+      </div><!-- Dive Conditions -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Conditions</h2>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Weather:</label><span class="font-mono text-xs capitalize">Sunny</span></div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Temperature:</label>
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center px-2"><span>Air Temp</span><span class="font-mono text-xs">72.0 °F</span></div>
+            <div class="flex flex-col items-center px-2"><span>Water Temp</span><span class="font-mono text-xs">70.0 °F</span></div>
+            <div class="flex flex-col items-center px-2"><span>Thermocline</span><span class="font-mono text-xs">50.0 °F</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Water Conditions:</label>
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center px-2"><span>Current</span><span class="font-mono text-xs">Strong</span></div>
+            <div class="flex flex-col items-center px-2"><span>Visibility</span><span class="font-mono text-xs">Poor</span></div>
+            <div class="flex flex-col items-center px-2"><span>Chop</span><span class="font-mono text-xs">Light</span></div>
+          </div>
+        </div>
+      </div><!-- Gas Consumption -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Breathing Gas</h2>
+        <div class="flex align-baseline gap-3 ml-2"><span class="font-bold font-mono text-lg">1)</span>
+          <div>
+            <p class="space-x-2"><span class="font-bold">My tank</span>
+              <!--v-if-->
+            </p>
+            <p class="space-x-2"><span>3000 psi</span><span><i class="fa-solid fa-arrow-right"></i></span><span>1000 psi</span></p>
+          </div>
+        </div>
+      </div><!-- Equipment -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Equipment</h2>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Weight Configuration:</label>
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center px-2"><span>Weight</span><span class="font-mono text-xs">6.5 lb</span></div>
+            <div class="flex flex-col items-center px-2"><span>Correctness</span><span class="font-mono text-xs">Correct</span></div>
+            <div class="flex flex-col items-center px-2"><span>Trim</span><span class="font-mono text-xs">Knees down</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Exposure Suit:</label><span class="font-mono text-xs">Drysuit</span></div>
+        <div class="grid grid-cols-2 gap-2">
+          <p class="flex gap-2 items-baseline"><label class="font-bold text-right min-w-16">Boots:</label><span class="text-success"><i class="fas fa-check-circle"></i><span class="sr-only">Yes</span></span></p>
+          <p class="flex gap-2 items-baseline"><label class="font-bold text-right min-w-16">Camera:</label><span class="text-secondary"><i class="fas fa-times-circle"></i><span class="sr-only">No</span></span></p>
+          <p class="flex gap-2 items-baseline"><label class="font-bold text-right min-w-16">Gloves:</label><span class="text-success"><i class="fas fa-check-circle"></i><span class="sr-only">Yes</span></span></p>
+          <p class="flex gap-2 items-baseline"><label class="font-bold text-right min-w-16">Hood:</label><span class="text-success"><i class="fas fa-check-circle"></i><span class="sr-only">Yes</span></span></p>
+          <p class="flex gap-2 items-baseline"><label class="font-bold text-right min-w-16">Scooter:</label><span class="text-secondary"><i class="fas fa-times-circle"></i><span class="sr-only">No</span></span></p>
+          <p class="flex gap-2 items-baseline"><label class="font-bold text-right min-w-16">Torch:</label><span class="text-success"><i class="fas fa-check-circle"></i><span class="sr-only">Yes</span></span></p>
+        </div>
+      </div><!-- Notes -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <div class="flex flex-col gap-0.5">
+          <h2 class="text-xl font-bold font-title -ml-3">Notes</h2>
+          <div><label class="font-bold">Comments:</label>
+            <p class="font-mono text-xs">This was a great dive!</p>
+          </div><label class="font-bold">Rating:</label>
+          <p class="flex gap-2 items-center">
+          <div readonly="">3.8</div>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>"
 `;
 
 exports[`ViewLogbookEntry component will render correctly for a minimal log entry 1`] = `
-"<div class="space-y-3" data-testid="logbook-entry">
-  <!--v-if-->
-  <div class="flex flex-col"><label class="font-bold">Entry time:</label><span class="italic">January 31, 2023 9:16 AM</span><span class="italic text-sm">(America/Los_Angeles)</span></div>
-  <!--v-if-->
-  <div class="flex flex-col"><label class="font-bold">Duration:</label><span class="italic">44.1 min</span></div>
+"<div>
+  <ul class="flex flex-row" role="tablist">
+    <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-blue-800 dark:text-blue-300 font-bold rounded-t-md bg-blue-400 dark:bg-blue-800"><button id="tab-general" data-testid="tab-general" disabled="" role="tab" aria-selected="true">General Info</button></li>
+    <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-gray-500"><button id="tab-profile" data-testid="tab-profile" role="tab" aria-selected="false">Dive Profile</button></li>
+  </ul>
+  <div class="bg-blue-400 dark:bg-blue-800 p-3 rounded-b-md rounded-tr-md shadow-md shadow-grey-800" role="tabpanel" aria-labelledby="tab-general">
+    <div class="flex gap-5 justify-between items-center my-2">
+      <div>
+        <!--v-if-->
+      </div><a href="/profile/logbook_guy" target="_blank" rel="noopener noreferrer" class="no-style group relative rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 h-[32px] w-fit shadow-inner shadow-grey-800 cursor-pointer"><span class="relative"><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=logbook_guy"><!--v-if--></span><span class="pr-2 font-bold text-sm">@logbook_guy</span>
+        <div class="absolute top-[105%] left-2 min-w-44 opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 flex flex-wrap bg-secondary-dark p-1 rounded-md shadow-lg shadow-grey-800/60 text-xs z-[55] transition-opacity ease-in-out duration-200"><label class="font-bold text-right w-2/5">Joined:</label><span class="w-3/5 px-1 text-pretty">4 years ago</span><label class="font-bold text-right w-2/5">Username:</label><span class="w-3/5 px-1 text-pretty">@logbook_guy</span><label class="font-bold text-right w-2/5">Location:</label><span class="w-3/5 px-1 text-pretty">Not specified</span></div>
+      </a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <!-- General Dive Info -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Dive Info</h2>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Entry time:</label><span class="font-mono text-xs">January 31, 2023 9:16 AM</span><span class="font-mono text-xs">America/Los_Angeles</span></div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Duration:</label>
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center px-2"><span>Duration</span><span class="font-mono text-xs">0:00:44.10</span></div>
+            <div class="flex flex-col items-center px-2"><span>Bottom Time</span><span class="font-mono text-xs">Unspecified</span></div>
+            <div class="flex flex-col items-center px-2"><span>Surface Interval</span><span class="font-mono text-xs">Unspecified</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Depth:</label>
+          <div class="flex gap-5">
+            <div class="flex flex-col items-center px-2"><span>Maximum</span><span class="font-mono text-xs">Unspecified</span></div>
+            <div class="flex flex-col items-center px-2"><span>Average</span><span class="font-mono text-xs">Unspecified</span></div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-0.5"><label class="font-bold">Tags:</label>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <p>No tags</p>
+            <!--v-if-->
+          </div>
+        </div>
+      </div><!-- Location -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Location</h2>
+        <div><label class="font-bold">Dive Site:</label>
+          <p>Unspecified</p>
+        </div>
+        <div><label class="font-bold">Dive shop:</label>
+          <p>Unspecified</p>
+        </div>
+      </div><!-- Dive Conditions -->
+      <!--v-if-->
+      <!-- Gas Consumption -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <h2 class="text-xl font-bold font-title -ml-3">Breathing Gas</h2>
+        <div class="flex align-baseline gap-3 ml-2"><span class="font-bold font-mono text-lg">1)</span>
+          <div>
+            <p class="space-x-2"><span class="font-bold">My tank</span>
+              <!--v-if-->
+            </p>
+            <p class="space-x-2"><span>3000 psi</span><span><i class="fa-solid fa-arrow-right"></i></span><span>1000 psi</span></p>
+          </div>
+        </div>
+      </div><!-- Equipment -->
+      <!--v-if-->
+      <!-- Notes -->
+      <div class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6">
+        <div class="flex flex-col gap-0.5">
+          <h2 class="text-xl font-bold font-title -ml-3">Notes</h2>
+          <!--v-if--><label class="font-bold">Rating:</label>
+          <p class="flex gap-2 items-center">
+          <div readonly="">0</div>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>"
 `;

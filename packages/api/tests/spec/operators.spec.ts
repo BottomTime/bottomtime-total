@@ -8,16 +8,21 @@ import {
   ApiList,
   AvatarSize,
   CreateOrUpdateOperatorDTO,
+  CreateOrUpdateTeamMemberDTO,
+  DiveSiteDTO,
   ListAvatarURLsResponseDTO,
   LogBookSharing,
   OperatorDTO,
+  SearchDiveSitesResponseSchema,
   SearchOperatorsParams,
   SearchOperatorsResponseSchema,
+  TeamMemberDTO,
   VerificationStatus,
 } from '../../src';
 import { Fetcher } from '../../src/client';
 import { OperatorsApiClient } from '../../src/client/operators';
 import TestData from '../fixtures/dive-operator-search-results.json';
+import TestDiveSites from '../fixtures/dive-sites-search-results.json';
 
 const TestKey = 'test-operator';
 const TestOperator: OperatorDTO = {
@@ -57,10 +62,45 @@ const TestURLs: ListAvatarURLsResponseDTO = {
   },
 } as const;
 
+const TeamMembers: TeamMemberDTO[] = [
+  {
+    title: 'Instructor',
+    joined: '2016-04',
+    member: {
+      accountTier: 200,
+      avatar: '/api/users/Chris/avatar',
+      location: 'Cambridge, ON',
+      logBookSharing: LogBookSharing.Private,
+      memberSince: 1713361114242,
+      name: 'Chris Carleton',
+      userId: 'cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1',
+      username: 'Chris',
+    },
+  },
+  {
+    title: 'Dive Master',
+    member: {
+      accountTier: 0,
+      avatar:
+        'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/613.jpg',
+      bio: 'At tenetur libero ullam aspernatur culpa provident nobis explicabo eos. Non voluptas aliquid quos repellendus incidunt veniam. Suscipit voluptates modi saepe rerum. In similique magni cupiditate sit ea beatae quisquam rerum corrupti.',
+      experienceLevel: 'Expert',
+      location: 'Kshlerinburgh, NH, NF',
+      logBookSharing: LogBookSharing.Private,
+      memberSince: 1422446556022,
+      name: 'Ashley Bruen',
+      startedDiving: '2015-06-14',
+      userId: '7ea68b2a-3f35-4650-bbd5-99c9325e0c09',
+      username: 'Ashley_Bruen35',
+    },
+  },
+] as const;
+
 describe('Operators API client', () => {
   let fetcher: Fetcher;
   let client: OperatorsApiClient;
   let testData: ApiList<OperatorDTO>;
+  let diveSites: ApiList<DiveSiteDTO>;
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   let testFile: any; // Need to use "any" type here to avoid mismatch with JSDOM File type.
@@ -69,6 +109,7 @@ describe('Operators API client', () => {
     fetcher = new Fetcher();
     client = new OperatorsApiClient(fetcher);
     testData = SearchOperatorsResponseSchema.parse(TestData);
+    diveSites = SearchDiveSitesResponseSchema.parse(TestDiveSites);
 
     const img = await fs.readFile(
       path.resolve(__dirname, '../fixtures/waltito.png'),
@@ -403,5 +444,132 @@ describe('Operators API client', () => {
         resolve();
       };
     });
+  });
+
+  it('will request dive sites for a given operator', async () => {
+    mockFetch.get(`/api/operators/${TestKey}/sites`, {
+      status: 200,
+      body: diveSites,
+    });
+
+    const sites = await client.listDiveSites(TestKey);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(sites.data).toHaveLength(diveSites.data.length);
+    expect(sites.totalCount).toBe(diveSites.totalCount);
+    sites.data.forEach((site, index) => {
+      expect(site).toEqual(diveSites.data[index]);
+    });
+  });
+
+  it('will add dive sites to an operator', async () => {
+    const siteIds = [
+      '56d4558e-6b4e-484b-8b94-2ad907ee6f9b',
+      '18ae7cba-62cc-4c34-b104-3d1842075989',
+      'c5b79659-a76f-403f-94ae-889d5718fc21',
+    ];
+    mockFetch.post(
+      {
+        url: `/api/operators/${TestKey}/sites`,
+        body: { siteIds },
+      },
+      {
+        status: 200,
+        body: { attached: siteIds.length, skipped: 0 },
+      },
+    );
+
+    await expect(client.addDiveSites(TestKey, siteIds)).resolves.toBe(
+      siteIds.length,
+    );
+
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('', async () => {
+    const siteIds = [
+      '56d4558e-6b4e-484b-8b94-2ad907ee6f9b',
+      '18ae7cba-62cc-4c34-b104-3d1842075989',
+      'c5b79659-a76f-403f-94ae-889d5718fc21',
+    ];
+    mockFetch.delete(
+      {
+        url: `/api/operators/${TestKey}/sites`,
+        body: { siteIds },
+      },
+      {
+        status: 200,
+        body: { removed: siteIds.length, skipped: 0 },
+      },
+    );
+
+    await expect(client.removeDiveSites(TestKey, siteIds)).resolves.toBe(
+      siteIds.length,
+    );
+
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will list team members', async () => {
+    mockFetch.get(`/api/operators/${TestKey}/team`, {
+      status: 200,
+      body: {
+        data: TeamMembers,
+        totalCount: TeamMembers.length,
+      },
+    });
+
+    const results = await client.listTeamMembers(TestKey);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(results).toMatchSnapshot();
+  });
+
+  it('will add or update a team member', async () => {
+    const options: CreateOrUpdateTeamMemberDTO = {
+      joined: '2012-08-08',
+      title: 'Diver Dude',
+    };
+    mockFetch.put(
+      {
+        url: `/api/operators/${TestKey}/team/${TeamMembers[0].member.username}`,
+        body: options,
+      },
+      {
+        status: 200,
+        body: {
+          ...TeamMembers[0],
+          ...options,
+        },
+      },
+    );
+
+    const result = await client.addOrUpdateTeamMember(
+      TestKey,
+      TeamMembers[0].member.username,
+      options,
+    );
+
+    expect(mockFetch.done()).toBe(true);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('will remove team members', async () => {
+    const username = 'sandra12';
+    mockFetch.delete(
+      {
+        url: `/api/operators/${TestKey}/team`,
+        body: [username],
+      },
+      {
+        status: 200,
+        body: {
+          succeeded: 1,
+          skipped: 0,
+        },
+      },
+    );
+    await client.removeTeamMembers(TestKey, username);
+    expect(mockFetch.done()).toBe(true);
   });
 });

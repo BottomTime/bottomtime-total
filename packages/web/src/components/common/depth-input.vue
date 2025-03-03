@@ -2,10 +2,10 @@
   <div class="space-y-1.5">
     <div class="relative">
       <FormTextBox
-        v-model.number="state.value"
+        v-model.number="depth"
         :control-id="controlId"
         :invalid="invalid"
-        :disabled="disabled || state.bottomless"
+        :disabled="disabled || bottomless"
         :maxlength="10"
         :test-id="testId"
       />
@@ -13,15 +13,20 @@
         :id="controlId ? `${controlId}-unit` : undefined"
         class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-10 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
         :data-testid="testId ? `${testId}-unit` : undefined"
-        :disabled="disabled || state.bottomless"
-        @click.prevent="onToggleUnit"
+        :disabled="disabled || bottomless"
+        @click.prevent="
+          $emit(
+            'toggle-unit',
+            unit === DepthUnit.Meters ? DepthUnit.Feet : DepthUnit.Meters,
+          )
+        "
       >
-        <span>{{ state.unit }}</span>
+        <span>{{ unit }}</span>
       </button>
     </div>
     <FormCheckbox
       v-if="allowBottomless"
-      v-model="state.bottomless"
+      v-model="bottomless"
       :control-id="controlId ? `${controlId}-bottomless` : undefined"
       :test-id="testId ? `${testId}-bottomless` : undefined"
       :disabled="disabled"
@@ -38,11 +43,10 @@
 </template>
 
 <script lang="ts" setup>
-import { DepthDTO, DepthUnit } from '@bottomtime/api';
+import { DepthUnit } from '@bottomtime/api';
 
-import { reactive, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-import { useCurrentUser } from '../../store';
 import FormCheckbox from './form-checkbox.vue';
 import FormTextBox from './form-text-box.vue';
 
@@ -52,16 +56,10 @@ interface DepthInputProps {
   disabled?: boolean;
   invalid?: boolean;
   testId?: string;
-}
-interface DepthInputState {
-  bottomless: boolean;
-  value: string | number;
-  unit: DepthUnit;
+  unit?: DepthUnit;
 }
 
-const currentUser = useCurrentUser();
-
-const depth = defineModel<DepthDTO | string>({
+const depth = defineModel<number | string>({
   required: false,
   default: '',
 });
@@ -69,59 +67,15 @@ const props = withDefaults(defineProps<DepthInputProps>(), {
   allowBottomless: false,
   disabled: false,
   invalid: false,
+  unit: DepthUnit.Meters,
 });
+defineEmits<{
+  (e: 'toggle-unit', newUnit: DepthUnit): void;
+}>();
 
-const state = reactive<DepthInputState>(
-  typeof depth.value === 'string'
-    ? {
-        bottomless: false,
-        value: depth.value,
-        unit: currentUser.user?.settings.depthUnit ?? DepthUnit.Meters,
-      }
-    : {
-        bottomless: props.allowBottomless && depth.value?.depth === 0,
-        value: depth.value?.depth || '',
-        unit:
-          depth.value?.unit ??
-          currentUser.user?.settings.depthUnit ??
-          DepthUnit.Meters,
-      },
-);
+const bottomless = ref(props.allowBottomless && depth.value === 0);
 
-function onToggleUnit() {
-  state.unit =
-    state.unit === DepthUnit.Meters ? DepthUnit.Feet : DepthUnit.Meters;
-}
-
-watch(state, () => {
-  if (state.bottomless) {
-    depth.value = {
-      depth: 0,
-      unit: state.unit,
-    };
-  } else if (!state.value) {
-    depth.value = '';
-  } else if (typeof state.value === 'number') {
-    depth.value = {
-      depth: state.value,
-      unit: state.unit,
-    };
-  } else {
-    depth.value = state.value;
-  }
-});
-
-watch(depth, () => {
-  if (typeof depth.value === 'string') {
-    state.value = depth.value;
-    return;
-  }
-
-  state.bottomless = props.allowBottomless && depth.value?.depth === 0;
-  state.value = depth.value?.depth || '';
-  state.unit =
-    depth.value?.unit ??
-    currentUser.user?.settings.depthUnit ??
-    DepthUnit.Meters;
+watch(bottomless, (bottomless) => {
+  depth.value = bottomless ? 0 : '';
 });
 </script>

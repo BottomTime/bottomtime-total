@@ -2,11 +2,9 @@ import {
   AccountTier,
   ApiClient,
   ApiList,
-  CreateOrUpdateOperatorDTO,
   OperatorDTO,
   SearchOperatorsResponseSchema,
   UserDTO,
-  VerificationStatus,
 } from '@bottomtime/api';
 
 import {
@@ -16,18 +14,16 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
-import { ToastType } from '../../../../src/common';
-import EditOperator from '../../../../src/components/operators/edit-operator.vue';
 import OperatorsListItem from '../../../../src/components/operators/operators-list-item.vue';
 import ViewOperator from '../../../../src/components/operators/view-operator.vue';
 import { FeaturesServiceKey } from '../../../../src/featrues';
-import { useCurrentUser, useToasts } from '../../../../src/store';
+import { useCurrentUser } from '../../../../src/store';
 import OperatorsView from '../../../../src/views/operators/operators-view.vue';
 import { ConfigCatClientMock } from '../../../config-cat-client-mock';
-import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import TestData from '../../../fixtures/dive-operators.json';
 import { BasicUser } from '../../../fixtures/users';
@@ -45,7 +41,6 @@ describe('Operators view', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof OperatorsView>;
   let searchSpy: jest.SpyInstance;
 
@@ -64,7 +59,6 @@ describe('Operators view', () => {
     testData = SearchOperatorsResponseSchema.parse(TestData);
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    toasts = useToasts(pinia);
 
     await router.push('/shops');
 
@@ -77,6 +71,7 @@ describe('Operators view', () => {
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };
@@ -191,153 +186,13 @@ describe('Operators view', () => {
   });
 
   it('will allow a shop owner to create a new dive shop', async () => {
-    const create: CreateOrUpdateOperatorDTO = {
-      active: true,
-      name: 'New Shop',
-      slug: 'new-shop',
-      gps: {
-        lat: 20.42,
-        lon: -87.32,
-      },
-      address: '1234 Main St',
-      phone: '555-555-5555',
-      email: 'randy@newshop.com',
-      description: 'A new dive shop',
-      socials: {
-        facebook: 'newshop',
-        instagram: 'newshop',
-        twitter: 'newshop',
-        tiktok: 'newshop',
-        youtube: 'newshop',
-      },
-      website: 'https://newshop.com',
-    };
-    const result: OperatorDTO = {
-      id: 'new-shop',
-      owner: ShopOwner.profile,
-      createdAt: new Date('2021-01-01T00:00:00Z').valueOf(),
-      updatedAt: new Date('2021-01-01T00:00:00Z').valueOf(),
-      verificationStatus: VerificationStatus.Unverified,
-      ...create,
-    };
-    const spy = jest
-      .spyOn(client.operators, 'createOperator')
-      .mockResolvedValue(result);
-
     currentUser.user = ShopOwner;
-
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
 
     await wrapper.get('[data-testid="operators-create-shop"]').trigger('click');
-    const editor = wrapper.getComponent(EditOperator);
-    expect(editor.isVisible()).toBe(true);
-    editor.vm.$emit('save', create);
     await flushPromises();
-
-    expect(spy).toHaveBeenCalledWith(create);
-    expect(wrapper.getComponent(OperatorsListItem).props('operator')).toEqual(
-      result,
-    );
-    expect(wrapper.findComponent(EditOperator).exists()).toBe(false);
-  });
-
-  it('will allow a shop owner to edit an existing shop', async () => {
-    const existing: OperatorDTO = {
-      ...testData.data[0],
-      owner: ShopOwner.profile,
-    };
-    const update: CreateOrUpdateOperatorDTO = {
-      active: true,
-      address: '1234 Main St',
-      description: 'A new dive shop',
-      name: 'New Shop',
-      phone: '555-555-5555',
-      slug: existing.slug,
-      gps: existing.gps,
-      email: existing.email,
-      socials: existing.socials,
-      website: existing.website,
-    };
-    const expected: OperatorDTO = {
-      ...existing,
-      ...update,
-    };
-    currentUser.user = ShopOwner;
-    searchSpy = jest
-      .spyOn(client.operators, 'searchOperators')
-      .mockResolvedValue({
-        data: [existing],
-        totalCount: 1,
-      });
-
-    const saveSpy = jest
-      .spyOn(client.operators, 'updateOperator')
-      .mockResolvedValue(expected);
-
-    const wrapper = mount(OperatorsView, opts);
-    await flushPromises();
-
-    const item = wrapper.getComponent(OperatorsListItem);
-    item.get(`[data-testid="select-${existing.slug}"]`).trigger('click');
-    await flushPromises();
-
-    const editor = wrapper.getComponent(EditOperator);
-    editor.vm.$emit('save', update);
-    await flushPromises();
-
-    expect(saveSpy).toHaveBeenCalledWith(existing.slug, update);
-    expect(wrapper.findComponent(EditOperator).exists()).toBe(false);
-  });
-
-  it('will handle a conflict error when saving an operator', async () => {
-    const existing: OperatorDTO = {
-      ...testData.data[0],
-      owner: ShopOwner.profile,
-    };
-    const update: CreateOrUpdateOperatorDTO = {
-      active: true,
-      address: '1234 Main St',
-      description: 'A new dive shop',
-      name: 'New Shop',
-      phone: '555-555-5555',
-      slug: existing.slug,
-      gps: existing.gps,
-      email: existing.email,
-      socials: existing.socials,
-      website: existing.website,
-    };
-    currentUser.user = ShopOwner;
-    searchSpy = jest
-      .spyOn(client.operators, 'searchOperators')
-      .mockResolvedValue({
-        data: [existing],
-        totalCount: 1,
-      });
-
-    const saveSpy = jest
-      .spyOn(client.operators, 'updateOperator')
-      .mockRejectedValue(createHttpError(409));
-
-    const wrapper = mount(OperatorsView, opts);
-    await flushPromises();
-
-    const item = wrapper.getComponent(OperatorsListItem);
-    item.get(`[data-testid="select-${existing.slug}"]`).trigger('click');
-    await flushPromises();
-
-    const editor = wrapper.getComponent(EditOperator);
-    editor.vm.$emit('save', update);
-    await flushPromises();
-
-    expect(saveSpy).toHaveBeenCalledWith(existing.slug, update);
-    expect(wrapper.findComponent(EditOperator).isVisible()).toBe(true);
-
-    expect(toasts.toasts).toHaveLength(1);
-    expect(toasts.toasts[0].type).toBe(ToastType.Warning);
-    expect(toasts.toasts[0].message).toBe(
-      'Unable to save dive shop. URL slug is already in use. Please change your slug to make it unique and then try again.',
-    );
+    expect(router.currentRoute.value.path).toBe('/shops/createNew');
   });
 
   it('will display a dive shop in read-only mode when viewed by a user who is not the owner', async () => {

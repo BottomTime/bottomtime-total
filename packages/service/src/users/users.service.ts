@@ -9,7 +9,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash } from 'bcryptjs';
@@ -19,6 +19,7 @@ import { v7 as uuid } from 'uuid';
 import { Config } from '../config';
 import { UserEntity } from '../data';
 import { User } from './user';
+import { UserFactory } from './user-factory';
 import { UsersQueryBuilder } from './users-query-builder';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO & {
@@ -37,6 +38,9 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly Users: Repository<UserEntity>,
+
+    @Inject(UserFactory)
+    private readonly userFactory: UserFactory,
   ) {}
 
   private async checkForConflicts(
@@ -108,12 +112,12 @@ export class UsersService {
 
     await this.Users.save(data);
 
-    return new User(this.Users, data);
+    return this.userFactory.createUser(data);
   }
 
   async getUserById(id: string): Promise<User | undefined> {
     const data = await this.Users.findOne({ where: { id } });
-    return data ? new User(this.Users, data) : undefined;
+    return data ? this.userFactory.createUser(data) : undefined;
   }
 
   async getUserByUsernameOrEmail(
@@ -125,12 +129,12 @@ export class UsersService {
       where: [{ usernameLowered: lowered }, { emailLowered: lowered }],
     });
 
-    return data ? new User(this.Users, data) : undefined;
+    return data ? this.userFactory.createUser(data) : undefined;
   }
 
   async getUserByStripeId(stripeCustomerId: string): Promise<User | undefined> {
     const data = await this.Users.findOneBy({ stripeCustomerId });
-    return data ? new User(this.Users, data) : undefined;
+    return data ? this.userFactory.createUser(data) : undefined;
   }
 
   async searchUsers(
@@ -150,7 +154,7 @@ export class UsersService {
     const [users, totalCount] = await query.getManyAndCount();
 
     return {
-      data: users.map((d) => new User(this.Users, d)),
+      data: users.map((d) => this.userFactory.createUser(d)),
       totalCount,
     };
   }

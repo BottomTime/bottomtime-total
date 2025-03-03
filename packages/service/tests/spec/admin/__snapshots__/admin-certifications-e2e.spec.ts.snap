@@ -2,7 +2,13 @@
 
 exports[`Certifications End-to-End when creating a certification will create a new certification 1`] = `
 {
-  "agency": "BSAC",
+  "agency": {
+    "id": "d85b955b-04f3-4803-ba74-c31c27bc26de",
+    "logo": "https://www.naui.org",
+    "longName": "National Association of Underwater Instructors",
+    "name": "NAUI",
+    "website": "https://www.naui.org",
+  },
   "course": "Intro to Underwater Stuff",
   "id": "b24ae74c-0802-47bb-9eab-a88574bb78df",
 }
@@ -10,7 +16,13 @@ exports[`Certifications End-to-End when creating a certification will create a n
 
 exports[`Certifications End-to-End when getting a certification will return a certification by id 1`] = `
 {
-  "agency": "PADI",
+  "agency": {
+    "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+    "logo": "https://www.padi.com",
+    "longName": "Professional Association of Diving Instructors",
+    "name": "PADI",
+    "website": "https://www.padi.com",
+  },
   "course": "Open Water Diver",
   "id": "6b12745f-dc89-47d4-b6d7-07deb2127340",
 }
@@ -20,54 +32,114 @@ exports[`Certifications End-to-End when searching certifications will perform a 
 {
   "data": [
     {
-      "agency": "SSI",
-      "course": "Equipment Techniques",
-      "id": "f9e0294b-6fb5-4103-bd6e-a26dc3c08087",
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Fish Identification",
+      "id": "e8ddfecb-bad6-4ea7-9ca9-8dbc8b348854",
     },
     {
-      "agency": "SSI",
-      "course": "Extended Range",
-      "id": "16971174-46dd-450c-92e6-c34f9b9148c6",
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Ice Diver",
+      "id": "4c58f0dd-871e-4057-b805-ec2008694f39",
     },
     {
-      "agency": "SSI",
-      "course": "Freediving 1",
-      "id": "0a314d67-7398-445f-9cdb-d129518c557e",
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Master Scuba Diver",
+      "id": "5e85fb4f-efd7-4723-9558-7deba1dd4bdb",
     },
     {
-      "agency": "SSI",
-      "course": "Freediving 2",
-      "id": "c1834a92-8f26-4824-bf58-4a739b9a354a",
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Night Diver",
+      "id": "4a4e8d09-a348-4c39-b6a3-4da500070574",
     },
     {
-      "agency": "SSI",
-      "course": "Master Diver",
-      "id": "f3e57d9e-135a-4faf-9a36-57d6316d4d1e",
-    },
-    {
-      "agency": "SSI",
-      "course": "Navigation",
-      "id": "df2d1520-6b86-4a03-932a-60b995e8cc37",
-    },
-    {
-      "agency": "SSI",
-      "course": "Night Diving and Limited Visibility",
-      "id": "9725da3f-3fd5-4922-b904-883d8c100dd1",
-    },
-    {
-      "agency": "SSI",
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
       "course": "Open Water Diver",
-      "id": "e9356339-da23-43d3-a16e-6e512f847832",
+      "id": "6b12745f-dc89-47d4-b6d7-07deb2127340",
     },
     {
-      "agency": "SSI",
-      "course": "Open Water Instructor",
-      "id": "cf1bc979-1fee-48c7-93e8-a49d486611eb",
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Open Water Scuba Instructor",
+      "id": "2e68f278-d51e-404b-8194-eb3440642abb",
     },
     {
-      "agency": "SSI",
-      "course": "Perfect Buoyancy",
-      "id": "d183d199-67ec-4fd6-af12-94ea26c5da1f",
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Peak Performance Buoyancy",
+      "id": "49a05ee2-3ae8-4328-ba7d-de885b753b8e",
+    },
+    {
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Project AWARE (Conservation)",
+      "id": "398bbcac-1d0f-4077-851c-1d4ecdf1de79",
+    },
+    {
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Rebreather Diver",
+      "id": "80cba2df-c854-4a20-b6be-84382e3b6210",
+    },
+    {
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "course": "Rescue Diver",
+      "id": "12990a9d-6656-453c-83a2-b4dd2e81a865",
     },
   ],
   "totalCount": 28,
@@ -76,7 +148,13 @@ exports[`Certifications End-to-End when searching certifications will perform a 
 
 exports[`Certifications End-to-End when updating a certification will update the indicated certification 1`] = `
 {
-  "agency": "BSAC",
+  "agency": {
+    "id": "a6a87695-02fb-4caf-b5c2-6af5afbb0ff8",
+    "logo": "https://www.divessi.com",
+    "longName": "Scuba Schools International",
+    "name": "SSI",
+    "website": "https://www.divessi.com",
+  },
   "course": "Advanced Reef Identification",
   "id": "4bc3792d-1c81-4b9a-a7e3-75f8e9d6b972",
 }

@@ -11,10 +11,12 @@ import { useCurrentUser } from '../../store';
 
 type DepthTextProps = {
   depth: number;
-  unit: DepthUnit;
+  unit?: DepthUnit;
 };
 
-const props = defineProps<DepthTextProps>();
+const props = withDefaults(defineProps<DepthTextProps>(), {
+  unit: DepthUnit.Meters,
+});
 const currentUser = useCurrentUser();
 
 const text = computed(() => {

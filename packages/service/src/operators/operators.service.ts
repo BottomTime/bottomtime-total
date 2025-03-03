@@ -85,6 +85,7 @@ export class OperatorsService {
     const results = await this.operators.find({
       where: { id: In(ids) },
       relations: ['owner'],
+      order: { name: 'ASC' },
     });
     return results.map((item) => this.operatorFactory.createOperator(item));
   }

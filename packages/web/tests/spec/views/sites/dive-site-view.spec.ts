@@ -23,6 +23,7 @@ import {
   BasicUser,
   UserWithEmptyProfile,
 } from '../../../fixtures/users';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 describe('Dive Site View', () => {
   let fetcher: Fetcher;
@@ -70,6 +71,7 @@ describe('Dive Site View', () => {
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };

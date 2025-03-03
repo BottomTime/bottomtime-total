@@ -2,7 +2,9 @@ import mockFetch from 'fetch-mock-jest';
 
 import {
   ApiList,
+  CreateOrUpdateDiveSiteReviewDTO,
   CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateOperatorReviewDTO,
   DepthUnit,
   DiveSiteDTO,
   ExposureSuit,
@@ -94,6 +96,103 @@ const FullTestData: LogEntryDTO = {
   ],
   tags: ['wreck', 'deep', 'cold'],
 };
+
+const RecentDiveOperators = [
+  {
+    active: true,
+    createdAt: 1739204161841,
+    description:
+      'Dan’s was purchased by Matt Mandziuk who has had a big set of shoes to fill as Dan backs out slowly into retirement. We have enjoyed the new concepts Matt continues to bring to the store, as well as fresh and fun ideas. There are always many new and exciting changes with Matt at the helm. While most things have remained the same, the main goals have been to get things running more efficiently and to make the sport more accessible to everyone involved. One of the most successful changes within the brand was offering in-store financing, renovating the layout of the store, as well as the addition of a number of great new dive trips and charters. Our goal as a shop is to keep expanding, growing and improving at every turn.\nMatt’s vision for the Dan’s brand has also expanded into the creation of Divers Edge – our technical dive training arm. With a solid and proven foundation of recreational diving, the Divers Edge brand aims to further technical diving and exploration with some exciting new projects and trips specific to technical divers.\n\n2024 is going to be our 50th anniversary of Dan’s Dive Shop. To hit the Forty year mark in any business is a huge achievement – let alone the dive business – is no easy task. We couldn’t have done it without you – our customers and students. It’s been a great ride full of learning, improvement, more learning and lots of bubbles!\n\nThank you for your continued support of the DDS brand and we look forward to adding more to our history!\n\nSee you in the water,\nThe DDS family.',
+    email: 'admin@dansdiveshop.ca',
+    gps: {
+      lat: 43.1708282,
+      lon: -79.2268426,
+    },
+    id: '0194f0a5-7131-7bb9-95d2-a7f833eff151',
+    name: "Dan's Dive Shop",
+    owner: {
+      accountTier: 200,
+      userId: 'cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1',
+      username: 'Chris',
+      memberSince: 1713361114242,
+      logBookSharing: 'private',
+      avatar: '/api/users/Chris/avatar',
+      location: 'Cambridge, ON',
+      name: 'Chris Carleton',
+    },
+    socials: {
+      facebook: 'dansdiveshop',
+      instagram: 'dansdiveshop',
+      tiktok: 'dansdiveshop',
+      twitter: 'dansdiveshop',
+      youtube: 'dansdiveshop',
+    },
+    updatedAt: 1739206823938,
+    address: '329 Welland Ave, St. Catharines, ON L2R 2R2, Canada',
+    logo: '/api/operators/dans-dive-shop/logo',
+    phone: '(800) 268-3267',
+    slug: 'dans-dive-shop',
+    verificationStatus: 'unverified',
+    website: 'https://dansdiveshop.ca/',
+  },
+];
+
+const RecentDiveSites = [
+  {
+    id: 'af6294af-89e4-49ea-80af-967de0f336cd',
+    creator: {
+      accountTier: 0,
+      userId: '179bebf1-cc41-48cf-88aa-0f886c01e74f',
+      username: 'Ford_Kris',
+      memberSince: 1550661767372,
+      logBookSharing: 'private',
+      avatar:
+        'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1189.jpg',
+      location: 'Cheyenne, VT, NR',
+      name: 'Ford Kris',
+    },
+    createdOn: 1678720808407,
+    name: 'agreeable, private eardrum',
+    location: 'Maximilliaborough, WA, PS',
+    directions:
+      'Civitas trans nobis conventus compello aro. Carcer villa vulariter apparatus benevolentia. Tergeo tabula terminatio tres magni atavus adicio certus.',
+    freeToDive: false,
+    shoreAccess: true,
+    averageRating: 4.4,
+    averageDifficulty: 1.3,
+  },
+  {
+    id: '2358f771-1bda-4792-895a-15ab916ab569',
+    creator: {
+      accountTier: 0,
+      userId: 'bc1d6cad-6189-4f44-a9f1-0f095b6cd0ff',
+      username: 'Kaelyn.Muller80',
+      memberSince: 1421637069831,
+      logBookSharing: 'private',
+      avatar:
+        'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1158.jpg',
+      location: 'Henderson, NE, CG',
+      name: 'Kaelyn Muller',
+    },
+    createdOn: 1589163161228,
+    name: 'authentic, key crate',
+    depth: {
+      depth: 104.7,
+      unit: 'ft',
+    },
+    location: 'Fort Morton, NH, KG',
+    directions:
+      'Cometes tempora officiis commodi taceo somnus audeo odit ars cupiditate. Teres attonbitus amplitudo autus titulus ventus. Vicissitudo suggero tamquam tunc sopor adficio capitulus.',
+    gps: {
+      lon: 111.4163,
+      lat: -61.5161,
+    },
+    freeToDive: false,
+    shoreAccess: false,
+    averageRating: 2,
+    averageDifficulty: 4.9,
+  },
+];
 
 describe('Log entries API client', () => {
   let fetcher: Fetcher;
@@ -320,5 +419,197 @@ describe('Log entries API client', () => {
     await client.deleteLogEntry(username, entryId);
 
     expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will retrieve operator review', async () => {
+    const username = 'Chris';
+    const entryId = 'efafd448-a61a-4d4a-bc14-3be4ffb93d72';
+    mockFetch.get(`/api/users/${username}/logbook/${entryId}/reviewOperator`, {
+      status: 200,
+      body: {
+        createdAt: 1739560608679,
+        creator: {
+          accountTier: 200,
+          logBookSharing: 'private',
+          memberSince: 1713361114242,
+          userId: 'cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1',
+          username: 'Chris',
+          avatar: '/api/users/Chris/avatar',
+          name: 'Chris Carleton',
+          location: 'Cambridge, ON',
+        },
+        comments: 'Sick dive shop, great staff!',
+        id: '019505e4-63a7-7888-91a3-854ea65487a2',
+        rating: 4.1,
+        updatedAt: 1739560608679,
+      },
+    });
+
+    const result = await client.getOperatorReview(username, entryId);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('will review operator', async () => {
+    const username = 'Chris';
+    const entryId = 'efafd448-a61a-4d4a-bc14-3be4ffb93d72';
+    const review: CreateOrUpdateOperatorReviewDTO = {
+      rating: 4.1,
+      comments: 'Sick dive shop, great staff!',
+    };
+    mockFetch.put(
+      {
+        url: `/api/users/${username}/logbook/${entryId}/reviewOperator`,
+        body: review,
+      },
+      {
+        status: 200,
+        body: {
+          createdAt: 1739560608679,
+          creator: {
+            accountTier: 200,
+            logBookSharing: 'private',
+            memberSince: 1713361114242,
+            userId: 'cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1',
+            username: 'Chris',
+            avatar: '/api/users/Chris/avatar',
+            name: 'Chris Carleton',
+            location: 'Cambridge, ON',
+          },
+          comments: 'Sick dive shop, great staff!',
+          id: '019505e4-63a7-7888-91a3-854ea65487a2',
+          rating: 4.1,
+          updatedAt: 1739560608679,
+        },
+      },
+    );
+
+    const result = await client.reviewOperator(username, entryId, review);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('will retrieve dive site review', async () => {
+    const username = 'Chris';
+    const entryId = 'efafd448-a61a-4d4a-bc14-3be4ffb93d72';
+    mockFetch.get(`/api/users/${username}/logbook/${entryId}/reviewSite`, {
+      status: 200,
+      body: {
+        id: '019505d0-9631-799c-951f-04f0bb2f2c13',
+        creator: {
+          accountTier: 200,
+          memberSince: 1713361114242,
+          userId: 'cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1',
+          username: 'Chris',
+          logBookSharing: 'private',
+          name: 'Chris Carleton',
+          avatar: '/api/users/Chris/avatar',
+          location: 'Cambridge, ON',
+        },
+        createdOn: 1739559310897,
+        updatedOn: 1739559310897,
+        rating: 4.7,
+        difficulty: 0.9,
+        comments: 'I love diving here. Warm water and good vis.',
+      },
+    });
+
+    const result = await client.getSiteReview(username, entryId);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('will review dive site', async () => {
+    const username = 'Chris';
+    const entryId = 'efafd448-a61a-4d4a-bc14-3be4ffb93d72';
+    const review: CreateOrUpdateDiveSiteReviewDTO = {
+      rating: 3.8,
+      difficulty: 2.2,
+      comments: 'Updated review!',
+    };
+    mockFetch.put(
+      {
+        url: `/api/users/${username}/logbook/${entryId}/reviewSite`,
+        body: review,
+      },
+      {
+        status: 200,
+        body: {
+          id: '019505d0-9631-799c-951f-04f0bb2f2c13',
+          creator: {
+            accountTier: 200,
+            memberSince: 1713361114242,
+            userId: 'cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1',
+            username: 'Chris',
+            logBookSharing: 'private',
+            name: 'Chris Carleton',
+            avatar: '/api/users/Chris/avatar',
+            location: 'Cambridge, ON',
+          },
+          createdOn: 1739559310897,
+          updatedOn: 1739559310897,
+          ...review,
+        },
+      },
+    );
+
+    const result = await client.reviewSite(username, entryId, review);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('will list most recent dive sites', async () => {
+    const username = 'Chris';
+    mockFetch.get(`/api/users/${username}/logbook/recentDiveSites`, {
+      status: 200,
+      body: RecentDiveSites,
+    });
+
+    const results = await client.getMostRecentDiveSites(username);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(results).toMatchSnapshot();
+  });
+
+  it('will list most recent operators', async () => {
+    const username = 'Chris';
+    mockFetch.get(`/api/users/${username}/logbook/recentOperators`, {
+      status: 200,
+      body: RecentDiveOperators,
+    });
+
+    const results = await client.getMostRecentDiveOperators(username);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(results).toMatchSnapshot();
+  });
+
+  it('will retrieve log entry data samples', async () => {
+    const username = 'Chris';
+    const entryId = '83023e93-1293-4dcd-a101-938b2832020b';
+    mockFetch.get(`/api/users/${username}/logbook/${entryId}/samples`, {
+      status: 200,
+      body: [
+        {
+          offset: 1000,
+          depth: 50,
+          gps: { lat: 43.1708282, lng: -79.2268426 },
+        },
+        {
+          offset: 2000,
+          depth: 56,
+          gps: { lat: 43.1708282, lng: -79.2268426 },
+        },
+      ],
+    });
+
+    const results = await client.loadLogEntrySampleData(username, entryId);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(results).toMatchSnapshot();
   });
 });

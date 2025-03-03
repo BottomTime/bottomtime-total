@@ -6,10 +6,12 @@ import {
   SortOrder,
 } from '@bottomtime/api';
 
-import { mount } from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { createRouter } from 'tests/fixtures/create-router';
+import { Router } from 'vue-router';
 
 import FriendsListItem from '../../../../src/components/friends/friends-list-item.vue';
 import FriendsList from '../../../../src/components/friends/friends-list.vue';
@@ -25,14 +27,24 @@ const NoFriendsMessage = '[data-testid="no-friends"]';
 const SortOrderDropdown = '[data-testid="sort-order"]';
 
 describe('Friends list component', () => {
+  let router: Router;
   let friendData: ApiList<FriendDTO>;
+  let opts: ComponentMountingOptions<typeof FriendsList>;
 
   beforeAll(() => {
+    router = createRouter();
     friendData = ListFriendsResposneSchema.parse(FriendTestData);
+
+    opts = {
+      global: {
+        plugins: [router],
+      },
+    };
   });
 
   it('will render an empty list', () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: {
           data: [],
@@ -50,6 +62,7 @@ describe('Friends list component', () => {
 
   it('will render a partial list', () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: {
           data: friendData.data.slice(0, 12),
@@ -73,6 +86,7 @@ describe('Friends list component', () => {
 
   it('will render a full list', () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: friendData,
       },
@@ -93,6 +107,7 @@ describe('Friends list component', () => {
 
   it('will emit "load-more" event if Load More button is clicked', async () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: {
           data: friendData.data.slice(0, 12),
@@ -108,6 +123,7 @@ describe('Friends list component', () => {
 
   it('will render a loading message when loading more friends', () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: {
           data: friendData.data.slice(0, 12),
@@ -124,6 +140,7 @@ describe('Friends list component', () => {
   ['select', 'unfriend'].forEach((event) => {
     it(`will bubble up a "${event}" event when a list item raises it`, async () => {
       const wrapper = mount(FriendsList, {
+        ...opts,
         props: {
           friends: friendData,
         },
@@ -145,6 +162,7 @@ describe('Friends list component', () => {
   ].forEach(({ sortBy, sortOrder }) => {
     it(`will initialize sort order dropdown sorted by ${sortBy} and ordered by ${sortOrder}`, () => {
       const wrapper = mount(FriendsList, {
+        ...opts,
         props: {
           friends: friendData,
           sortBy,
@@ -159,6 +177,7 @@ describe('Friends list component', () => {
 
   it('will default sort order to username ascending if not provided', () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: friendData,
       },
@@ -172,6 +191,7 @@ describe('Friends list component', () => {
 
   it('will emit "change-sort-order" event if sort order is changed', async () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: friendData,
       },
@@ -189,6 +209,7 @@ describe('Friends list component', () => {
 
   it('will emit "add-friend" event when Add Friend button is clicked', async () => {
     const wrapper = mount(FriendsList, {
+      ...opts,
       props: {
         friends: friendData,
       },

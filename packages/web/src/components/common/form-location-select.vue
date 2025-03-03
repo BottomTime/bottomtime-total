@@ -92,7 +92,12 @@ const value = defineModel<GpsCoordinates | GpsCoordinatesWithRadius>({
 });
 const state = reactive<FormLocationSelectState>({
   showLocationDialog: false,
-  radius: value.value && 'radius' in value.value ? value.value.radius : 50,
+  radius:
+    value.value &&
+    'radius' in value.value &&
+    typeof value.value.radius === 'number'
+      ? value.value.radius
+      : 50,
 });
 const locationDialog = ref<InstanceType<typeof LocationDialog> | null>();
 

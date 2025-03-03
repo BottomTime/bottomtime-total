@@ -1,14 +1,13 @@
 <template>
   <div class="space-y-4">
     <p class="text-sm text-center">
-      Here are your most recently used dive sites. These are the entries you've
+      Here are your most recently used dive sites. These are the sites you've
       used on your most recently created log entries.
     </p>
 
     <div v-if="currentSite">
       <TextHeading level="h3">Current Site</TextHeading>
       <SelectDiveSiteListItem
-        v-if="currentSite"
         :site="currentSite"
         :selected="state.selectedSite === currentSite.id"
         @highlight="onSiteHighlighted"
@@ -64,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO, SuccinctDiveSiteDTO } from '@bottomtime/api';
+import { DiveSiteDTO } from '@bottomtime/api';
 
 import { onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
@@ -77,7 +76,7 @@ import TextHeading from '../../common/text-heading.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface RecentSitesListProps {
-  currentSite?: SuccinctDiveSiteDTO;
+  currentSite?: DiveSiteDTO;
 }
 
 interface RecentSitesState {
@@ -92,7 +91,7 @@ const route = useRoute();
 
 const props = defineProps<RecentSitesListProps>();
 defineEmits<{
-  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
+  (e: 'site-selected', site: DiveSiteDTO): void;
   (e: 'search'): void;
 }>();
 const state = reactive<RecentSitesState>({
@@ -114,7 +113,7 @@ onMounted(async () => {
   state.isLoading = false;
 });
 
-function onSiteHighlighted(site: SuccinctDiveSiteDTO) {
+function onSiteHighlighted(site: DiveSiteDTO) {
   state.selectedSite = site.id;
 }
 </script>

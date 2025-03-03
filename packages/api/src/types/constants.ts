@@ -160,7 +160,7 @@ export const GpsCoordinatesSchema = z
       .parse(values);
   });
 export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
-export type GpsCoordinatesWithRadius = GpsCoordinates & { radius: number };
+export type GpsCoordinatesWithRadius = GpsCoordinates & { radius?: number };
 
 /**
  * Uses libphonenumber-js to parse, validate, and transform a string into a proper phone number.
@@ -233,6 +233,12 @@ export const SuccessFailResponseSchema = z.object({
 });
 export type SuccessFailResponseDTO = z.infer<typeof SuccessFailResponseSchema>;
 
+export const SuccessCountSchema = z.object({
+  succeeded: z.number().int().min(0),
+  skipped: z.number().int().min(0),
+});
+export type SuccessCountDTO = z.infer<typeof SuccessCountSchema>;
+
 export const DepthSchema = z
   .object({
     depth: z.number().min(0),
@@ -256,6 +262,35 @@ export const PressureSchema = z.object({
   unit: z.nativeEnum(PressureUnit),
 });
 export type PressureDTO = z.infer<typeof PressureSchema>;
+
+export const TemperatureSchema = z.object({
+  temperature: z.number(),
+  unit: z.nativeEnum(TemperatureUnit),
+});
+export type TemperatureDTO = z.infer<typeof TemperatureSchema>;
+
+type TemperatureBounds = Record<TemperatureUnit, { min: number; max: number }>;
+const AirTempBounds: TemperatureBounds = {
+  [TemperatureUnit.Celsius]: { min: -50, max: 60 },
+  [TemperatureUnit.Fahrenheit]: { min: -58, max: 140 },
+};
+const WaterTempBounds: TemperatureBounds = {
+  [TemperatureUnit.Celsius]: { min: -2, max: 60 },
+  [TemperatureUnit.Fahrenheit]: { min: 28, max: 140 },
+};
+
+export const AirTemperatureSchema = TemperatureSchema.refine(
+  (val) =>
+    val.temperature >= AirTempBounds[val.unit].min &&
+    val.temperature <= AirTempBounds[val.unit].max,
+  'Temperature must be between -50 and 60°C (-58 and 140°F)',
+);
+export const WaterTemperatureSchema = TemperatureSchema.refine(
+  (val) =>
+    val.temperature >= WaterTempBounds[val.unit].min &&
+    val.temperature <= WaterTempBounds[val.unit].max,
+  'Temperature must be between -2 and 60°C (28 and 140°F)',
+);
 
 export type AppMetricsDTO = {
   users: {

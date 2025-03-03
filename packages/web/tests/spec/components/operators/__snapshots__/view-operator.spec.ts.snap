@@ -1,15 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ViewOperator component will render with all properties 1`] = `
-"<div class="flex gap-6" data-testid="view-operator-section">
-  <div>
-    <p class="p-2"><img src="https://loremflickr.com/128/128?lock=1873198725464064/256x256" class="rounded-md" width="256px" height="256px"></p>
+"<!--v-if-->
+<!--v-if-->
+<div class="flex gap-6" data-testid="view-operator-section">
+  <div class="m-2 w-[128px] h-[128px]">
+    <p><img src="https://loremflickr.com/128/128?lock=1873198725464064/128x128" class="rounded-md" width="128px" height="128px"></p>
   </div>
   <article class="space-y-3">
     <!--v-if-->
-    <p class="text-lg">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
-      Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="line-clamp-4 hover:line-clamp-none">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div class="overflow-x-auto space-y-3">
+        <p>Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
+          Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+      </div>
+      <!--v-if-->
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="space-y-2 px-3">
         <h3 class="text-lg font-bold font-title">Contact Info</h3>
         <p class="space-x-2"><span><i class="fa-solid fa-map-marker-alt fa-xs fa-fw"></i></span><span class="sr-only">Address</span><span>6713 Ritchie Key Apt. 697, Suffolk, LA, 43097</span></p>
@@ -19,27 +27,59 @@ exports[`ViewOperator component will render with all properties 1`] = `
       </div>
       <div class="space-y-2 px-3">
         <h3 class="text-lg font-bold font-title">Socials</h3>
-        <p class="space-x-2"><span><i class="fa-brands fa-facebook fa-xs fa-fw"></i></span><span class="sr-only">Facebook</span><a href="https://facebook.com/Nestor34/" target="_blank">Nestor34</a></p>
-        <p class="space-x-2"><span><i class="fa-brands fa-instagram fa-xs fa-fw"></i></span><span class="sr-only">Instagram</span><a href="https://instagram.com/Warren7/" target="_blank">Warren7</a></p>
-        <p class="space-x-2"><span><i class="fa-brands fa-tiktok fa-xs fa-fw"></i></span><span class="sr-only">TikTok</span><a href="https://tiktok.com/@Rickey.Steuber/" target="_blank">Rickey.Steuber</a></p>
-        <p class="space-x-2"><span><i class="fa-brands fa-x-twitter fa-xs fa-fw"></i></span><span class="sr-only">X</span><a href="https://x.com/Pierre_Rogahn/" target="_blank">Pierre_Rogahn</a></p>
-        <p class="space-x-2"><span><i class="fa-brands fa-youtube fa-xs fa-fw"></i></span><span class="sr-only">YouTube</span><a href="https://youtube.com/channel/squeaky_osmosis/" target="_blank">squeaky_osmosis</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-facebook fa-xs fa-fw"></i></span><span class="sr-only">Facebook</span><a href="https://www.facebook.com/Nestor34" target="_blank">Nestor34</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-instagram fa-xs fa-fw"></i></span><span class="sr-only">Instagram</span><a href="https://www.instagram.com/Warren7/" target="_blank">Warren7</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-tiktok fa-xs fa-fw"></i></span><span class="sr-only">TikTok</span><a href="https://www.tiktok.com/@Rickey.Steuber" target="_blank">Rickey.Steuber</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-x-twitter fa-xs fa-fw"></i></span><span class="sr-only">X</span><a href="https://x.com/Pierre_Rogahn" target="_blank">Pierre_Rogahn</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-youtube fa-xs fa-fw"></i></span><span class="sr-only">YouTube</span><a href="https://www.youtube.com/@squeaky_osmosis" target="_blank">squeaky_osmosis</a></p>
       </div>
     </div>
   </article>
+</div>
+<div class="space-y-3">
+  <h1 class="text-2xl font-bold font-title">Reviews</h1>
+  <div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-md shadow-grey-800 flex flex-col gap-1 md:flex-row justify-between items-center md:items-baseline sticky top-16 z-[40]">
+    <p><span>Showing </span><span class="font-bold">0</span><span> of </span><span class="font-bold">0</span><span> reviews</span></p>
+    <div class="flex flex-col gap-1 items-center md:items-end">
+      <div class="flex flex-wrap gap-2 items-baseline">
+        <p class="font-bold">Rating:</p>
+        <div readonly="">0</div>
+      </div>
+      <div class="flex flex-col lg:flex-row items-center md:items-end lg:items-baseline gap-3">
+        <div><select id="reviews-sort-order" class="bg-grey-200 border-2 border-grey-600 text-grey-950 rounded-lg block py-1 px-2 h-8 dark:bg-grey-300 dark:placeholder-grey-400 disabled:bg-grey-400 disabled:text-grey-700 disabled:dark:bg-grey-500 min-w-36" data-testid="reviews-sort-order" name="reviews-sort-order">
+            <option value="createdAt-desc">Age (most recent to oldest)</option>
+            <option value="createdAt-asc">Age (most recent to oldest)</option>
+            <option value="rating-desc">Rating (highest to lowest)</option>
+            <option value="rating-asc">Rating (lowest to highest)</option>
+          </select></div>
+        <!--v-if-->
+      </div>
+    </div>
+  </div>
+  <div class="text-center my-8 text-lg">
+    <p class="space-x-3 italic"><span><i class="fas fa-spinner fa-spin"></i></span><span>Fetching customer reviews...</span></p>
+  </div>
 </div>"
 `;
 
 exports[`ViewOperator component will render with partial properties 1`] = `
-"<div class="flex gap-6" data-testid="view-operator-section">
-  <div>
-    <!--v-if-->
+"<!--v-if-->
+<!--v-if-->
+<div class="flex gap-6" data-testid="view-operator-section">
+  <div class="m-2 w-[128px] h-[128px]">
+    <p><i class="fa-regular fa-image fa-5x"></i></p>
   </div>
   <article class="space-y-3">
     <!--v-if-->
-    <p class="text-lg">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
-      Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="line-clamp-4 hover:line-clamp-none">
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div class="overflow-x-auto space-y-3">
+        <p>Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
+          Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+      </div>
+      <!--v-if-->
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="space-y-2 px-3">
         <h3 class="text-lg font-bold font-title">Contact Info</h3>
         <p class="space-x-2"><span><i class="fa-solid fa-map-marker-alt fa-xs fa-fw"></i></span><span class="sr-only">Address</span><span>6713 Ritchie Key Apt. 697, Suffolk, LA, 43097</span></p>
@@ -50,5 +90,29 @@ exports[`ViewOperator component will render with partial properties 1`] = `
       <!--v-if-->
     </div>
   </article>
+</div>
+<div class="space-y-3">
+  <h1 class="text-2xl font-bold font-title">Reviews</h1>
+  <div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-md shadow-grey-800 flex flex-col gap-1 md:flex-row justify-between items-center md:items-baseline sticky top-16 z-[40]">
+    <p><span>Showing </span><span class="font-bold">0</span><span> of </span><span class="font-bold">0</span><span> reviews</span></p>
+    <div class="flex flex-col gap-1 items-center md:items-end">
+      <div class="flex flex-wrap gap-2 items-baseline">
+        <p class="font-bold">Rating:</p>
+        <div readonly="">0</div>
+      </div>
+      <div class="flex flex-col lg:flex-row items-center md:items-end lg:items-baseline gap-3">
+        <div><select id="reviews-sort-order" class="bg-grey-200 border-2 border-grey-600 text-grey-950 rounded-lg block py-1 px-2 h-8 dark:bg-grey-300 dark:placeholder-grey-400 disabled:bg-grey-400 disabled:text-grey-700 disabled:dark:bg-grey-500 min-w-36" data-testid="reviews-sort-order" name="reviews-sort-order">
+            <option value="createdAt-desc">Age (most recent to oldest)</option>
+            <option value="createdAt-asc">Age (most recent to oldest)</option>
+            <option value="rating-desc">Rating (highest to lowest)</option>
+            <option value="rating-asc">Rating (lowest to highest)</option>
+          </select></div>
+        <!--v-if-->
+      </div>
+    </div>
+  </div>
+  <div class="text-center my-8 text-lg">
+    <p class="space-x-3 italic"><span><i class="fas fa-spinner fa-spin"></i></span><span>Fetching customer reviews...</span></p>
+  </div>
 </div>"
 `;

@@ -63,8 +63,11 @@ export class LogEntriesService {
   ): Promise<ApiList<LogEntry>> {
     const query = new LogEntryQueryBuilder(this.Entries)
       .withDateRange(options?.startDate, options?.endDate)
+      .withLocation(options?.location, options?.radius)
       .withOwner(options?.ownerId)
       .withPagination(options?.skip, options?.limit)
+      .withQuery(options?.query)
+      .withRatingRange(options?.minRating, options?.maxRating)
       .withSortOrder(options?.sortBy, options?.sortOrder)
       .build();
 

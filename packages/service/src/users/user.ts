@@ -30,7 +30,6 @@ export type UserSettings = Required<{
 
 export class User implements Express.User {
   private readonly log = new Logger(User.name);
-
   private _profile: Profile | undefined;
 
   constructor(

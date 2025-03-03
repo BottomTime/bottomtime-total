@@ -58,6 +58,7 @@ export class LogEntryFactory {
       boots: data.equipment?.boots ?? null,
       bottomTemperature: data.conditions?.bottomTemperature ?? null,
       bottomTime: data.timing.bottomTime ?? null,
+      surfaceInterval: data.timing.surfaceInterval ?? null,
       camera: data.equipment?.camera ?? null,
       chop: data.conditions?.chop ?? null,
       createdAt: now,

@@ -15,6 +15,7 @@ import { OAuthService } from '../../../src/auth/oauth.service';
 import { UserEntity, UserOAuthEntity } from '../../../src/data';
 import { User, UserFactory, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
+import { createUserFactory } from '../../utils';
 import { createTestUser } from '../../utils/create-test-user';
 
 const Provider = 'Shmoogle';
@@ -32,8 +33,8 @@ describe('OAuth Service', () => {
     userData = createTestUser();
     Users = dataSource.getRepository(UserEntity);
     OAuth = dataSource.getRepository(UserOAuthEntity);
-    usersService = new UsersService(Users);
-    userFactory = new UserFactory(Users);
+    userFactory = createUserFactory();
+    usersService = new UsersService(Users, userFactory);
     service = new OAuthService(usersService, userFactory, OAuth);
   });
 
@@ -192,7 +193,7 @@ describe('OAuth Service', () => {
     expect(user.isLockedOut).toBe(false);
 
     const data = await Users.findOneByOrFail({ id: user.id });
-    expect(user.toJSON()).toEqual(new User(Users, data).toJSON());
+    expect(user.toJSON()).toEqual(userFactory.createUser(data).toJSON());
   });
 
   it('will create a new account with all properties provided', async () => {
@@ -238,7 +239,7 @@ describe('OAuth Service', () => {
     expect(user.settings.weightUnit).toBe(WeightUnit.Pounds);
 
     const data = await Users.findOneByOrFail({ id: user.id });
-    expect(user.toJSON()).toEqual(new User(Users, data).toJSON());
+    expect(user.toJSON()).toEqual(userFactory.createUser(data).toJSON());
   });
 
   it('will determine if a username is taken', async () => {

@@ -15,6 +15,7 @@ import {
   OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
+  OperatorTeamMemberEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSitesModule } from '../../../src/diveSites';
@@ -22,6 +23,7 @@ import { OperatorFactory } from '../../../src/operators';
 import { OperatorLogoController } from '../../../src/operators/operator-logo.controller';
 import { OperatorsService } from '../../../src/operators/operators.service';
 import { StorageModule } from '../../../src/storage';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import {
   S3Utils,
@@ -102,9 +104,12 @@ describe('Operator logos E2E tests', () => {
                 OperatorEntity,
                 OperatorDiveSiteEntity,
                 OperatorReviewEntity,
+                OperatorTeamMemberEntity,
+                UserEntity,
               ]),
               StorageModule,
               DiveSitesModule,
+              UsersModule,
             ],
             providers: [OperatorsService, OperatorFactory],
             controllers: [OperatorLogoController],

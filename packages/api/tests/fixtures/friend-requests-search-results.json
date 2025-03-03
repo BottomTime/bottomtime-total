@@ -6,13 +6,14 @@
       "direction": "outgoing",
       "friendId": "395e0278-662b-4d65-93ca-1be4e7b31b9d",
       "friend": {
-        "id": "395e0278-662b-4d65-93ca-1be4e7b31b9d",
-        "username": "Precious_Mitchell65",
+        "userId": "395e0278-662b-4d65-93ca-1be4e7b31b9d",
+        "accountTier": 0,
         "memberSince": 1673082254433,
+        "username": "Precious_Mitchell65",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/264.jpg",
-        "name": "Precious Mitchell",
         "location": "Frederickland, MN, DO",
-        "logBookSharing": "private"
+        "name": "Precious Mitchell"
       }
     },
     {
@@ -21,13 +22,14 @@
       "direction": "outgoing",
       "friendId": "96516ceb-0853-4497-815c-04d6caceaded",
       "friend": {
-        "id": "96516ceb-0853-4497-815c-04d6caceaded",
-        "username": "Alphonso93",
+        "userId": "96516ceb-0853-4497-815c-04d6caceaded",
+        "accountTier": 0,
         "memberSince": 1655443370057,
+        "username": "Alphonso93",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/257.jpg",
-        "name": "Alphonso Marvin",
         "location": "Raleigh, FL, SJ",
-        "logBookSharing": "private"
+        "name": "Alphonso Marvin"
       }
     },
     {
@@ -36,13 +38,14 @@
       "direction": "outgoing",
       "friendId": "2c3908b7-53a5-4113-a611-f0893c346a46",
       "friend": {
-        "id": "2c3908b7-53a5-4113-a611-f0893c346a46",
-        "username": "Adela28",
+        "userId": "2c3908b7-53a5-4113-a611-f0893c346a46",
+        "accountTier": 0,
         "memberSince": 1502663312590,
+        "username": "Adela28",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/313.jpg",
-        "name": "Adela Kshlerin",
         "location": "New Zachary, OR, HU",
-        "logBookSharing": "private"
+        "name": "Adela Kshlerin"
       }
     },
     {
@@ -51,13 +54,14 @@
       "direction": "outgoing",
       "friendId": "9fa97683-5239-4a3d-94c0-94163015828f",
       "friend": {
-        "id": "9fa97683-5239-4a3d-94c0-94163015828f",
-        "username": "Stefan_Dare87",
+        "userId": "9fa97683-5239-4a3d-94c0-94163015828f",
+        "accountTier": 0,
         "memberSince": 1685780718515,
+        "username": "Stefan_Dare87",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/523.jpg",
-        "name": "Stefan Dare",
         "location": "Bountiful, MI, CH",
-        "logBookSharing": "private"
+        "name": "Stefan Dare"
       }
     },
     {
@@ -66,13 +70,14 @@
       "direction": "outgoing",
       "friendId": "99f36d27-bc3f-46d6-8a7a-fa4c036aaa8e",
       "friend": {
-        "id": "99f36d27-bc3f-46d6-8a7a-fa4c036aaa8e",
-        "username": "Pietro_Bahringer41",
+        "userId": "99f36d27-bc3f-46d6-8a7a-fa4c036aaa8e",
+        "accountTier": 0,
         "memberSince": 1457971799784,
+        "username": "Pietro_Bahringer41",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/643.jpg",
-        "name": "Pietro Bahringer",
         "location": "Sammyshire, NV, UY",
-        "logBookSharing": "private"
+        "name": "Pietro Bahringer"
       }
     },
     {
@@ -81,13 +86,14 @@
       "direction": "incoming",
       "friendId": "76117947-e3ff-4374-a451-633c1500724e",
       "friend": {
-        "id": "76117947-e3ff-4374-a451-633c1500724e",
-        "username": "Clark.Casper",
+        "userId": "76117947-e3ff-4374-a451-633c1500724e",
+        "accountTier": 0,
         "memberSince": 1484031800627,
+        "username": "Clark.Casper",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/377.jpg",
-        "name": "Clark Casper",
         "location": "Kingsport, ME, IT",
-        "logBookSharing": "private"
+        "name": "Clark Casper"
       }
     },
     {
@@ -96,13 +102,14 @@
       "direction": "incoming",
       "friendId": "f77fef8f-a707-4df4-85a0-aabf902db6f5",
       "friend": {
-        "id": "f77fef8f-a707-4df4-85a0-aabf902db6f5",
-        "username": "Jett_Greenfelder97",
+        "userId": "f77fef8f-a707-4df4-85a0-aabf902db6f5",
+        "accountTier": 0,
         "memberSince": 1620816696066,
+        "username": "Jett_Greenfelder97",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1130.jpg",
-        "name": "Jett Greenfelder",
         "location": "Fayton, AK, GM",
-        "logBookSharing": "private"
+        "name": "Jett Greenfelder"
       }
     },
     {
@@ -111,13 +118,14 @@
       "direction": "outgoing",
       "friendId": "208351aa-cbe1-444f-aec5-1fec7d3b729a",
       "friend": {
-        "id": "208351aa-cbe1-444f-aec5-1fec7d3b729a",
-        "username": "Dusty84",
+        "userId": "208351aa-cbe1-444f-aec5-1fec7d3b729a",
+        "accountTier": 0,
         "memberSince": 1677748219478,
+        "username": "Dusty84",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/51.jpg",
-        "name": "Dusty Weimann",
         "location": "Hammesville, GA, PS",
-        "logBookSharing": "private"
+        "name": "Dusty Weimann"
       }
     },
     {
@@ -126,13 +134,14 @@
       "direction": "outgoing",
       "friendId": "4b5ad323-d71c-4f84-86aa-54cae2666632",
       "friend": {
-        "id": "4b5ad323-d71c-4f84-86aa-54cae2666632",
-        "username": "Ezekiel.Okuneva66",
+        "userId": "4b5ad323-d71c-4f84-86aa-54cae2666632",
+        "accountTier": 0,
         "memberSince": 1664528415428,
+        "username": "Ezekiel.Okuneva66",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/797.jpg",
-        "name": "Ezekiel Okuneva",
         "location": "Lake Forest, TX, NF",
-        "logBookSharing": "private"
+        "name": "Ezekiel Okuneva"
       }
     },
     {
@@ -141,13 +150,14 @@
       "direction": "incoming",
       "friendId": "4c31f49a-1d80-453a-9da3-787e376a21da",
       "friend": {
-        "id": "4c31f49a-1d80-453a-9da3-787e376a21da",
-        "username": "Clemmie.Johnston52",
+        "userId": "4c31f49a-1d80-453a-9da3-787e376a21da",
+        "accountTier": 0,
         "memberSince": 1664951683972,
+        "username": "Clemmie.Johnston52",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/318.jpg",
-        "name": "Clemmie Johnston",
         "location": "Port Alvena, MS, DO",
-        "logBookSharing": "private"
+        "name": "Clemmie Johnston"
       }
     },
     {
@@ -156,13 +166,14 @@
       "direction": "outgoing",
       "friendId": "fca0adda-9dde-4023-85be-2f59ccfc011c",
       "friend": {
-        "id": "fca0adda-9dde-4023-85be-2f59ccfc011c",
-        "username": "Elroy_Carter",
+        "userId": "fca0adda-9dde-4023-85be-2f59ccfc011c",
+        "accountTier": 0,
         "memberSince": 1544756024401,
+        "username": "Elroy_Carter",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/794.jpg",
-        "name": "Elroy Carter",
         "location": "Stammton, NE, GB",
-        "logBookSharing": "private"
+        "name": "Elroy Carter"
       }
     },
     {
@@ -171,13 +182,14 @@
       "direction": "outgoing",
       "friendId": "e6c938f9-72e0-4d7c-9cd8-3a279b341a43",
       "friend": {
-        "id": "e6c938f9-72e0-4d7c-9cd8-3a279b341a43",
-        "username": "Mose_Hammes",
+        "userId": "e6c938f9-72e0-4d7c-9cd8-3a279b341a43",
+        "accountTier": 0,
         "memberSince": 1524819045901,
+        "username": "Mose_Hammes",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/971.jpg",
-        "name": "Mose Hammes",
         "location": "Port Beth, AK, TZ",
-        "logBookSharing": "private"
+        "name": "Mose Hammes"
       }
     },
     {
@@ -186,13 +198,14 @@
       "direction": "incoming",
       "friendId": "5615f520-0486-4c92-8c33-6f34ddfbdcac",
       "friend": {
-        "id": "5615f520-0486-4c92-8c33-6f34ddfbdcac",
-        "username": "Edd.Hahn",
+        "userId": "5615f520-0486-4c92-8c33-6f34ddfbdcac",
+        "accountTier": 0,
         "memberSince": 1516827911508,
+        "username": "Edd.Hahn",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1037.jpg",
-        "name": "Edd Hahn",
         "location": "North Stefanborough, UT, UA",
-        "logBookSharing": "private"
+        "name": "Edd Hahn"
       }
     },
     {
@@ -201,13 +214,14 @@
       "direction": "outgoing",
       "friendId": "d8073dcd-e640-40ed-bf36-da6f2e370177",
       "friend": {
-        "id": "d8073dcd-e640-40ed-bf36-da6f2e370177",
-        "username": "Rebekah.Kunze36",
+        "userId": "d8073dcd-e640-40ed-bf36-da6f2e370177",
+        "accountTier": 0,
         "memberSince": 1522228661008,
+        "username": "Rebekah.Kunze36",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/643.jpg",
-        "name": "Rebekah Kunze",
         "location": "South Josephcester, ID, YE",
-        "logBookSharing": "private"
+        "name": "Rebekah Kunze"
       }
     },
     {
@@ -216,13 +230,14 @@
       "direction": "outgoing",
       "friendId": "912ad5e2-70d9-4643-9bdd-2b33947d05de",
       "friend": {
-        "id": "912ad5e2-70d9-4643-9bdd-2b33947d05de",
-        "username": "Sheridan18",
+        "userId": "912ad5e2-70d9-4643-9bdd-2b33947d05de",
+        "accountTier": 0,
         "memberSince": 1527949866182,
+        "username": "Sheridan18",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/791.jpg",
-        "name": "Sheridan Hettinger",
         "location": "Phoebeport, WA, QA",
-        "logBookSharing": "private"
+        "name": "Sheridan Hettinger"
       }
     },
     {
@@ -231,13 +246,14 @@
       "direction": "incoming",
       "friendId": "d7032ae1-fc7d-4a1e-afaf-7b3963b4a743",
       "friend": {
-        "id": "d7032ae1-fc7d-4a1e-afaf-7b3963b4a743",
-        "username": "Elvera6",
+        "userId": "d7032ae1-fc7d-4a1e-afaf-7b3963b4a743",
+        "accountTier": 0,
         "memberSince": 1465627851140,
+        "username": "Elvera6",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/680.jpg",
-        "name": "Elvera Cole",
         "location": "East Keshawn, KY, AW",
-        "logBookSharing": "private"
+        "name": "Elvera Cole"
       }
     },
     {
@@ -246,13 +262,14 @@
       "direction": "incoming",
       "friendId": "5e5834d6-1783-4dac-a748-163b98177fa5",
       "friend": {
-        "id": "5e5834d6-1783-4dac-a748-163b98177fa5",
-        "username": "Florence_Wolf",
+        "userId": "5e5834d6-1783-4dac-a748-163b98177fa5",
+        "accountTier": 0,
         "memberSince": 1597816935494,
+        "username": "Florence_Wolf",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1160.jpg",
-        "name": "Florence Wolf",
         "location": "Twin Falls, MS, LA",
-        "logBookSharing": "private"
+        "name": "Florence Wolf"
       }
     },
     {
@@ -261,13 +278,14 @@
       "direction": "outgoing",
       "friendId": "fc58eded-d58e-4a29-9941-8d5a41ad89b2",
       "friend": {
-        "id": "fc58eded-d58e-4a29-9941-8d5a41ad89b2",
-        "username": "Doris_Oberbrunner",
+        "userId": "fc58eded-d58e-4a29-9941-8d5a41ad89b2",
+        "accountTier": 0,
         "memberSince": 1471936305615,
+        "username": "Doris_Oberbrunner",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1084.jpg",
-        "name": "Doris Oberbrunner",
         "location": "Kylerfield, LA, NI",
-        "logBookSharing": "private"
+        "name": "Doris Oberbrunner"
       }
     },
     {
@@ -276,13 +294,14 @@
       "direction": "incoming",
       "friendId": "70738858-83b0-4b2a-8280-ee0881b4791c",
       "friend": {
-        "id": "70738858-83b0-4b2a-8280-ee0881b4791c",
-        "username": "Alanis_Kiehn",
+        "userId": "70738858-83b0-4b2a-8280-ee0881b4791c",
+        "accountTier": 0,
         "memberSince": 1618013278940,
+        "username": "Alanis_Kiehn",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/523.jpg",
-        "name": "Alanis Kiehn",
         "location": "Missouri City, KY, PY",
-        "logBookSharing": "private"
+        "name": "Alanis Kiehn"
       }
     },
     {
@@ -291,13 +310,14 @@
       "direction": "incoming",
       "friendId": "d6a1a432-378c-4475-adbd-5c9358dc8e34",
       "friend": {
-        "id": "d6a1a432-378c-4475-adbd-5c9358dc8e34",
-        "username": "Andrew_Weissnat",
+        "userId": "d6a1a432-378c-4475-adbd-5c9358dc8e34",
+        "accountTier": 0,
         "memberSince": 1688880867903,
+        "username": "Andrew_Weissnat",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/542.jpg",
-        "name": "Andrew Weissnat",
         "location": "Lincoln, AZ, MV",
-        "logBookSharing": "private"
+        "name": "Andrew Weissnat"
       }
     },
     {
@@ -306,13 +326,14 @@
       "direction": "outgoing",
       "friendId": "24f4cb26-98f0-4501-b6d7-733801178359",
       "friend": {
-        "id": "24f4cb26-98f0-4501-b6d7-733801178359",
-        "username": "Dortha_Auer75",
+        "userId": "24f4cb26-98f0-4501-b6d7-733801178359",
+        "accountTier": 0,
         "memberSince": 1532465858727,
+        "username": "Dortha_Auer75",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1192.jpg",
-        "name": "Dortha Auer",
         "location": "Jaredview, NH, TC",
-        "logBookSharing": "private"
+        "name": "Dortha Auer"
       }
     },
     {
@@ -321,13 +342,14 @@
       "direction": "outgoing",
       "friendId": "6ce852b4-35b4-4444-b4b7-57077c546584",
       "friend": {
-        "id": "6ce852b4-35b4-4444-b4b7-57077c546584",
-        "username": "Bell91",
+        "userId": "6ce852b4-35b4-4444-b4b7-57077c546584",
+        "accountTier": 0,
         "memberSince": 1675019817462,
+        "username": "Bell91",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/636.jpg",
-        "name": "Bell McDermott",
         "location": "Darrinfort, AZ, GW",
-        "logBookSharing": "private"
+        "name": "Bell McDermott"
       }
     },
     {
@@ -336,13 +358,14 @@
       "direction": "incoming",
       "friendId": "ce6acd82-885f-428d-b2cd-19c77f571744",
       "friend": {
-        "id": "ce6acd82-885f-428d-b2cd-19c77f571744",
-        "username": "Makenzie.Gerlach97",
+        "userId": "ce6acd82-885f-428d-b2cd-19c77f571744",
+        "accountTier": 0,
         "memberSince": 1669518532338,
+        "username": "Makenzie.Gerlach97",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/385.jpg",
-        "name": "Makenzie Gerlach",
         "location": "Port Janaecester, LA, AM",
-        "logBookSharing": "private"
+        "name": "Makenzie Gerlach"
       }
     },
     {
@@ -351,13 +374,14 @@
       "direction": "incoming",
       "friendId": "fc5353c8-f91a-4b23-891b-cdb45613497a",
       "friend": {
-        "id": "fc5353c8-f91a-4b23-891b-cdb45613497a",
-        "username": "Vidal_Corkery",
+        "userId": "fc5353c8-f91a-4b23-891b-cdb45613497a",
+        "accountTier": 0,
         "memberSince": 1706637187172,
+        "username": "Vidal_Corkery",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1199.jpg",
-        "name": "Vidal Corkery",
         "location": "Fort Louisamouth, KY, PF",
-        "logBookSharing": "private"
+        "name": "Vidal Corkery"
       }
     },
     {
@@ -366,13 +390,14 @@
       "direction": "outgoing",
       "friendId": "208351aa-cbe1-444f-aec5-1fec7d3b729a",
       "friend": {
-        "id": "208351aa-cbe1-444f-aec5-1fec7d3b729a",
-        "username": "Dusty84",
+        "userId": "208351aa-cbe1-444f-aec5-1fec7d3b729a",
+        "accountTier": 0,
         "memberSince": 1677748219478,
+        "username": "Dusty84",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/51.jpg",
-        "name": "Dusty Weimann",
         "location": "Hammesville, GA, PS",
-        "logBookSharing": "private"
+        "name": "Dusty Weimann"
       }
     },
     {
@@ -381,13 +406,14 @@
       "direction": "outgoing",
       "friendId": "21136c5c-90a6-44b3-89c0-eb3ed4cbe2ee",
       "friend": {
-        "id": "21136c5c-90a6-44b3-89c0-eb3ed4cbe2ee",
-        "username": "Maribel_Ernser",
+        "userId": "21136c5c-90a6-44b3-89c0-eb3ed4cbe2ee",
+        "accountTier": 0,
         "memberSince": 1609366357917,
+        "username": "Maribel_Ernser",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/793.jpg",
-        "name": "Maribel Ernser",
         "location": "Port Tristian, MT, GR",
-        "logBookSharing": "private"
+        "name": "Maribel Ernser"
       }
     },
     {
@@ -396,13 +422,14 @@
       "direction": "incoming",
       "friendId": "4b08394c-cd72-40ea-a5fc-2daeea2632ce",
       "friend": {
-        "id": "4b08394c-cd72-40ea-a5fc-2daeea2632ce",
-        "username": "Reyna.Barton1",
+        "userId": "4b08394c-cd72-40ea-a5fc-2daeea2632ce",
+        "accountTier": 0,
         "memberSince": 1627667244100,
+        "username": "Reyna.Barton1",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/257.jpg",
-        "name": "Reyna Barton",
         "location": "Koeppville, CA, LB",
-        "logBookSharing": "private"
+        "name": "Reyna Barton"
       }
     },
     {
@@ -411,13 +438,14 @@
       "direction": "incoming",
       "friendId": "fd870c1d-3b00-4d12-85f0-9032d311888b",
       "friend": {
-        "id": "fd870c1d-3b00-4d12-85f0-9032d311888b",
-        "username": "Augustine92",
+        "userId": "fd870c1d-3b00-4d12-85f0-9032d311888b",
+        "accountTier": 0,
         "memberSince": 1663681477516,
+        "username": "Augustine92",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/183.jpg",
-        "name": "Augustine Wehner",
         "location": "Port Agustincester, TN, AF",
-        "logBookSharing": "private"
+        "name": "Augustine Wehner"
       }
     },
     {
@@ -426,13 +454,14 @@
       "direction": "outgoing",
       "friendId": "2f69a2a9-7d71-4a7d-a0e1-849551bded4c",
       "friend": {
-        "id": "2f69a2a9-7d71-4a7d-a0e1-849551bded4c",
-        "username": "Cathy65",
+        "userId": "2f69a2a9-7d71-4a7d-a0e1-849551bded4c",
+        "accountTier": 0,
         "memberSince": 1585550717437,
+        "username": "Cathy65",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/19.jpg",
-        "name": "Cathy Schroeder",
         "location": "Osinskiborough, AK, HR",
-        "logBookSharing": "private"
+        "name": "Cathy Schroeder"
       }
     },
     {
@@ -441,13 +470,14 @@
       "direction": "incoming",
       "friendId": "9fa97683-5239-4a3d-94c0-94163015828f",
       "friend": {
-        "id": "9fa97683-5239-4a3d-94c0-94163015828f",
-        "username": "Stefan_Dare87",
+        "userId": "9fa97683-5239-4a3d-94c0-94163015828f",
+        "accountTier": 0,
         "memberSince": 1685780718515,
+        "username": "Stefan_Dare87",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/523.jpg",
-        "name": "Stefan Dare",
         "location": "Bountiful, MI, CH",
-        "logBookSharing": "private"
+        "name": "Stefan Dare"
       }
     },
     {
@@ -456,13 +486,14 @@
       "direction": "incoming",
       "friendId": "9685c510-dc35-42c2-a819-d2c989bb34fb",
       "friend": {
-        "id": "9685c510-dc35-42c2-a819-d2c989bb34fb",
-        "username": "Marjolaine.Corwin",
+        "userId": "9685c510-dc35-42c2-a819-d2c989bb34fb",
+        "accountTier": 0,
         "memberSince": 1429028531145,
+        "username": "Marjolaine.Corwin",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/782.jpg",
-        "name": "Marjolaine Corwin",
         "location": "West Genoveva, NC, LI",
-        "logBookSharing": "private"
+        "name": "Marjolaine Corwin"
       }
     },
     {
@@ -471,13 +502,14 @@
       "direction": "incoming",
       "friendId": "9998cb73-1dff-4f10-a526-204982748b4e",
       "friend": {
-        "id": "9998cb73-1dff-4f10-a526-204982748b4e",
-        "username": "Diana.Halvorson",
+        "userId": "9998cb73-1dff-4f10-a526-204982748b4e",
+        "accountTier": 0,
         "memberSince": 1622435325228,
+        "username": "Diana.Halvorson",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/831.jpg",
-        "name": "Diana Halvorson",
         "location": "North Lupebury, NE, MQ",
-        "logBookSharing": "private"
+        "name": "Diana Halvorson"
       }
     },
     {
@@ -486,13 +518,14 @@
       "direction": "outgoing",
       "friendId": "032aa891-2609-4f74-bfd0-c2e14e5fe7f7",
       "friend": {
-        "id": "032aa891-2609-4f74-bfd0-c2e14e5fe7f7",
-        "username": "Annabel_Schuppe93",
+        "userId": "032aa891-2609-4f74-bfd0-c2e14e5fe7f7",
+        "accountTier": 0,
         "memberSince": 1602002344910,
+        "username": "Annabel_Schuppe93",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/827.jpg",
-        "name": "Annabel Schuppe",
         "location": "Fort Buddy, NY, CM",
-        "logBookSharing": "private"
+        "name": "Annabel Schuppe"
       }
     },
     {
@@ -501,13 +534,14 @@
       "direction": "incoming",
       "friendId": "3d9c2951-b838-471d-88bf-08ecac85ba2b",
       "friend": {
-        "id": "3d9c2951-b838-471d-88bf-08ecac85ba2b",
-        "username": "Orville_Kunde1",
+        "userId": "3d9c2951-b838-471d-88bf-08ecac85ba2b",
+        "accountTier": 0,
         "memberSince": 1553765357812,
+        "username": "Orville_Kunde1",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/423.jpg",
-        "name": "Orville Kunde",
         "location": "Adamsfield, MA, CY",
-        "logBookSharing": "private"
+        "name": "Orville Kunde"
       }
     },
     {
@@ -516,13 +550,14 @@
       "direction": "incoming",
       "friendId": "721d04b8-4acf-48a1-8060-cce4135206ce",
       "friend": {
-        "id": "721d04b8-4acf-48a1-8060-cce4135206ce",
-        "username": "Niko57",
+        "userId": "721d04b8-4acf-48a1-8060-cce4135206ce",
+        "accountTier": 0,
         "memberSince": 1503632767938,
+        "username": "Niko57",
+        "logBookSharing": "private",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/252.jpg",
-        "name": "Niko Nader",
         "location": "East Ryleighmouth, OR, LC",
-        "logBookSharing": "private"
+        "name": "Niko Nader"
       }
     }
   ],

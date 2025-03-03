@@ -1,8 +1,8 @@
 import { DiveSiteReviewsSortBy, SortOrder } from '@bottomtime/api';
 
-import { DiveSiteReviewEntity } from 'src/data';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
+import { DiveSiteReviewEntity } from '../data';
 import { DiveSite } from './dive-site';
 
 const SelectFields = [
@@ -37,15 +37,34 @@ export class DiveSiteReviewsQueryBuilder {
     return this.query;
   }
 
+  withCreator(creator?: string): this {
+    if (creator) {
+      this.query = this.query.andWhere('creator.usernameLowered = :creator', {
+        creator: creator.trim().toLowerCase(),
+      });
+    }
+    return this;
+  }
+
   withPagination(skip?: number, limit?: number): this {
-    this.query.skip(skip ?? 0).take(limit ?? 100);
+    this.query = this.query.skip(skip ?? 0).take(limit ?? 100);
     return this;
   }
 
   withSortOrder(sortBy?: DiveSiteReviewsSortBy, sortOrder?: SortOrder): this {
     const sortOrderValue = sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC';
-    const sortByValue = `reviews.${sortBy ?? DiveSiteReviewsSortBy.CreatedOn}`;
-    this.query.orderBy(sortByValue, sortOrderValue, 'NULLS LAST');
+    let sortByColumn: string;
+    switch (sortBy) {
+      case DiveSiteReviewsSortBy.Rating:
+        sortByColumn = 'reviews.rating';
+        break;
+
+      case DiveSiteReviewsSortBy.CreatedOn:
+      default:
+        sortByColumn = 'reviews.createdOn';
+        break;
+    }
+    this.query.orderBy(sortByColumn, sortOrderValue, 'NULLS LAST');
     if (sortBy === DiveSiteReviewsSortBy.Rating) {
       this.query.addOrderBy('reviews.createdOn', 'DESC');
     }

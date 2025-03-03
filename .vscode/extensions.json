@@ -5,6 +5,8 @@
     "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
     "ms-playwright.playwright",
-    "ajmnz.swagger-jsdoc-indent"
+    "ajmnz.swagger-jsdoc-indent",
+    "dbaeumer.vscode-eslint",
+    "mikestead.dotenv"
   ]
 }

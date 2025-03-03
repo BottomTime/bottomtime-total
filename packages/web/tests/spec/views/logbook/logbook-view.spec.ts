@@ -18,6 +18,8 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { FeaturesServiceKey } from 'src/featrues';
+import { ConfigCatClientMock } from 'tests/config-cat-client-mock';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
@@ -26,10 +28,12 @@ import LogbookEntriesList from '../../../../src/components/logbook/logbook-entri
 import LogbookSearch from '../../../../src/components/logbook/logbook-search.vue';
 import { useCurrentUser } from '../../../../src/store';
 import LogbookView from '../../../../src/views/logbook/logbook-view.vue';
+import '../../../dayjs';
 import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import LogEntryTestData from '../../../fixtures/log-entries.json';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 const ProfileData: ProfileDTO = {
   accountTier: AccountTier.Basic,
@@ -43,6 +47,7 @@ const ProfileData: ProfileDTO = {
 describe('Logbook view', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
+  let features: ConfigCatClientMock;
   let router: Router;
   let entryData: ApiList<LogEntryDTO>;
 
@@ -60,6 +65,7 @@ describe('Logbook view', () => {
         component: LogbookView,
       },
     ]);
+    features = new ConfigCatClientMock({});
 
     entryData = ListLogEntriesResponseSchema.parse(LogEntryTestData);
   });
@@ -77,9 +83,11 @@ describe('Logbook view', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [FeaturesServiceKey as symbol]: features,
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };
@@ -356,8 +364,8 @@ describe('Logbook view', () => {
     await flushPromises();
 
     expect(router.currentRoute.value.query).toEqual({
-      startDate: '2024-05-08T19:29:31.551Z',
-      endDate: '2025-05-08T19:29:31.551Z',
+      startDate: new Date('2024-05-08T19:29:31.551Z').valueOf().toString(),
+      endDate: new Date('2025-05-08T19:29:31.551Z').valueOf().toString(),
       query: 'yolo',
     });
   });
@@ -378,7 +386,7 @@ describe('Logbook view', () => {
 
     expect(wrapper.find('[data-testid="drawer-panel"]').isVisible()).toBe(true);
     expect(wrapper.find('[data-testid="entry-logNumber"]').text()).toBe(
-      entry.logNumber?.toString(),
+      `#${entry.logNumber}`,
     );
 
     await wrapper.find('[data-testid="drawer-close"]').trigger('click');

@@ -35,7 +35,7 @@ import {
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
 import { OperatorFactory, OperatorsService } from '../../../src/operators';
-import { User } from '../../../src/users';
+import { UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
@@ -46,6 +46,7 @@ import {
   createOperatorFactory,
   createTestDiveProfile,
   createTestLogEntry,
+  createUserFactory,
   parseDiveSiteJSON,
   parseLogEntryJSON,
   parseOperatorJSON,
@@ -65,6 +66,7 @@ describe('Log entries service', () => {
   let siteFactory: DiveSiteFactory;
   let operatorFactory: OperatorFactory;
   let entryFactory: LogEntryFactory;
+  let userFactory: UserFactory;
   let diveSitesService: DiveSitesService;
   let operatorsService: OperatorsService;
   let service: LogEntriesService;
@@ -85,6 +87,7 @@ describe('Log entries service', () => {
 
     siteFactory = createDiveSiteFactory();
     operatorFactory = createOperatorFactory();
+    userFactory = createUserFactory();
     entryFactory = new LogEntryFactory(
       Entries,
       EntriesAir,
@@ -185,7 +188,7 @@ describe('Log entries service', () => {
   describe('when creating a new log entry', () => {
     it('will create a new log entry with minimal options', async () => {
       const options: CreateLogEntryOptions = {
-        owner: new User(Users, ownerData[0]),
+        owner: userFactory.createUser(ownerData[0]),
         timing: {
           entryTime: new Date('2024-03-28T13:45:00').valueOf(),
           timezone: 'Europe/Amsterdam',
@@ -225,7 +228,7 @@ describe('Log entries service', () => {
 
     it('will create a new log entry with all options', async () => {
       const options: CreateLogEntryOptions = {
-        owner: new User(Users, ownerData[0]),
+        owner: userFactory.createUser(ownerData[0]),
         logNumber: 123,
 
         timing: {
@@ -269,6 +272,7 @@ describe('Log entries service', () => {
         },
 
         notes: 'Great dive! Saw fish.',
+        rating: 3.8,
         tags: [],
 
         air: [
@@ -352,7 +356,7 @@ describe('Log entries service', () => {
 
     it('will create a new log entry with a dive site attached', async () => {
       const options: CreateLogEntryOptions = {
-        owner: new User(Users, ownerData[0]),
+        owner: userFactory.createUser(ownerData[0]),
         timing: {
           entryTime: new Date('2024-03-28T13:45:00').valueOf(),
           timezone: 'Europe/Amsterdam',
@@ -391,7 +395,7 @@ describe('Log entries service', () => {
 
     it('will create a new log entry with an operator attached', async () => {
       const options: CreateLogEntryOptions = {
-        owner: new User(Users, ownerData[0]),
+        owner: userFactory.createUser(ownerData[0]),
         timing: {
           entryTime: new Date('2024-03-28T13:45:00').valueOf(),
           timezone: 'Europe/Amsterdam',

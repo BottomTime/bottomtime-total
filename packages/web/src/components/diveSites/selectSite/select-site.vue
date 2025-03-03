@@ -4,6 +4,15 @@
     :active-tab="state.activeTab"
     @tab-changed="onTabChanged"
   >
+    <OfferedByOperatorList
+      v-if="
+        state.activeTab === SelectSiteTabs.FromOperator && props.currentOperator
+      "
+      :operator="props.currentOperator"
+      :current-site="currentSite"
+      @site-selected="(site) => $emit('site-selected', site)"
+    />
+
     <RecentSitesList
       v-if="state.activeTab === SelectSiteTabs.Recent"
       :current-site="currentSite"
@@ -13,8 +22,11 @@
 
     <SearchDiveSitesForm
       v-else-if="state.activeTab === SelectSiteTabs.Search"
+      :is-adding-sites="isAddingSites"
+      :multi-select="multiSelect"
       @create="state.activeTab = SelectSiteTabs.Create"
       @site-selected="(site) => $emit('site-selected', site)"
+      @add="(sites) => $emit('multi-select', sites)"
     />
 
     <CreateSiteWizard
@@ -28,7 +40,8 @@
 <script lang="ts" setup>
 import {
   CreateOrUpdateDiveSiteDTO,
-  SuccinctDiveSiteDTO,
+  DiveSiteDTO,
+  OperatorDTO,
 } from '@bottomtime/api';
 
 import { computed, reactive } from 'vue';
@@ -39,11 +52,13 @@ import { useOops } from '../../../oops';
 import { useToasts } from '../../../store';
 import TabsPanel from '../../common/tabs-panel.vue';
 import CreateSiteWizard from '../create-site-wizard.vue';
+import OfferedByOperatorList from './offered-by-operator-list.vue';
 import RecentSitesList from './recent-sites-list.vue';
 import SearchDiveSitesForm from './search-dive-sites-form.vue';
 
 enum SelectSiteTabs {
   Recent = 'recent',
+  FromOperator = 'fromOperator',
   Search = 'search',
   Create = 'create',
 }
@@ -54,26 +69,44 @@ interface SelectSiteState {
 }
 
 interface SelectSiteProps {
-  currentSite?: SuccinctDiveSiteDTO;
+  currentSite?: DiveSiteDTO;
+  currentOperator?: OperatorDTO;
+  isAddingSites?: boolean;
+  multiSelect?: boolean;
+  showRecent?: boolean;
 }
 
 const client = useClient();
 const oops = useOops();
 const toasts = useToasts();
 
-defineProps<SelectSiteProps>();
+const props = withDefaults(defineProps<SelectSiteProps>(), {
+  isAddingSites: false,
+  multiSelect: false,
+  showRecent: true,
+});
 const emit = defineEmits<{
-  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
+  (e: 'site-selected', site: DiveSiteDTO): void;
+  (e: 'multi-select', site: DiveSiteDTO[]): void;
 }>();
 
 const tabs = computed<TabInfo[]>(() => [
-  { key: SelectSiteTabs.Recent, label: 'Recent Sites' },
+  ...(props.currentOperator
+    ? [{ key: SelectSiteTabs.FromOperator, label: 'Offered by Your Dive Shop' }]
+    : []),
+  ...(props.showRecent
+    ? [{ key: SelectSiteTabs.Recent, label: 'Recent Sites' }]
+    : []),
   { key: SelectSiteTabs.Search, label: 'Search for a Site' },
   { key: SelectSiteTabs.Create, label: 'Create a New Site' },
 ]);
 
 const state = reactive<SelectSiteState>({
-  activeTab: SelectSiteTabs.Recent,
+  activeTab: props.currentOperator
+    ? SelectSiteTabs.FromOperator
+    : props.showRecent
+    ? SelectSiteTabs.Recent
+    : SelectSiteTabs.Search,
   isSavingNewSite: false,
 });
 

@@ -59,12 +59,14 @@ exports[`Log entries service when creating a new log entry will create a new log
   "logNumber": 123,
   "notes": "Great dive! Saw fish.",
   "operator": undefined,
+  "rating": 3.8,
   "site": undefined,
   "tags": [],
   "timing": {
     "bottomTime": 2880,
     "duration": 3120,
     "entryTime": 1711658700000,
+    "surfaceInterval": undefined,
     "timezone": "Europe/Amsterdam",
   },
   "updatedAt": 2024-07-23T14:22:09.372Z,
@@ -1002,52 +1004,52 @@ exports[`Log entries service when listing recent dive sites will return a distin
 exports[`Log entries service when listing recent operators will return a distinct list of the most recently used operators 1`] = `
 [
   {
-    "id": "5b8b9f97-3b8f-4510-a75f-c4ac682ca555",
-    "name": "passionate, attractive checkroom",
+    "id": "5c3619d6-2b6b-468a-b1cc-79c464303e24",
+    "name": "annual, crowded editor",
   },
   {
-    "id": "e1282190-0709-4af9-a8b5-043330b342db",
-    "name": "opulent, wilted wheel",
-  },
-  {
-    "id": "c2f48c4e-cc27-4099-bd0c-00e9d43fc222",
-    "name": "shabby, handsome north",
-  },
-  {
-    "id": "b7384c5c-9592-4060-a069-6f102fd76312",
-    "name": "necessary, trivial savory",
-  },
-  {
-    "id": "fc34db05-badf-4171-a772-94111ff73add",
-    "name": "poised, few fertilizer",
-  },
-  {
-    "id": "ffb23adb-11b2-4507-9fb7-58df5b677846",
-    "name": "sophisticated, tart bull-fighter",
+    "id": "c8570f93-cc7f-48e8-9168-fac339134cb8",
+    "name": "clear-cut, shady bend",
   },
   {
     "id": "5d34fe9f-e726-4f4f-a0fe-601e60fc9a0d",
     "name": "direct, lustrous slang",
   },
   {
-    "id": "7c6ea32d-a9a7-4766-bfcc-8acd7b6d6dfd",
-    "name": "usable, fragrant snorer",
-  },
-  {
     "id": "0a0a9dcd-2440-43e8-8aa2-2976522b3950",
     "name": "flustered, thunderous charity",
   },
   {
-    "id": "5c3619d6-2b6b-468a-b1cc-79c464303e24",
-    "name": "annual, crowded editor",
+    "id": "b7384c5c-9592-4060-a069-6f102fd76312",
+    "name": "necessary, trivial savory",
+  },
+  {
+    "id": "e1282190-0709-4af9-a8b5-043330b342db",
+    "name": "opulent, wilted wheel",
+  },
+  {
+    "id": "5b8b9f97-3b8f-4510-a75f-c4ac682ca555",
+    "name": "passionate, attractive checkroom",
+  },
+  {
+    "id": "fc34db05-badf-4171-a772-94111ff73add",
+    "name": "poised, few fertilizer",
+  },
+  {
+    "id": "c2f48c4e-cc27-4099-bd0c-00e9d43fc222",
+    "name": "shabby, handsome north",
   },
   {
     "id": "aad3e262-0f18-4a6a-bfa5-e6ec25f1779d",
     "name": "silent, blind rank",
   },
   {
-    "id": "c8570f93-cc7f-48e8-9168-fac339134cb8",
-    "name": "clear-cut, shady bend",
+    "id": "ffb23adb-11b2-4507-9fb7-58df5b677846",
+    "name": "sophisticated, tart bull-fighter",
+  },
+  {
+    "id": "7c6ea32d-a9a7-4766-bfcc-8acd7b6d6dfd",
+    "name": "usable, fragrant snorer",
   },
 ]
 `;
@@ -1126,8 +1128,13 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "slug": "miniature-unlawful-hydrocarbon",
     "website": "https://exhausted-milepost.biz",
   },
+  "rating": 2.8949975958094,
   "site": {
     "averageRating": 1.48,
+    "depth": {
+      "depth": 10.58,
+      "unit": "ft",
+    },
     "description": "Adipiscor verus theologus chirographum cimentarius benigne tamquam occaecati corona. Tam verbum audacia. Aureus tolero acerbitas virgo impedit.",
     "gps": {
       "lat": -2.7163,
@@ -1142,6 +1149,7 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "bottomTime": 3021,
     "duration": 3324,
     "entryTime": 1656290866796,
+    "surfaceInterval": undefined,
     "timezone": "Asia/Atyrau",
   },
   "updatedAt": undefined,
@@ -1222,8 +1230,13 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "slug": "miniature-unlawful-hydrocarbon",
     "website": "https://exhausted-milepost.biz",
   },
+  "rating": 2.8949975958094,
   "site": {
     "averageRating": 1.48,
+    "depth": {
+      "depth": 10.58,
+      "unit": "ft",
+    },
     "description": "Adipiscor verus theologus chirographum cimentarius benigne tamquam occaecati corona. Tam verbum audacia. Aureus tolero acerbitas virgo impedit.",
     "gps": {
       "lat": -2.7163,
@@ -1238,6 +1251,7 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "bottomTime": 3021,
     "duration": 3324,
     "entryTime": 1656290866796,
+    "surfaceInterval": undefined,
     "timezone": "Asia/Atyrau",
   },
   "updatedAt": undefined,

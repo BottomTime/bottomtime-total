@@ -16,7 +16,7 @@ import { StripeWebhookService } from '../../../src/membership/stripe-webhook.ser
 import { UsersModule, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { getEntitlementsChangedEvent } from '../../fixtures/stripe-events';
-import { createTestApp, createTestUser } from '../../utils';
+import { createTestApp, createTestUser, createUserFactory } from '../../utils';
 
 const UserData: Partial<UserEntity> = {
   id: '7f73a521-ea15-4f4f-801e-c9b8ddd794fc',
@@ -44,7 +44,7 @@ describe('Stripe webhook controller', () => {
   beforeAll(async () => {
     stripe = new Stripe('sk_test_xxxxx');
     Users = dataSource.getRepository(UserEntity);
-    usersService = new UsersService(Users);
+    usersService = new UsersService(Users, createUserFactory());
     events = new EventsService(new EventEmitter2());
     service = new StripeWebhookService(stripe, usersService, events);
     app = await createTestApp(

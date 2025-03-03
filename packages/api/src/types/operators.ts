@@ -2,12 +2,13 @@ import { z } from 'zod';
 
 import {
   BooleanString,
+  FuzzyDateRegex,
   GpsCoordinatesSchema,
   PhoneNumber,
   SlugRegex,
   SortOrder,
 } from './constants';
-import { SuccinctProfileSchema, UsernameSchema } from './users';
+import { ProfileSchema, SuccinctProfileSchema, UsernameSchema } from './users';
 
 export enum VerificationStatus {
   /** Verification has not yet been requested for this entity. */
@@ -47,10 +48,11 @@ export const CreateOrUpdateOperatorSchema = z.object({
 
   socials: z
     .object({
+      bluesky: z.string().max(100),
       facebook: z.string().max(100),
-      twitter: z.string().max(100),
       instagram: z.string().max(100),
       tiktok: z.string().max(100),
+      twitter: z.string().max(100),
       youtube: z.string().max(100),
     })
     .partial()
@@ -150,6 +152,11 @@ export type ListOperatorReviewsParams = z.infer<
   typeof ListOperatorReviewsSchema
 >;
 
+export const ListOperatorReviewsResponseSchema = z.object({
+  data: OperatorReviewSchema.array(),
+  totalCount: z.number().int(),
+});
+
 export const ListOperatorDiveSitesParamsSchema = z
   .object({
     skip: z.coerce.number().int().min(0),
@@ -180,3 +187,21 @@ export const RemoveDiveSitesResponseSchema = z.object({
 export type RemoveDiveSitesResponseDTO = z.infer<
   typeof RemoveDiveSitesResponseSchema
 >;
+
+export const CreateOrUpdateTeamMemberSchema = z.object({
+  title: z.string().trim().max(200).optional(),
+  joined: z.string().trim().regex(FuzzyDateRegex).optional(),
+});
+export type CreateOrUpdateTeamMemberDTO = z.infer<
+  typeof CreateOrUpdateTeamMemberSchema
+>;
+
+export const TeamMemberSchema = CreateOrUpdateTeamMemberSchema.extend({
+  member: ProfileSchema,
+});
+export type TeamMemberDTO = z.infer<typeof TeamMemberSchema>;
+
+export const ListTeamMembersResponseSchema = z.object({
+  data: TeamMemberSchema.array(),
+  totalCount: z.number().int(),
+});

@@ -1,5 +1,6 @@
-import FuzzyDate from '@/components/common/form-fuzzy-date.vue';
 import { mount } from '@vue/test-utils';
+
+import FuzzyDate from 'src/components/common/form-fuzzy-date.vue';
 
 const YearInputSelector = 'select#test-year';
 const MonthInputSelector = 'select#test-month';

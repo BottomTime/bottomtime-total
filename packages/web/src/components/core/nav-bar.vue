@@ -24,13 +24,15 @@
             alt="logo"
             class="w-12 h-8 rounded-md shadow-sm shadow-danger"
           />
-          <span class="text-red hover:text-danger-dark text-2xl">
+          <span
+            class="text-red hover:text-danger-dark text-2xl hidden lg:block"
+          >
             {{ appTitle }}
           </span>
         </a>
 
         <!-- Right-Hand Dropdown (always visible) -->
-        <div class="flex items-center space-x-0 md:order-2 md:space-x-3">
+        <div class="flex min-w-fit items-center space-x-3 md:order-2">
           <DarkModeToggle />
 
           <!-- Login/register links for anonymous users -->
@@ -51,7 +53,9 @@
           </ul>
 
           <!-- Notifications alert -->
-          <NotificationsBell v-if="notificationsEnabled.value" />
+          <NotificationsBell
+            v-if="currentUser.user && notificationsEnabled.value"
+          />
 
           <!-- Avatar for authenticated users -->
           <button
@@ -68,7 +72,7 @@
               :avatar="currentUser.user?.profile?.avatar ?? undefined"
               :display-name="currentUser.displayName"
             />
-            <span class="text-lg hidden md:block">
+            <span class="text-lg hidden lg:block">
               {{ currentUser.displayName }}
             </span>
             <span class="text-lg hidden md:block">
@@ -84,40 +88,40 @@
                 class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left z-[42]"
               >
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/friends"
                 >
                   Friends
                 </a>
                 <a
                   v-if="currentUser.user?.accountTier >= AccountTier.ShopOwner"
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   :href="`/shops?owner=${currentUser.user?.username}`"
                 >
                   My Dive Shops
                 </a>
                 <hr />
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/profile"
                 >
                   Profile
                 </a>
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/account"
                 >
                   Account
                 </a>
                 <a
-                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/settings"
                 >
                   Settings
                 </a>
                 <hr />
                 <a
-                  class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  class="no-style w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   @click="onLogout"
                 >
                   Logout

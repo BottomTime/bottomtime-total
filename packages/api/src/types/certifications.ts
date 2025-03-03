@@ -1,8 +1,25 @@
 import { z } from 'zod';
 
+import { FuzzyDateRegex } from './constants';
+
+export const CreateOrUpdateAgencySchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  longName: z.string().trim().max(200).optional(),
+  logo: z.string().trim().min(1).max(250),
+  website: z.string().trim().url().max(250),
+});
+export type CreateOrUpdateAgencyDTO = z.infer<
+  typeof CreateOrUpdateAgencySchema
+>;
+
+export const AgencySchema = CreateOrUpdateAgencySchema.extend({
+  id: z.string().uuid(),
+});
+export type AgencyDTO = z.infer<typeof AgencySchema>;
+
 export const CertificationSchema = z.object({
   id: z.string().uuid(),
-  agency: z.string().trim().max(100),
+  agency: AgencySchema,
   course: z.string().trim().max(200),
 });
 export type CertificationDTO = z.infer<typeof CertificationSchema>;
@@ -23,8 +40,31 @@ export const SearchCertificationsResponseSchema = z.object({
 });
 
 export const CreateOrUpdateCertificationParamsSchema = CertificationSchema.omit(
-  { id: true },
-);
+  { id: true, agency: true },
+).extend({
+  agency: z.string().uuid(),
+});
 export type CreateOrUpdateCertificationParamsDTO = z.infer<
   typeof CreateOrUpdateCertificationParamsSchema
+>;
+
+export const CreateOrUpdateProfessionalAssociationParamsSchema = z.object({
+  agency: z.string().uuid(),
+  identificationNumber: z.string().trim().max(100),
+  title: z.string().trim().min(1).max(200),
+  startDate: z.string().trim().regex(FuzzyDateRegex).optional(),
+});
+export type CreateOrUpdateProfessionalAssociationParamsDTO = z.infer<
+  typeof CreateOrUpdateProfessionalAssociationParamsSchema
+>;
+
+export const ProfessionalAssociationSchema =
+  CreateOrUpdateProfessionalAssociationParamsSchema.omit({
+    agency: true,
+  }).extend({
+    id: z.string().uuid(),
+    agency: AgencySchema,
+  });
+export type ProfessionalAssociationDTO = z.infer<
+  typeof ProfessionalAssociationSchema
 >;

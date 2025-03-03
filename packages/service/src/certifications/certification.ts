@@ -2,10 +2,12 @@ import { CertificationDTO } from '@bottomtime/api';
 
 import { Repository } from 'typeorm';
 
-import { CertificationEntity } from '../data';
+import { AgencyEntity, CertificationEntity } from '../data';
+import { Agency } from './agency';
 
 export class Certification {
   constructor(
+    private readonly Agencies: Repository<AgencyEntity>,
     private readonly Certifications: Repository<CertificationEntity>,
     private readonly data: CertificationEntity,
   ) {}
@@ -21,11 +23,11 @@ export class Certification {
     this.data.course = value;
   }
 
-  get agency(): string {
-    return this.data.agency;
+  get agency(): Agency {
+    return new Agency(this.Agencies, this.data.agency!);
   }
-  set agency(value: string) {
-    this.data.agency = value;
+  set agency(value: Agency) {
+    this.data.agency = { ...value.toEntity() };
   }
 
   async save(): Promise<void> {
@@ -41,7 +43,7 @@ export class Certification {
     return {
       id: this.id,
       course: this.course,
-      agency: this.agency,
+      agency: this.agency.toJSON(),
     };
   }
 }

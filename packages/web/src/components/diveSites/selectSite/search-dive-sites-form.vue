@@ -1,71 +1,74 @@
 <template>
   <div class="space-y-4">
-    <form class="space-y-4" @submit.prevent="onSearch">
-      <FormSearchBox
-        v-model="state.search"
-        control-id="siteSearchQuery"
-        test-id="site-search-query"
-        placeholder="Search for a dive site..."
-        autofocus
-        @search="onSearch"
-      />
-
-      <div class="px-16 space-y-1.5">
-        <GoogleMap
-          :marker="state.location"
-          :sites="state.sites?.data"
-          @click="onLocationChange"
-          @site-selected="onSiteHighlighted"
-        />
-        <p class="text-sm text-center italic" italic>
-          Click a place on the map to center your search around that point.
-        </p>
-
-        <FormField
-          label="Search radius (km)"
-          control-id="site-search-radius"
-          :responsive="false"
-          required
-        >
-          <FormSlider
-            v-model="state.radius"
-            control-id="site-search-radius"
-            test-id="site-search-radius"
-            :min="10"
-            :max="500"
-            :step="10"
+    <form @submit.prevent="">
+      <fieldset
+        class="space-y-4"
+        :disabled="state.isSearching || isAddingSites"
+      >
+        <FormField label="Search">
+          <FormSearchBox
+            v-model="state.search"
+            control-id="siteSearchQuery"
+            test-id="site-search-query"
+            placeholder="Search for a dive site..."
+            autofocus
+            @search="onSearch"
           />
         </FormField>
-      </div>
 
-      <div class="text-center">
-        <FormButton
-          type="primary"
-          control-id="searchSites"
-          test-id="search-sites"
-          @click="onSearch"
-        >
-          Search
-        </FormButton>
-      </div>
+        <FormField label="Location">
+          <FormLocationPicker
+            v-model="state.location"
+            class="max-w-[360px]"
+            show-radius
+          />
+        </FormField>
+
+        <div class="text-center">
+          <FormButton
+            class="space-x-1"
+            :type="state.sites ? 'normal' : 'primary'"
+            :is-loading="state.isSearching"
+            control-id="searchSites"
+            test-id="search-sites"
+            submit
+            @click="onSearch"
+          >
+            <span>
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <span>Search</span>
+          </FormButton>
+        </div>
+      </fieldset>
     </form>
 
-    <div v-if="state.isSearching" class="text-center">
-      <LoadingSpinner message="Searching..." />
-    </div>
+    <div v-if="state.sites">
+      <FormBox class="flex items-baseline justify-between">
+        <p data-testid="search-sites-counts">
+          <span>Showing </span>
+          <span class="font-bold">{{ state.sites.data.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ state.sites.totalCount }}</span>
+          <span> dive sites.</span>
+        </p>
 
-    <div v-else-if="state.sites">
-      <p class="text-center my-1.5" data-testid="search-sites-counts">
-        <span>Showing </span>
-        <span class="font-bold">{{ state.sites.data.length }}</span>
-        <span> of </span>
-        <span class="font-bold">{{ state.sites.totalCount }}</span>
-        <span> dive sites.</span>
-      </p>
+        <div v-if="multiSelect">
+          <FormButton
+            :disabled="!sitesSelected || isAddingSites"
+            :is-loading="isAddingSites"
+            size="sm"
+            type="primary"
+            @click="onAddCheckedSites"
+          >
+            Add selected sites
+          </FormButton>
+        </div>
+      </FormBox>
 
-      <ul
+      <TransitionList
         v-if="state.sites.totalCount"
-        class="*:odd:bg-blue-300/40 *:odd:dark:bg-blue-900/40"
+        class="px-2"
         data-testid="search-sites-results-list"
       >
         <SelectDiveSiteListItem
@@ -73,8 +76,10 @@
           :key="site.id"
           :site="site"
           :selected="site.id === state.selectedSite"
+          :multi-select="multiSelect"
           @highlight="onSiteHighlighted"
           @select="(site) => $emit('site-selected', site)"
+          @toggle-checked="onSiteCheckmarkToggled"
         />
 
         <li
@@ -96,7 +101,7 @@
             Load more...
           </FormButton>
         </li>
-      </ul>
+      </TransitionList>
 
       <div
         v-else
@@ -124,57 +129,71 @@ import {
   ApiList,
   DiveSiteDTO,
   GpsCoordinates,
+  GpsCoordinatesWithRadius,
   SearchDiveSitesParamsDTO,
-  SuccinctDiveSiteDTO,
 } from '@bottomtime/api';
 
-import { reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 
 import { useClient } from '../../../api-client';
+import { useGeolocation } from '../../../geolocation';
 import { useOops } from '../../../oops';
+import FormBox from '../../common/form-box.vue';
 import FormButton from '../../common/form-button.vue';
 import FormField from '../../common/form-field.vue';
+import FormLocationPicker from '../../common/form-location-picker.vue';
 import FormSearchBox from '../../common/form-search-box.vue';
-import FormSlider from '../../common/form-slider.vue';
-import GoogleMap from '../../common/google-map.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
 import NavLink from '../../common/nav-link.vue';
+import TransitionList from '../../common/transition-list.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
+
+interface SelectDiveSiteListProps {
+  isAddingSites?: boolean;
+  multiSelect: boolean;
+}
 
 interface SelectDiveSiteListState {
   isLoadingMore: boolean;
   isSearching: boolean;
-  location?: GpsCoordinates;
-  radius: number;
+  location?: GpsCoordinatesWithRadius;
+  mapCenter?: GpsCoordinates;
   search: string;
   selectedSite?: string;
-  sites?: ApiList<DiveSiteDTO>;
+  sites?: ApiList<DiveSiteDTO & { selected?: boolean }>;
 }
 
 const client = useClient();
+const geolocation = useGeolocation();
 const oops = useOops();
 
-defineEmits<{
+const emit = defineEmits<{
+  (e: 'add', sites: DiveSiteDTO[]): void;
   (e: 'create'): void;
-  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
+  (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
+withDefaults(defineProps<SelectDiveSiteListProps>(), {
+  isAddingSites: false,
+  multiSelect: false,
+});
 const state = reactive<SelectDiveSiteListState>({
   isLoadingMore: false,
   isSearching: false,
-  radius: 100,
   search: '',
 });
 
-function onLocationChange(location?: GpsCoordinates): void {
-  state.location = location;
-}
+const sitesSelected = computed(
+  () => state.sites?.data.some((site) => site.selected) ?? false,
+);
 
 function getSearchParams(): SearchDiveSitesParamsDTO {
   return {
     query: state.search || undefined,
-    location: state.location,
-    radius: state.location ? state.radius : undefined,
+    location: state.location
+      ? { lat: state.location.lat, lon: state.location.lon }
+      : undefined,
+    radius: state.location?.radius,
     limit: 30,
   };
 }
@@ -193,10 +212,11 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMore = true;
 
   await oops(async () => {
-    const results = await client.diveSites.searchDiveSites({
+    const search = {
       ...getSearchParams(),
       skip: state.sites?.data.length,
-    });
+    };
+    const results = await client.diveSites.searchDiveSites(search);
     state.sites!.data.push(...results.data);
     state.sites!.totalCount = results.totalCount;
   });
@@ -204,7 +224,24 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMore = false;
 }
 
-function onSiteHighlighted(site: SuccinctDiveSiteDTO): void {
+function onSiteHighlighted(site: DiveSiteDTO): void {
   state.selectedSite = site.id;
 }
+
+function onSiteCheckmarkToggled(
+  site: DiveSiteDTO & { selected?: boolean },
+): void {
+  site.selected = !site.selected;
+}
+
+function onAddCheckedSites(): void {
+  emit('add', state.sites?.data.filter((site) => site.selected) ?? []);
+}
+
+onMounted(() => {
+  geolocation.getCurrentLocation().then((location) => {
+    state.location = location;
+    state.mapCenter = location;
+  });
+});
 </script>

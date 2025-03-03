@@ -1,6 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Operators API client will add or update a team member 1`] = `
+{
+  "joined": "2012-08-08",
+  "member": {
+    "accountTier": 200,
+    "avatar": "/api/users/Chris/avatar",
+    "location": "Cambridge, ON",
+    "logBookSharing": "private",
+    "memberSince": 1713361114242,
+    "name": "Chris Carleton",
+    "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
+    "username": "Chris",
+  },
+  "title": "Diver Dude",
+}
+`;
+
 exports[`Operators API client will allow a user to upload a new logo 1`] = `"cac7bb0ed0a07e3fed4c0977b8ca87fc"`;
+
+exports[`Operators API client will list team members 1`] = `
+{
+  "data": [
+    {
+      "joined": "2016-04",
+      "member": {
+        "accountTier": 200,
+        "avatar": "/api/users/Chris/avatar",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private",
+        "memberSince": 1713361114242,
+        "name": "Chris Carleton",
+        "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
+        "username": "Chris",
+      },
+      "title": "Instructor",
+    },
+    {
+      "member": {
+        "accountTier": 0,
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/613.jpg",
+        "bio": "At tenetur libero ullam aspernatur culpa provident nobis explicabo eos. Non voluptas aliquid quos repellendus incidunt veniam. Suscipit voluptates modi saepe rerum. In similique magni cupiditate sit ea beatae quisquam rerum corrupti.",
+        "experienceLevel": "Expert",
+        "location": "Kshlerinburgh, NH, NF",
+        "logBookSharing": "private",
+        "memberSince": 1422446556022,
+        "name": "Ashley Bruen",
+        "startedDiving": "2015-06-14",
+        "userId": "7ea68b2a-3f35-4650-bbd5-99c9325e0c09",
+        "username": "Ashley_Bruen35",
+      },
+      "title": "Dive Master",
+    },
+  ],
+  "totalCount": 2,
+}
+`;
 
 exports[`Operators API client will perform a search with search parameters 1`] = `
 [

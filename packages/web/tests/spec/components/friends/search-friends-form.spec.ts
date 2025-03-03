@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   ApiClient,
   ApiList,
   Fetcher,
@@ -14,9 +15,8 @@ import {
   mount,
 } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { Pinia, createPinia } from 'pinia';
+import dayjs from 'tests/dayjs';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
@@ -26,8 +26,6 @@ import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import UserTestData from '../../../fixtures/user-search-results.json';
 import { BasicUser } from '../../../fixtures/users';
-
-dayjs.extend(relativeTime);
 
 const LoadMoreButton = '[data-testid="search-friends-load-more"]';
 const SearchBox = '[data-testid="search-users"]';
@@ -176,7 +174,8 @@ describe('Search friends form component', () => {
       expires: dayjs().add(14, 'days').valueOf(),
       direction: FriendRequestDirection.Outgoing,
       friend: {
-        id: friendo.userId,
+        userId: friendo.userId,
+        accountTier: AccountTier.Basic,
         username: friendo.username,
         memberSince: friendo.memberSince,
         logBookSharing: friendo.logBookSharing,

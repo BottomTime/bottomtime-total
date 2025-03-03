@@ -1,6 +1,6 @@
 <template>
   <li
-    :class="`p-3 min-w-24 rounded-md text-md ${bgColour} flex flex-row items-start gap-2`"
+    :class="`p-3 min-w-24 rounded-md text-md ${bgColour} shadow-lg shadow-grey-800/60 flex flex-row items-start gap-2`"
     :data-testid="`toast-${toastId}`"
     role="alert"
   >

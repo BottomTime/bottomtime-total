@@ -20,6 +20,15 @@
  *         type: string
  *         format: uuid
  *         example: 123e4567-e89b-12d3-a456-426614174000
+ *     BuddyUsername:
+ *       name: buddyUsername
+ *       in: path
+ *       required: true
+ *       description: The dive buddy's unique username.
+ *       schema:
+ *         type: string
+ *         pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
+ *         example: jane.diver
  *   schemas:
  *     LogEntryAir:
  *       type: object
@@ -186,6 +195,13 @@
  *               format: float
  *               name: Duration
  *               description: The total duration of the dive. (I.e. The total time underwater.) Specified in seconds.
+ *               example: 3442.89
+ *               exclusiveMinimum: 0
+ *             surfaceInterval:
+ *               type: number
+ *               format: float
+ *               name: Surface Interval
+ *               description: The length of the surface interval since the previous dive (assuming there was one). Specified in seconds.
  *               example: 3442.89
  *               exclusiveMinimum: 0
  *         depths:
@@ -501,4 +517,93 @@
  *             the device to avoid duplication of log entries.
  *           example: "bookmark_12345"
  *           maxLength: 200
+ *     CreateOrUpdateLogEntrySignatureBuddy:
+ *       type: object
+ *       required:
+ *         - buddyType
+ *       properties:
+ *         buddyType:
+ *           type: string
+ *           title: Buddy Type
+ *           description: |
+ *             Type of dive buddy who is signing this log entry. Divemasters and instructors
+ *             must also include their agency and certification number.
+ *           example: instructor
+ *           enum:
+ *             - buddy
+ *             - divemaster
+ *             - instructor
+ *     CreateOrUpdateLogEntrySignatureProfessional:
+ *       allOf:
+ *         - $ref: "#/components/schemas/CreateOrUpdateLogEntrySignatureBuddy"
+ *         - type: object
+ *           required:
+ *             - agency
+ *             - certificationNumber
+ *           properties:
+ *             agency:
+ *               type: string
+ *               format: uuid
+ *               title: Agency
+ *               description: The ID of the agency that certified the professional.
+ *               example: 576148c3-550b-4ede-bfe9-f3499ad2d02c
+ *             certificationNumber:
+ *               type: string
+ *               title: Certification Number
+ *               description: The certification number of the professional.
+ *               example: 123456
+ *               maxLength: 100
+ *     CreateOrUpdateLogEntrySignature:
+ *       oneOf:
+ *         - $ref: "#/components/schemas/CreateOrUpdateLogEntrySignatureBuddy"
+ *         - $ref: "#/components/schemas/CreateOrUpdateLogEntrySignatureProfessional"
+ *       discriminator:
+ *         propertyName: buddyType
+ *         mapping:
+ *           buddy: "#/components/schemas/CreateOrUpdateLogEntrySignatureBuddy"
+ *           divemaster: "#/components/schemas/CreateOrUpdateLogentrySignatureProfessional"
+ *           instructor: "#/components/schemas/CreateOrUpdateLogentrySignatureProfessional"
+ *     LogEntrySignature:
+ *       type: object
+ *       required:
+ *         - id
+ *         - signedOn
+ *         - buddy
+ *         - type
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           title: ID
+ *           description: The unique ID of the signature.
+ *           example: 123e4567-e89b-12d3-a456-426614174000
+ *         signedOn:
+ *           type: integer
+ *           format: int64
+ *           title: Signed On
+ *           description: The date and time at which the signature was made. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1625419200000
+ *         buddy:
+ *           $ref: "#/components/schemas/SuccinctProfile"
+ *           title: Dive Buddy Profile
+ *           description: The profile of the dive buddy who signed the log entry.
+ *         type:
+ *           type: string
+ *           enum:
+ *             - buddy
+ *             - divemaster
+ *             - instructor
+ *           title: Signature Type
+ *           description: The type of signature. Either `buddy`, `divemaster`, or `instructor`.
+ *           example: instructor
+ *         agency:
+ *           $ref: "#/components/schemas/Agency"
+ *           title: Agency
+ *           description: The agency that certified the professional. Only present for divemaster and instructor signatures.
+ *         certificationNumber:
+ *           type: string
+ *           title: Certification Number
+ *           description: The certification number of the professional. Only present for divemaster and instructor signatures.
+ *           maxLength: 200
+ *           example: 123456
  */

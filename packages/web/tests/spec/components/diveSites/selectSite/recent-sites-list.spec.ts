@@ -21,6 +21,7 @@ import { useCurrentUser } from '../../../../../src/store';
 import { createRouter } from '../../../../fixtures/create-router';
 import TestDiveSites from '../../../../fixtures/dive-sites-search-results.json';
 import { BasicUser } from '../../../../fixtures/users';
+import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
 
 describe('RecentSitesList component', () => {
   let fetcher: Fetcher;
@@ -60,6 +61,9 @@ describe('RecentSitesList component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+        },
+        stubs: {
+          StarRating: StarRatingStub,
         },
       },
     };

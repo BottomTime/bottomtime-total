@@ -1,16 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Page Footer component will render correctly 1`] = `
-"<section class="font-content text-grey-700 dark:text-grey-200 text-center h-36 pt-8">
-  <p class="text-sm italic p-3">Copyright © Chris Carleton, 2024</p>
-  <ul class="text-xs flex flex-wrap justify-center">
-    <li class="p-0.5"><a href="/privacy">Privacy Policy</a></li>
-    <li class="p-0.5">|</li>
-    <li class="p-0.5"><a href="/termsOfService">Terms of Service</a></li>
-    <li class="p-0.5">|</li>
-    <li class="p-0.5"><a href="/cookies">Cookie Policy</a></li>
-    <li class="p-0.5">|</li>
-    <li class="p-0.5"><a href="mailto:administrator@website.com">Contact</a></li>
+"<section class="font-content text-grey-700 dark:text-grey-200 text-center h-36 mt-8">
+  <p class="text-sm"> Copyright © Chris Carleton, 2025</p>
+  <ul class="text-sm flex flex-wrap justify-center *:p-0.5">
+    <li><a href="/privacy" class="">Privacy Policy</a></li>
+    <li>|</li>
+    <li><a href="/termsOfService" class="">Terms of Service</a></li>
+    <li>|</li>
+    <li><a href="/cookies" class="">Cookie Policy</a></li>
+    <li>|</li>
+    <li><a href="mailto:administrator@website.com">Contact</a></li>
+    <li>|</li>
+    <li><a href="/developers" class="">Developers</a></li>
   </ul>
 </section>"
 `;

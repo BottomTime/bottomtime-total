@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectOperatorListItem component will render with operator details 1`] = `
+"<li class="flex gap-2 items-center">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="select-operator-academic-squeaky-osmosis" type="button">
+      <!--v-if--> Select
+    </button></div>
+  <div class="grow space-y-2">
+    <div class="flex align-baseline justify-between">
+      <div class="flex gap-2"><button data-testid="operator-name-academic-squeaky-osmosis">
+          <p class="text-lg font-title capitalize hover:text-link-hover">academic, squeaky osmosis</p>
+        </button>
+        <!--v-if-->
+      </div>
+      <!--v-if-->
+    </div>
+    <p class="text-sm text-justify italic">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
+      Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+    <div class="flex gap-6 justify-between">
+      <div class="text-center">
+        <p class="font-bold">Address</p>
+        <p>6713 Ritchie Key Apt. 697, Suffolk, LA, 43097</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Phone</p>
+        <p><a href="tel:936.810.0307 x63779">936.810.0307 x63779</a></p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Email</p>
+        <p><a href="mailto:Elizabeth_Ernser@hotmail.com">Elizabeth_Ernser@hotmail.com</a></p>
+      </div>
+    </div>
+  </div>
+</li>"
+`;

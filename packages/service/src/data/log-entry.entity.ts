@@ -61,6 +61,9 @@ export class LogEntryEntity {
   @Column({ type: 'float', nullable: false })
   duration: number = 0;
 
+  @Column({ type: 'float', nullable: true })
+  surfaceInterval: number | null = null;
+
   // Location
   @ManyToOne(() => DiveSiteEntity, (site) => site.logEntries, {
     nullable: true,
@@ -186,4 +189,16 @@ export class LogEntryEntity {
 
   @Column('varchar', { length: 200, nullable: true })
   deviceId: string | null = null;
+
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+    insert: false,
+    update: false,
+    asExpression: `setweight(to_tsvector('english', coalesce(notes, '') || ' ' || tags), 'A')`,
+    generatedType: 'STORED',
+  })
+  @Index()
+  fulltext?: string;
 }

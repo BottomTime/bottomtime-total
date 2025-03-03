@@ -15,9 +15,13 @@ import {
   UserEntity,
   UserOAuthEntity,
 } from '../../../src/data';
-import { User, UsersModule } from '../../../src/users';
+import { UserFactory, UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
-import { createAuthHeader, createTestUser } from '../../utils';
+import {
+  createAuthHeader,
+  createTestUser,
+  createUserFactory,
+} from '../../utils';
 import { createTestApp } from '../../utils/create-test-app';
 
 const JwtId = 'a1b2c3d4e5f6g7h8i9j0';
@@ -35,6 +39,7 @@ describe('Auth Module E2E Tests', () => {
   let Users: Repository<UserEntity>;
   let InvalidatedTokens: Repository<InvalidTokenEntity>;
   let OAuth: Repository<UserOAuthEntity>;
+  let userFactory: UserFactory;
 
   let app: INestApplication;
   let server: unknown;
@@ -43,6 +48,7 @@ describe('Auth Module E2E Tests', () => {
     Users = dataSource.getRepository(UserEntity);
     OAuth = dataSource.getRepository(UserOAuthEntity);
     InvalidatedTokens = dataSource.getRepository(InvalidTokenEntity);
+    userFactory = createUserFactory();
 
     app = await createTestApp({
       imports: [
@@ -66,7 +72,7 @@ describe('Auth Module E2E Tests', () => {
 
   it('will return the currently logged in user', async () => {
     const userData = createTestUser();
-    const user = new User(Users, userData);
+    const user = userFactory.createUser(userData);
     const authHeader = await createAuthHeader(user.id);
     await Users.save(userData);
 
@@ -83,7 +89,7 @@ describe('Auth Module E2E Tests', () => {
 
   it('will login a user with username and password', async () => {
     const userData = createTestUser(TestUserData);
-    const user = new User(Users, userData);
+    const user = userFactory.createUser(userData);
     const agent = request.agent(server);
     await Users.save(userData);
 

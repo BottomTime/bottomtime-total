@@ -6,13 +6,20 @@ import {
   mount,
 } from '@vue/test-utils';
 
+import { GeolocationKey } from 'src/geolocation';
+import { MockGeolocation } from 'tests/mock-geolocation';
+
 import SearchDiveSitesForm from '../../../../src/components/diveSites/search-dive-sites-form.vue';
 
 const SearchInput = '[data-testid="search-dive-sites"]';
-const SelectLocation = '[data-testid="select-location"]';
-const ClearLocation = '[data-testid="clear-location"]';
-const RangeInput = '[data-testid="search-range"]';
-const SearchCoordinates = '[data-testid="search-coordinates"]';
+const SelectLocation = '[data-testid="location-picker-set"]';
+const LatitudeInput = '[data-testid="location-picker-lat"]';
+const LongitudeInput = '[data-testid="location-picker-lon"]';
+const SaveLocationButton = '[data-testid="location-picker-save"]';
+const CancelLocationButton = '[data-testid="location-picker-cancel"]';
+const ClearLocation = '[data-testid="location-picker-clear"]';
+const RangeInput = '[data-testid="location-picker-radius"]';
+const SearchCoordinates = '[data-testid="location-picker-gps"]';
 const RatingInput = '[data-testid="rating"]';
 const DifficultyInput = '[data-testid="difficulty"]';
 const RefreshButton = '[data-testid="refresh-dive-sites"]';
@@ -22,13 +29,18 @@ const Longitude = -87.015536937484;
 
 describe('Search Dive Sites Form', () => {
   let params: SearchDiveSitesParamsDTO;
+  let geolocation: MockGeolocation;
   let opts: ComponentMountingOptions<typeof SearchDiveSitesForm>;
 
   beforeEach(() => {
+    geolocation = new MockGeolocation();
     params = {};
     opts = {
       props: { params },
       global: {
+        provide: {
+          [GeolocationKey as symbol]: geolocation,
+        },
         stubs: { teleport: true },
       },
     };
@@ -40,9 +52,9 @@ describe('Search Dive Sites Form', () => {
     await wrapper.get(SearchInput).setValue('secret cove');
 
     await wrapper.get(SelectLocation).trigger('click');
-    await wrapper.get('[data-testid="latitude"]').setValue(Latitude);
-    await wrapper.get('[data-testid="longitude"]').setValue(Longitude);
-    await wrapper.get('[data-testid="confirm-location"]').trigger('click');
+    await wrapper.get(LatitudeInput).setValue(Latitude);
+    await wrapper.get(LongitudeInput).setValue(Longitude);
+    await wrapper.get(SaveLocationButton).trigger('click');
     await flushPromises();
     await wrapper.get(RangeInput).setValue('350');
 
@@ -68,26 +80,25 @@ describe('Search Dive Sites Form', () => {
     const wrapper = mount(SearchDiveSitesForm, opts);
 
     await wrapper.get(SelectLocation).trigger('click');
-    await wrapper.get('[data-testid="cancel-location"]').trigger('click');
+    await wrapper.get(CancelLocationButton).trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('[data-testid="dialog-modal"]').exists()).toBe(false);
-    expect(wrapper.find(SearchCoordinates).exists()).toBe(false);
+    expect(wrapper.get(SearchCoordinates).text()).toMatchSnapshot();
   });
 
   it('will allow a user to clear the location', async () => {
     const wrapper = mount(SearchDiveSitesForm, opts);
 
     await wrapper.get(SelectLocation).trigger('click');
-    await wrapper.get('[data-testid="latitude"]').setValue(Latitude);
-    await wrapper.get('[data-testid="longitude"]').setValue(Longitude);
-    await wrapper.get('[data-testid="confirm-location"]').trigger('click');
+    await wrapper.get(LatitudeInput).setValue(Latitude);
+    await wrapper.get(LongitudeInput).setValue(Longitude);
+    await wrapper.get(SaveLocationButton).trigger('click');
     await flushPromises();
 
     expect(wrapper.get(SearchCoordinates).text()).toMatchSnapshot();
     await wrapper.get(ClearLocation).trigger('click');
 
-    expect(wrapper.find(SearchCoordinates).exists()).toBe(false);
+    expect(wrapper.get(SearchCoordinates).text()).toMatchSnapshot();
     await wrapper.get(RefreshButton).trigger('click');
     await flushPromises();
 

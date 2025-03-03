@@ -6,12 +6,10 @@ import {
 } from '@nestjs/common';
 
 import Stripe from 'stripe';
-import { Repository } from 'typeorm';
 
 import { UserEntity } from '../../../src/data';
 import { MembershipService } from '../../../src/membership/membership.service';
-import { User } from '../../../src/users';
-import { dataSource } from '../../data-source';
+import { User, UserFactory } from '../../../src/users';
 import {
   StripeCustomerCompleteMembership,
   StripeCustomerDeleted,
@@ -24,6 +22,7 @@ import {
   StripeEntitlementsShopOwner,
   StripePriceData,
 } from '../../fixtures/stripe';
+import { createUserFactory } from '../../utils';
 import { createTestUser } from '../../utils/create-test-user';
 
 const UserData: Partial<UserEntity> = {
@@ -40,15 +39,15 @@ const UserData: Partial<UserEntity> = {
 };
 
 describe('MembershipService class', () => {
-  let Users: Repository<UserEntity>;
   let stripe: Stripe;
   let service: MembershipService;
+  let userFactory: UserFactory;
 
   let userData: UserEntity;
   let user: User;
 
   beforeAll(async () => {
-    Users = dataSource.getRepository(UserEntity);
+    userFactory = createUserFactory();
 
     /* eslint-disable-next-line no-process-env */
     stripe = new Stripe('sk_test_xxxxx');
@@ -60,7 +59,7 @@ describe('MembershipService class', () => {
 
   beforeEach(() => {
     userData = createTestUser(UserData);
-    user = new User(Users, userData);
+    user = userFactory.createUser(userData);
   });
 
   it('will retrieve a list of available membership tiers', async () => {
@@ -321,15 +320,24 @@ describe('MembershipService class', () => {
       expect(changeMembershipSpy).toHaveBeenCalledWith(AccountTier.Basic);
     });
 
-    it('will throw an exception if the Stripe customer was deleted', async () => {
+    it("will create a new Stripe customer if the user's original customer was deleted", async () => {
       userData.accountTier = AccountTier.Pro;
       jest
         .spyOn(stripe.customers, 'retrieve')
         .mockResolvedValue(StripeCustomerDeleted);
+      const createSpy = jest
+        .spyOn(stripe.customers, 'create')
+        .mockResolvedValue(StripeCustomerProMember);
+      const updateSpy = jest
+        .spyOn(stripe.subscriptions, 'update')
+        .mockResolvedValue({} as Stripe.Response<Stripe.Subscription>);
 
-      await expect(
-        service.updateMembership(user, AccountTier.ShopOwner),
-      ).rejects.toThrow(InternalServerErrorException);
+      await service.updateMembership(user, AccountTier.ShopOwner);
+      expect(createSpy).toHaveBeenCalledWith({
+        email: user.email,
+        name: user.profile.name,
+      });
+      expect(updateSpy).toHaveBeenCalled();
     });
 
     it('will perform a no-op if the user is already at the requested account tier', async () => {

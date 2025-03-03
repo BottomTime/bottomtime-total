@@ -602,6 +602,7 @@ export class UserLogEntriesController {
 
     logEntry.logNumber = options.logNumber;
     logEntry.notes = options.notes;
+    logEntry.rating = options.rating;
     logEntry.tags = options.tags ?? [];
 
     logEntry.timing.entryTime = new Date(options.timing.entryTime);
@@ -619,6 +620,18 @@ export class UserLogEntriesController {
       logEntry.site = site;
     } else {
       logEntry.site = undefined;
+    }
+
+    if (options.operator) {
+      const operator = await this.operators.getOperator(options.operator);
+      if (!operator) {
+        throw new BadRequestException(
+          `Operator with ID "${options.operator}" not found.`,
+        );
+      }
+      logEntry.operator = operator;
+    } else {
+      logEntry.operator = undefined;
     }
 
     await logEntry.save();

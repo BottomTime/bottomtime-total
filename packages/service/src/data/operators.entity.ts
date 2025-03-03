@@ -19,6 +19,7 @@ import { LogEntryEntity } from './log-entry.entity';
 import { MediaFileEntity } from './media-file.entity';
 import { OperatorDiveSiteEntity } from './operator-dive-site.entity';
 import { OperatorReviewEntity } from './operator-review.entity';
+import { OperatorTeamMemberEntity } from './operator-team-member.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('dive_operators')
@@ -134,6 +135,11 @@ export class OperatorEntity {
     onDelete: 'CASCADE',
   })
   reviews?: OperatorReviewEntity[];
+
+  @OneToMany(() => OperatorTeamMemberEntity, (member) => member.operator, {
+    onDelete: 'CASCADE',
+  })
+  teamMembers?: OperatorTeamMemberEntity[];
 
   @Column({ type: 'float', nullable: true })
   @Index()

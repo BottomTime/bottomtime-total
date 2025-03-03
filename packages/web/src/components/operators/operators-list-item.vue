@@ -1,7 +1,5 @@
 <template>
-  <li
-    class="flex items-start gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
-  >
+  <li class="flex items-center gap-3">
     <figure class="min-w-[64px] min-h-[64px] text-center">
       <img
         v-if="operator.logo"
@@ -14,17 +12,18 @@
       <i v-else class="fa-solid fa-image fa-3x"></i>
     </figure>
 
-    <article class="grow space-y-1">
+    <article class="grow space-y-2">
       <!-- Title -->
       <div class="flex gap-2 items-center">
-        <FormButton
-          type="link"
-          size="2xl"
-          :test-id="`select-${operator.slug || operator.id}`"
+        <a
+          :id="operator.slug"
+          :data-testid="`select-${operator.slug || operator.id}`"
+          class="text-2xl capitalize"
+          :href="`#${operator.slug}`"
           @click="$emit('select', operator)"
         >
-          <span class="capitalize">{{ operator.name }}</span>
-        </FormButton>
+          {{ operator.name }}
+        </a>
 
         <PillLabel
           v-if="operator.verificationStatus === VerificationStatus.Verified"
@@ -65,12 +64,15 @@
         </template>
       </div>
 
-      <p v-if="operator.description">
-        {{ operator.description }}
-      </p>
+      <MarkdownViewer
+        v-if="operator.description"
+        class="text-sm text-pretty"
+        :model-value="operator.description"
+        collapse
+      />
 
-      <address class="grid grid-cols-2 px-2 gap-3 text-sm">
-        <div class="space-y-1.5">
+      <address class="text-sm space-y-3">
+        <div>
           <div v-if="operator.address || operator.gps" class="flex gap-2">
             <span>
               <i class="fa-solid fa-map-marker-alt"></i>
@@ -83,15 +85,15 @@
               </span>
             </p>
           </div>
+        </div>
 
+        <div class="flex flex-wrap *:mr-6 items-baseline">
           <div v-if="operator.phone" class="flex gap-2">
             <span>
               <i class="fa-solid fa-phone"></i>
             </span>
             <label class="sr-only">Phone</label>
-            <NavLink :to="`tel:${operator.phone}`">
-              {{ operator.phone }}
-            </NavLink>
+            <a :href="`tel:${operator.phone}`">{{ operator.phone }}</a>
           </div>
 
           <div v-if="operator.email" class="flex gap-2">
@@ -99,9 +101,7 @@
               <i class="fa-solid fa-envelope"></i>
             </span>
             <label class="sr-only">Email</label>
-            <NavLink :to="`mailto:${operator.email}`">
-              {{ operator.email }}
-            </NavLink>
+            <a :ref="`mailto:${operator.email}`">{{ operator.email }}</a>
           </div>
 
           <div v-if="operator.website" class="flex gap-2">
@@ -109,24 +109,32 @@
               <i class="fa-solid fa-globe"></i>
             </span>
             <label class="sr-only">Website</label>
-            <NavLink :to="operator.website">
-              {{ operator.website }}
-            </NavLink>
+            <a class="space-x-1" :href="operator.website" target="_blank">
+              <span>{{ operator.website }}</span>
+              <span>
+                <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
+              </span>
+            </a>
           </div>
         </div>
 
-        <div class="space-y-1.5">
+        <div class="flex flex-wrap items-baseline *:mr-6">
           <div v-if="operator.socials?.facebook" class="flex gap-2">
             <span>
               <i class="fa-brands fa-facebook"></i>
             </span>
             <label class="sr-only">Facebook</label>
-            <NavLink
-              :to="`https://facebook.com/${operator.socials?.facebook}/`"
-              new-tab
+            <a
+              :href="
+                getSocialMediaProfileUrl(
+                  SocialMediaNetwork.Facebook,
+                  operator.socials?.facebook,
+                )
+              "
+              target="_blank"
             >
               {{ operator.socials?.facebook }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.instagram" class="flex gap-2">
@@ -134,12 +142,17 @@
               <i class="fa-brands fa-instagram"></i>
             </span>
             <label class="sr-only">Instagram</label>
-            <NavLink
-              :to="`https://instagram.com/${operator.socials?.instagram}/`"
-              new-tab
+            <a
+              :href="
+                getSocialMediaProfileUrl(
+                  SocialMediaNetwork.Instagram,
+                  operator.socials?.instagram,
+                )
+              "
+              target="_blank"
             >
               {{ operator.socials?.instagram }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.tiktok" class="flex gap-2">
@@ -147,12 +160,17 @@
               <i class="fa-brands fa-tiktok"></i>
             </span>
             <label class="sr-only">TikTok</label>
-            <NavLink
-              :to="`https://tiktok.com/@${operator.socials?.tiktok}/`"
-              new-tab
+            <a
+              :href="
+                getSocialMediaProfileUrl(
+                  SocialMediaNetwork.TikTok,
+                  operator.socials?.tiktok,
+                )
+              "
+              target="_blank"
             >
               {{ operator.socials?.tiktok }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.twitter" class="flex gap-2">
@@ -160,12 +178,17 @@
               <i class="fa-brands fa-x-twitter"></i>
             </span>
             <label class="sr-only">X / Twitter</label>
-            <NavLink
-              :to="`https://x.com/${operator.socials?.twitter}/`"
-              new-tab
+            <a
+              :href="
+                getSocialMediaProfileUrl(
+                  SocialMediaNetwork.Twitter,
+                  operator.socials?.twitter,
+                )
+              "
+              target="_blank"
             >
               {{ operator.socials?.twitter }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.youtube" class="flex gap-2">
@@ -173,31 +196,38 @@
               <i class="fa-brands fa-youtube"></i>
             </span>
             <label class="sr-only">Youtube</label>
-            <NavLink
-              :to="`https://youtube.com/@${operator.socials?.youtube}/`"
-              new-tab
+            <a
+              :href="
+                getSocialMediaProfileUrl(
+                  SocialMediaNetwork.YouTube,
+                  operator.socials?.youtube,
+                )
+              "
+              target="_blank"
             >
               {{ operator.socials?.youtube }}
-            </NavLink>
+            </a>
           </div>
         </div>
       </address>
     </article>
 
-    <div v-if="canEdit" class="flex">
-      <FormButton
-        rounded="left"
-        size="sm"
-        :test-id="`edit-${operator.slug || operator.id}`"
-        @click="$emit('select', operator)"
-      >
-        <p>
-          <span class="sr-only">Edit {{ operator.name }}</span>
-          <span>
-            <i class="fa-solid fa-edit fa-sm"></i>
-          </span>
-        </p>
-      </FormButton>
+    <div v-if="canEdit" class="flex px-2">
+      <RouterLink :to="`/shops/${operator.slug}`">
+        <FormButton
+          rounded="left"
+          size="sm"
+          :test-id="`edit-${operator.slug || operator.id}`"
+        >
+          <p>
+            <span class="sr-only">Edit {{ operator.name }}</span>
+            <span>
+              <i class="fa-solid fa-pen fa-sm"></i>
+            </span>
+          </p>
+        </FormButton>
+      </RouterLink>
+
       <FormButton
         rounded="right"
         size="sm"
@@ -220,10 +250,12 @@
 import { OperatorDTO, UserRole, VerificationStatus } from '@bottomtime/api';
 
 import { computed } from 'vue';
+import { RouterLink } from 'vue-router';
 
+import { SocialMediaNetwork, getSocialMediaProfileUrl } from '../../socials';
 import { useCurrentUser } from '../../store';
 import FormButton from '../common/form-button.vue';
-import NavLink from '../common/nav-link.vue';
+import MarkdownViewer from '../common/markdown-viewer.vue';
 import PillLabel from '../common/pill-label.vue';
 
 interface OperatorsListItemProps {

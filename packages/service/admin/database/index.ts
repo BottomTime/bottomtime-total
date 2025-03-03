@@ -2,6 +2,7 @@
 import prompts from 'prompts';
 import { CommandModule } from 'yargs';
 
+import { generateDiveProfile } from './dive-profile';
 import { initDatabase } from './init-db';
 import { purgeDatabase } from './purge-db';
 import { seedDatabase } from './seed-db';
@@ -70,6 +71,11 @@ export const dbModule: CommandModule<{
               description: 'The number of dive operators to generate',
               type: 'number',
             })
+            .option('operator-reviews', {
+              default: 0,
+              description: 'The number of dive operator reviews to generate',
+              type: 'number',
+            })
             .option('users', {
               default: 0,
               description: 'The number of users to generate',
@@ -80,9 +86,24 @@ export const dbModule: CommandModule<{
               description: 'The number of dive sites to generate',
               type: 'number',
             })
+            .option('site-reviews', {
+              default: 0,
+              description: 'The number of dive site reviews to generate',
+              type: 'number',
+            })
             .option('username', {
               description:
                 'The username for which friend relations, friend requests, or log entries will be generated for. (Defaults to everyone.)',
+              type: 'string',
+            })
+            .option('operator', {
+              description:
+                'The key (slug) identifying the operator for which operator reviews will be generated',
+              type: 'string',
+            })
+            .option('site', {
+              description:
+                'The ID of the dive site for which site reviews will be generated',
               type: 'string',
             })
             .help();
@@ -93,11 +114,15 @@ export const dbModule: CommandModule<{
             friends: yargs.friends,
             friendRequests: yargs.friendRequests,
             diveOperators: yargs.operators,
+            diveOperatorReviews: yargs.operatorReviews,
             diveSites: yargs.sites,
+            diveSiteReviews: yargs.siteReviews,
             logEntries: yargs.logEntries,
             notifications: yargs.notifications,
             users: yargs.users,
             targetUser: yargs.username,
+            targetDiveSite: yargs.site,
+            targetOperator: yargs.operator,
           });
         },
       )
@@ -142,6 +167,28 @@ export const dbModule: CommandModule<{
         },
         async (yargs) => {
           await seedDatabase(yargs.postgresUri, yargs.requireSsl);
+        },
+      )
+      .command(
+        'dive-profile [entry-id]',
+        'Generate a test dive profile for a log entry',
+        (yargs) => {
+          return yargs
+            .positional('entry-id', {
+              alias: 'e',
+              type: 'string',
+              description:
+                'The ID of the log entry to append a dive profile to',
+            })
+            .demandOption('entry-id')
+            .help();
+        },
+        async (yargs) => {
+          await generateDiveProfile(
+            yargs.postgresUri,
+            yargs.requireSsl,
+            yargs.entryId,
+          );
         },
       );
   },

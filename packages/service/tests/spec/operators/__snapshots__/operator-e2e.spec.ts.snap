@@ -106,16 +106,6 @@ exports[`Operators E2E tests when creating a new dive operator will return a 400
     {
       "code": "invalid_type",
       "expected": "string",
-      "message": "Expected string, received number",
-      "path": [
-        "socials",
-        "twitter",
-      ],
-      "received": "number",
-    },
-    {
-      "code": "invalid_type",
-      "expected": "string",
       "message": "Expected string, received boolean",
       "path": [
         "socials",
@@ -132,6 +122,16 @@ exports[`Operators E2E tests when creating a new dive operator will return a 400
         "tiktok",
       ],
       "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "twitter",
+      ],
+      "received": "number",
     },
   ],
 }
@@ -605,16 +605,6 @@ exports[`Operators E2E tests when updating a dive operator will return a 400 res
     {
       "code": "invalid_type",
       "expected": "string",
-      "message": "Expected string, received number",
-      "path": [
-        "socials",
-        "twitter",
-      ],
-      "received": "number",
-    },
-    {
-      "code": "invalid_type",
-      "expected": "string",
       "message": "Expected string, received boolean",
       "path": [
         "socials",
@@ -631,6 +621,16 @@ exports[`Operators E2E tests when updating a dive operator will return a 400 res
         "tiktok",
       ],
       "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "twitter",
+      ],
+      "received": "number",
     },
   ],
 }

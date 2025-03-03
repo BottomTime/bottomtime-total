@@ -2,13 +2,13 @@
   <div
     :id="id"
     ref="mapElement"
-    class="w-full aspect-video"
+    class="w-full aspect-video shadow-md shadow-grey-900 rounded-sm"
     :data-testid="testId"
   ></div>
 </template>
 
 <script setup lang="ts">
-import { DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
+import { DiveSiteDTO, GpsCoordinates, OperatorDTO } from '@bottomtime/api';
 
 import { v7 as uuid } from 'uuid';
 import { onBeforeMount, ref, watch } from 'vue';
@@ -19,9 +19,12 @@ type GoogleMapProps = {
   id?: string;
   center?: GpsCoordinates;
   disabled?: boolean;
+  divePath?: GpsCoordinates[];
   marker?: GpsCoordinates;
   sites?: DiveSiteDTO[];
+  operators?: OperatorDTO[];
   testId?: string;
+  zoom?: number;
 };
 
 const mapElement = ref<HTMLElement | null>(null);
@@ -29,8 +32,11 @@ let mapsLib: globalThis.google.maps.MapsLibrary;
 let markersLib: globalThis.google.maps.MarkerLibrary;
 
 let map: globalThis.google.maps.Map;
+
 let markerElement: globalThis.google.maps.marker.AdvancedMarkerElement | null;
 let siteMarkers: globalThis.google.maps.marker.AdvancedMarkerElement[];
+let operatorMarkers: globalThis.google.maps.marker.AdvancedMarkerElement[];
+let divePathPoly: globalThis.google.maps.Polyline | null;
 
 // Toronto, Ontario... for now
 const DefaultCenter = { lat: 43.70011, lon: -79.4163 };
@@ -38,10 +44,13 @@ const DefaultCenter = { lat: 43.70011, lon: -79.4163 };
 const props = withDefaults(defineProps<GoogleMapProps>(), {
   disabled: false,
   sites: () => [],
+  operators: () => [],
+  zoom: 5,
 });
 const emit = defineEmits<{
   (e: 'click', location: GpsCoordinates): void;
   (e: 'site-selected', site: DiveSiteDTO): void;
+  (e: 'operator-selected', site: OperatorDTO): void;
 }>();
 
 const currentCenter = ref<GpsCoordinates>(
@@ -50,7 +59,9 @@ const currentCenter = ref<GpsCoordinates>(
 
 function createSiteMarkers(sites: DiveSiteDTO[]) {
   if (map) {
-    if (siteMarkers) siteMarkers.forEach((siteMarker) => siteMarker.remove());
+    siteMarkers?.forEach((siteMarker) => {
+      siteMarker.map = null;
+    });
     siteMarkers = sites
       .filter((site) => !!site.gps)
       .map((site) => {
@@ -112,6 +123,72 @@ function createSiteMarkers(sites: DiveSiteDTO[]) {
   }
 }
 
+function createOperatorMarkers(operators: OperatorDTO[]) {
+  if (map) {
+    operatorMarkers?.forEach((operatorMarker) => {
+      operatorMarker.map = null;
+    });
+    operatorMarkers = operators
+      .filter((operator) => !!operator.gps)
+      .map((operator) => {
+        const content = document.createElement('div');
+        content.classList.add(
+          'flex',
+          'items-center',
+          'space-x-1',
+          'pr-0',
+          'z-10',
+          'hover:z-30',
+          'hover:pr-1',
+          'rounded-md',
+          'h-[16px]',
+          'shadow-sm',
+          'bg-grey-200',
+          'group',
+        );
+        const img = document.createElement('img');
+        img.src = '/img/shop.svg';
+        img.alt = operator.name;
+        img.classList.add(
+          'w-[16px]',
+          'h-[16px]',
+          'rounded-md',
+          'shadow-sm',
+          'shadow-danger-hover',
+        );
+
+        const span = document.createElement('span');
+        span.classList.add(
+          'hidden',
+          'group-hover:block',
+          'text-grey-950',
+          'text-xs',
+          'capitalize',
+        );
+        span.textContent = operator.name;
+
+        content.appendChild(img);
+        content.appendChild(span);
+
+        const marker = new markersLib.AdvancedMarkerElement({
+          map,
+          position: new globalThis.google.maps.LatLng(
+            operator.gps!.lat,
+            operator.gps!.lon,
+          ),
+          title: operator.name,
+          content,
+          gmpClickable: true,
+        });
+
+        marker.addListener('click', () => {
+          emit('operator-selected', operator);
+        });
+        return marker;
+      });
+  }
+}
+
 onBeforeMount(async () => {
   const loader = useGoogle();
 
@@ -122,28 +199,13 @@ onBeforeMount(async () => {
   map = new mapsLib.Map(mapElement.value!, {
     mapId: uuid(),
     center: { lat: currentCenter.value.lat, lng: currentCenter.value.lon },
-    zoom: 5,
+    zoom: props.zoom,
     streetViewControl: false,
     fullscreenControl: false,
   });
 
   // Add a click listener to the map
   map.addListener('click', onMapClick);
-
-  if (!props.center && !props.marker && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        currentCenter.value = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-      },
-      (error) => {
-        /* eslint-disable-next-line no-console */
-        console.error('Error getting current position', error);
-      },
-    );
-  }
 
   if (props.marker) {
     markerElement = new markersLib.AdvancedMarkerElement({
@@ -158,6 +220,21 @@ onBeforeMount(async () => {
   }
 
   createSiteMarkers(props.sites);
+
+  if (props.divePath) {
+    divePathPoly = new mapsLib.Polyline({
+      geodesic: true,
+      strokeColor: '#FF0000',
+      visible: true,
+      map,
+      path: props.divePath.map((point) => ({
+        lat: point.lat,
+        lng: point.lon,
+      })),
+    });
+  } else {
+    divePathPoly = null;
+  }
 });
 
 function onMapClick(event: globalThis.google.maps.MapMouseEvent) {
@@ -179,9 +256,12 @@ function moveCenter(newCenter: NonNullable<GpsCoordinates>) {
 watch(
   () => props.marker,
   (newMarker) => {
+    if (markerElement) {
+      markerElement.map = null;
+    }
+
     if (map) {
       if (newMarker) {
-        if (markerElement) markerElement.remove();
         markerElement = new markersLib.AdvancedMarkerElement({
           map,
           position: new globalThis.google.maps.LatLng(
@@ -190,7 +270,6 @@ watch(
           ),
         });
       } else {
-        if (markerElement) markerElement.remove();
         markerElement = null;
       }
     }
@@ -213,5 +292,43 @@ watch(
   },
 );
 
-defineExpose({ moveCenter });
+watch(
+  () => props.operators,
+  (newOperators) => {
+    createOperatorMarkers(newOperators);
+  },
+);
+
+watch(
+  () => props.zoom,
+  (newZoom) => {
+    if (map) {
+      map.setZoom(newZoom);
+    }
+  },
+);
+
+watch(
+  () => props.divePath,
+  (path) => {
+    if (divePathPoly) {
+      divePathPoly.setMap(null);
+    }
+
+    if (path) {
+      divePathPoly = new mapsLib.Polyline({
+        geodesic: true,
+        strokeColor: '#FF0000',
+        visible: true,
+        map,
+        path: path.map((point) => ({
+          lat: point.lat,
+          lng: point.lon,
+        })),
+      });
+    } else {
+      divePathPoly = null;
+    }
+  },
+);
 </script>

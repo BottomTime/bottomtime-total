@@ -36,9 +36,36 @@ export class CertificationsController {
    *       - Certifications
    *     parameters:
    *       - $ref: "#/components/parameters/CertificationQuery"
-   *       - $ref: "#/components/parameters/CertificationAgency"
-   *       - $ref: "#/components/parameters/QuerySkip"
-   *       - $ref: "#/components/parameters/QueryLimit"
+   *       - name: agency
+   *         in: query
+   *         title: Agency
+   *         description: |
+   *           The name (or partial long name) of the agency that offers the certifications to search for.
+   *           Results will be filtered to only include courses offered by this agency.
+   *         schema:
+   *           type: string
+   *           example: ssi
+   *       - name: skip
+   *         in: query
+   *         title: Skip
+   *         description: The number of certifications to skip over before returning results.
+   *         schema:
+   *           type: integer
+   *           format: int32
+   *           minimum: 0
+   *           default: 0
+   *           example: 0
+   *       - name: limit
+   *         in: query
+   *         title: Limit
+   *         description: The maximum number of certifications to return.
+   *         schema:
+   *           type: integer
+   *           format: int32
+   *           minimum: 1
+   *           maximum: 400
+   *           default: 100
+   *           example: 100
    *     responses:
    *       200:
    *         description: The request succeeded and the response body contains the list of certifications matching the search criteria.

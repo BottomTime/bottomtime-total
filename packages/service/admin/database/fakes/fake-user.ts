@@ -20,7 +20,7 @@ const PasswordHash =
 export function fakeUser(): UserEntity {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
-  const username = faker.internet.userName({ firstName, lastName });
+  const username = faker.internet.username({ firstName, lastName });
   const email = faker.internet.email({ firstName, lastName });
 
   const data = new UserEntity();

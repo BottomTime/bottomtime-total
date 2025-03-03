@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Professional associations E2E tests when listing associations will list professional associations 1`] = `
+{
+  "data": [
+    {
+      "agency": {
+        "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+        "logo": "https://www.padi.com",
+        "longName": "Professional Association of Diving Instructors",
+        "name": "PADI",
+        "website": "https://www.padi.com",
+      },
+      "id": "7660e6de-d97e-4819-a15e-c7751f8690dc",
+      "identificationNumber": "CK-13333",
+      "startDate": "2021-01-01",
+      "title": "Instructor",
+    },
+    {
+      "agency": {
+        "id": "d85b955b-04f3-4803-ba74-c31c27bc26de",
+        "logo": "https://www.naui.org",
+        "longName": "National Association of Underwater Instructors",
+        "name": "NAUI",
+        "website": "https://www.naui.org",
+      },
+      "id": "b77ad1ca-0cd9-448b-9be5-b829d9024aa4",
+      "identificationNumber": "abd2324",
+      "startDate": "2022-01-01",
+      "title": "Dive Master",
+    },
+  ],
+  "totalCount": 2,
+}
+`;
+
+exports[`Professional associations E2E tests when retrieving a single association will return the indicated association 1`] = `
+{
+  "agency": {
+    "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+    "logo": "https://www.padi.com",
+    "longName": "Professional Association of Diving Instructors",
+    "name": "PADI",
+    "website": "https://www.padi.com",
+  },
+  "id": "7660e6de-d97e-4819-a15e-c7751f8690dc",
+  "identificationNumber": "CK-13333",
+  "startDate": "2021-01-01",
+  "title": "Instructor",
+}
+`;

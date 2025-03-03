@@ -83,8 +83,13 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
   "logNumber": 42,
   "notes": "This was a great dive!",
   "operator": undefined,
+  "rating": 3.2,
   "site": {
     "averageRating": 3.8,
+    "depth": {
+      "depth": 21.8,
+      "unit": "m",
+    },
     "description": "A wet dive site",
     "gps": {
       "lat": 1,
@@ -99,6 +104,7 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
     "bottomTime": 2700,
     "duration": 3000,
     "entryTime": 1609533296000,
+    "surfaceInterval": undefined,
     "timezone": "America/Los_Angeles",
   },
   "updatedAt": undefined,
@@ -160,6 +166,7 @@ exports[`Log Entry class will return properties correctly 5`] = `
   "bottomTime": 2700,
   "duration": 3000,
   "entryTime": 1609533296000,
+  "surfaceInterval": undefined,
   "timezone": "America/Los_Angeles",
 }
 `;

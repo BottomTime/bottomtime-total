@@ -3,11 +3,7 @@
     class="flex space-x-3 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-sm p-2"
   >
     <div class="w-[32px]">
-      <UserAvatar
-        :avatar="user.avatar ?? undefined"
-        :display-name="user.name || user.username"
-        size="small"
-      />
+      <UserAvatar :profile="user" size="small" />
     </div>
 
     <div class="flex flex-col space-y-1 grow">

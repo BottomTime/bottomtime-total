@@ -1,12 +1,13 @@
-import DiveSitesListItem from '@/components/diveSites/dive-sites-list-item.vue';
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import DiveSitesListItem from 'src/components/diveSites/dive-sites-list-item.vue';
 
 import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,
 } from '../../../fixtures/sites';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 describe('Dive Sites List Item component', () => {
   let pinia: Pinia;
@@ -16,6 +17,9 @@ describe('Dive Sites List Item component', () => {
     pinia = createPinia();
     global = {
       plugins: [pinia],
+      stubs: {
+        StarRating: StarRatingStub,
+      },
     };
   });
 
@@ -47,21 +51,6 @@ describe('Dive Sites List Item component', () => {
 
     expect(wrapper.emitted('site-selected')).toEqual([
       [DiveSiteWithMinimalProperties],
-    ]);
-  });
-
-  it('will emit event when name of creator is clicked', async () => {
-    const wrapper = mount(DiveSitesListItem, {
-      props: { site: DiveSiteWithMinimalProperties },
-      global,
-    });
-
-    await wrapper
-      .get(`[data-testid="site-creator-${DiveSiteWithMinimalProperties.id}"]`)
-      .trigger('click');
-
-    expect(wrapper.emitted('user-selected')).toEqual([
-      [DiveSiteWithMinimalProperties.creator.username],
     ]);
   });
 });

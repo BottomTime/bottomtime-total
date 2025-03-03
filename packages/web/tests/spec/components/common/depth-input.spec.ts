@@ -52,7 +52,8 @@ describe('DepthInput component', () => {
   it('will render with a depth value', () => {
     opts.props = {
       ...BaseProps,
-      modelValue: { depth: 10, unit: DepthUnit.Feet },
+      modelValue: 10,
+      unit: DepthUnit.Feet,
     };
     const wrapper = mount(DepthInput, opts);
     expect(wrapper.get<HTMLInputElement>(DepthInputText).element.value).toBe(
@@ -73,13 +74,14 @@ describe('DepthInput component', () => {
   it('will render in bottomless state if allowBottomless is true and depth is zero', () => {
     opts.props = {
       ...BaseProps,
-      modelValue: { depth: 0, unit: DepthUnit.Meters },
+      modelValue: 0,
+      unit: DepthUnit.Meters,
       allowBottomless: true,
     };
     const wrapper = mount(DepthInput, opts);
 
     const textInput = wrapper.get<HTMLInputElement>(DepthInputText);
-    expect(textInput.element.value).toBe('');
+    expect(textInput.element.value).toBe('0');
     expect(textInput.element.disabled).toBe(true);
 
     const unitButton = wrapper.get<HTMLButtonElement>(UnitButton);
@@ -91,25 +93,11 @@ describe('DepthInput component', () => {
     ).toBe(true);
   });
 
-  it("will default to the current user's preferred depth unit", () => {
-    currentUser.user = {
-      ...BasicUser,
-      settings: {
-        ...BasicUser.settings,
-        depthUnit: DepthUnit.Feet,
-      },
-    };
-    const wrapper = mount(DepthInput, opts);
-    expect(wrapper.get(UnitButton).text()).toBe('ft');
-  });
-
   it('will return an empty string if the field is left blank', async () => {
     opts.props = {
       ...BaseProps,
-      modelValue: {
-        depth: 10,
-        unit: DepthUnit.Feet,
-      },
+      modelValue: 10,
+      unit: DepthUnit.Feet,
     };
     const wrapper = mount(DepthInput, opts);
     await wrapper.get(DepthInputText).setValue('');
@@ -132,9 +120,7 @@ describe('DepthInput component', () => {
     };
     const wrapper = mount(DepthInput, opts);
     await wrapper.find(DepthInputText).setValue('32');
-    expect(wrapper.emitted('update:modelValue')).toEqual([
-      [{ depth: 32, unit: DepthUnit.Feet }],
-    ]);
+    expect(wrapper.emitted('update:modelValue')).toEqual([[32]]);
   });
 
   it('will allow the user to change the depth unit', async () => {
@@ -142,19 +128,21 @@ describe('DepthInput component', () => {
 
     await wrapper.get(DepthInputText).setValue('32');
     await wrapper.get(UnitButton).trigger('click');
+    await wrapper.setProps({ unit: DepthUnit.Feet });
     await wrapper.get(UnitButton).trigger('click');
 
-    expect(wrapper.emitted('update:modelValue')).toEqual([
-      [{ depth: 32, unit: DepthUnit.Meters }],
-      [{ depth: 32, unit: DepthUnit.Feet }],
-      [{ depth: 32, unit: DepthUnit.Meters }],
+    expect(wrapper.emitted('update:modelValue')).toEqual([[32]]);
+    expect(wrapper.emitted('toggle-unit')).toEqual([
+      [DepthUnit.Feet],
+      [DepthUnit.Meters],
     ]);
   });
 
   it('will update the value if the modelValue prop changes', async () => {
     opts.props = {
       ...BaseProps,
-      modelValue: { depth: 22, unit: DepthUnit.Meters },
+      modelValue: 22,
+      unit: DepthUnit.Meters,
     };
     const wrapper = mount(DepthInput, opts);
 
@@ -164,10 +152,8 @@ describe('DepthInput component', () => {
     expect(wrapper.get(UnitButton).text()).toBe('m');
 
     await wrapper.setProps({
-      modelValue: {
-        depth: 10,
-        unit: DepthUnit.Feet,
-      },
+      modelValue: 10,
+      unit: DepthUnit.Feet,
     });
 
     expect(wrapper.get<HTMLInputElement>(DepthInputText).element.value).toBe(
@@ -197,9 +183,7 @@ describe('DepthInput component', () => {
     };
     const wrapper = mount(DepthInput, opts);
     await wrapper.get(BottomlessCheckbox).setValue(true);
-    expect(wrapper.emitted('update:modelValue')).toEqual([
-      [{ depth: 0, unit: DepthUnit.Meters }],
-    ]);
+    expect(wrapper.emitted('update:modelValue')).toEqual([[0]]);
     expect(wrapper.get<HTMLInputElement>(DepthInputText).element.disabled).toBe(
       true,
     );
@@ -212,7 +196,8 @@ describe('DepthInput component', () => {
     opts.props = {
       ...BaseProps,
       allowBottomless: true,
-      modelValue: { depth: 0, unit: DepthUnit.Meters },
+      modelValue: 0,
+      unit: DepthUnit.Meters,
     };
     const wrapper = mount(DepthInput, opts);
     await wrapper.get(BottomlessCheckbox).setValue(false);

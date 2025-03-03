@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
 
-import { Toast } from '../common';
+import { Toast, ToastType } from '../common';
 
 export type ToastWithTimer = Toast & { timer: NodeJS.Timeout };
 
@@ -26,7 +26,23 @@ export const useToasts = defineStore('toasts', () => {
     }
   }
 
+  function success(id: string, message: string) {
+    toast({ id, message, type: ToastType.Success });
+  }
+
+  function info(id: string, message: string) {
+    toast({ id, message, type: ToastType.Info });
+  }
+
+  function warning(id: string, message: string) {
+    toast({ id, message, type: ToastType.Warning });
+  }
+
+  function error(id: string, message: string) {
+    toast({ id, message, type: ToastType.Error });
+  }
+
   const toasts = computed(() => Object.values(toastsData));
 
-  return { toasts, toast, dismissToast };
+  return { toasts, toast, dismissToast, success, info, warning, error };
 });

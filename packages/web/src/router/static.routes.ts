@@ -2,6 +2,7 @@ import { RouteRecordRaw } from 'vue-router';
 
 export const StaticRouteNames = {
   Cookies: 'cookies',
+  Developers: 'developers',
   Home: 'home',
   Privacy: 'privacy',
   ServerError: 'server-error',
@@ -13,6 +14,11 @@ export const StaticRoutes: RouteRecordRaw[] = [
     path: '/cookies',
     name: StaticRouteNames.Cookies,
     component: () => import('../views/cookies-view.vue'),
+  },
+  {
+    path: '/developers',
+    name: StaticRouteNames.Developers,
+    component: () => import('../views/developers-view.vue'),
   },
   {
     path: '/',

@@ -3,11 +3,8 @@
   <BreadCrumbs :items="[{ label: 'Logbook', active: true }]" />
 
   <DrawerPanel
-    :full-screen="
-      state.selectedEntry && username
-        ? `/logbook/${username}/${state.selectedEntry.id}`
-        : undefined
-    "
+    :full-screen="editMode ? '' : selectedEntryUrl"
+    :edit="editMode ? selectedEntryUrl : ''"
     :title="dayjs(state.selectedEntry?.timing.entryTime).format('LLL')"
     :visible="state.showSelectedEntry"
     @close="onCloseLogEntry"
@@ -27,8 +24,33 @@
     <ViewLogbookEntry
       v-else-if="state.selectedEntry"
       :entry="state.selectedEntry"
+      narrow
     />
   </DrawerPanel>
+
+  <ConfirmDialog
+    v-if="state.selectedEntry"
+    confirm-text="Delete"
+    title="Delete Log Entry?"
+    :visible="state.showConfirmDelete"
+    :is-loading="state.isDeleting"
+    dangerous
+    @cancel="onCancelDelete"
+    @confirm="onConfirmDelete"
+  >
+    <p>Are you sure you want to delete the selected log entry?</p>
+
+    <p class="font-bold text-center">
+      {{
+        dayjs(state.selectedEntry.timing.entryTime)
+          .tz(state.selectedEntry.timing.timezone, true)
+          .format('LLL')
+      }}
+      ({{ state.selectedEntry.timing.timezone }})
+    </p>
+
+    <p>This action cannot be undone.</p>
+  </ConfirmDialog>
 
   <RequireAuth :authorizer="state.isAuthorized">
     <template #forbidden>
@@ -87,12 +109,8 @@
     </template>
 
     <template #default>
-      <div v-if="state.isLoading" class="flex justify-center my-8 text-xl">
-        <LoadingSpinner message="Fetching log entries..." />
-      </div>
-
       <div
-        v-if="state.logEntries"
+        v-if="state.isLoading || !!state.logEntries"
         class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5"
       >
         <div>
@@ -102,12 +120,14 @@
         <LogbookEntriesList
           class="col-span-1 lg:col-span-3 xl:col-span-4"
           :edit-mode="editMode"
-          :entries="state.logEntries"
+          :entries="state.logEntries ?? { data: [], totalCount: 0 }"
           :is-loading="state.isLoading"
           :is-loading-more="state.isLoadingMoreEntries"
           @load-more="onLoadMore"
           @select="onSelectLogEntry"
           @sort-order-changed="onSortOrderChanged"
+          @edit="onEdit"
+          @delete="onDelete"
         />
       </div>
 
@@ -136,26 +156,28 @@ import { useRoute, useRouter } from 'vue-router';
 import { useClient } from '../../api-client';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import DrawerPanel from '../../components/common/drawer-panel.vue';
-import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NavLink from '../../components/common/nav-link.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth2.vue';
+import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import LogbookEntriesList from '../../components/logbook/logbook-entries-list.vue';
 import LogbookSearch from '../../components/logbook/logbook-search.vue';
 import ViewLogbookEntry from '../../components/logbook/view-logbook-entry.vue';
 import { useOops } from '../../oops';
-import { useCurrentUser } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface LogbookViewState {
   currentProfile?: ProfileDTO;
   isAuthorized: boolean;
+  isDeleting: boolean;
   isLoading: boolean;
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
   logEntries?: ApiList<LogEntryDTO>;
   queryParams: ListLogEntriesParamsDTO;
   selectedEntry?: LogEntryDTO | null;
+  showConfirmDelete: boolean;
   showSelectedEntry: boolean;
 }
 
@@ -164,6 +186,7 @@ const currentUser = useCurrentUser();
 const oops = useOops();
 const route = useRoute();
 const router = useRouter();
+const toasts = useToasts();
 
 const username = computed(() =>
   typeof route.params.username === 'string' ? route.params.username : '',
@@ -192,11 +215,21 @@ function parseQueryParams(): ListLogEntriesParamsDTO {
 
 const state = reactive<LogbookViewState>({
   isAuthorized: true,
+  isDeleting: false,
   isLoading: false,
   isLoadingLogEntry: false,
   isLoadingMoreEntries: false,
   queryParams: parseQueryParams(),
+  showConfirmDelete: false,
   showSelectedEntry: false,
+});
+
+const selectedEntryUrl = computed(() => {
+  if (state.selectedEntry && username.value) {
+    return `/logbook/${username.value}/${state.selectedEntry.id}`;
+  }
+
+  return '';
 });
 
 async function refresh(): Promise<void> {
@@ -293,14 +326,17 @@ async function onSearch(options: ListLogEntriesParamsDTO) {
   state.queryParams.query = options.query || undefined;
   state.queryParams.startDate = options.startDate || undefined;
   state.queryParams.endDate = options.endDate || undefined;
+  state.queryParams.location = options.location || undefined;
+  state.queryParams.radius = options.radius || undefined;
+  state.queryParams.minRating = options.minRating || undefined;
+  state.queryParams.maxRating = options.maxRating || undefined;
 
   await router.push({
     path: route.path,
-    query: {
-      ...JSON.parse(JSON.stringify(state.queryParams)),
-      skip: undefined,
-    },
+    query: client.logEntries.searchQueryString(options),
   });
+
+  await refresh();
 }
 
 async function onSortOrderChanged(
@@ -312,12 +348,52 @@ async function onSortOrderChanged(
 
   await router.push({
     path: route.path,
-    query: JSON.parse(
-      JSON.stringify({
-        ...state.queryParams,
-        skip: undefined,
-      }),
-    ),
+    query: client.logEntries.searchQueryString(state.queryParams),
   });
+
+  await refresh();
+}
+
+async function onEdit(selectedEntry: LogEntryDTO): Promise<void> {
+  if (currentUser.user) {
+    await router.push(
+      `/logbook/${currentUser.user.username}/${selectedEntry.id}`,
+    );
+  }
+}
+
+function onDelete(selectedEntry: LogEntryDTO): void {
+  state.selectedEntry = selectedEntry;
+  state.showConfirmDelete = true;
+}
+
+function onCancelDelete() {
+  state.showConfirmDelete = false;
+}
+
+async function onConfirmDelete(): Promise<void> {
+  state.isDeleting = true;
+
+  await oops(async () => {
+    if (!currentUser.user || !state.selectedEntry) return;
+    await client.logEntries.deleteLogEntry(
+      currentUser.user.username,
+      state.selectedEntry.id,
+    );
+
+    if (state.logEntries) {
+      const index = state.logEntries.data.findIndex(
+        (entry) => entry.id === state.selectedEntry?.id,
+      );
+      if (index > -1) {
+        state.logEntries.data.splice(index, 1);
+      }
+    }
+
+    state.showConfirmDelete = false;
+    toasts.success('entry-deleted', 'Log entry has been deleted.');
+  });
+
+  state.isDeleting = false;
 }
 </script>

@@ -9,6 +9,9 @@ import {
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { FeaturesServiceKey } from 'src/featrues';
+import { ConfigCatClientMock } from 'tests/config-cat-client-mock';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 import { Router } from 'vue-router';
 
 import FormCheckbox from '../../../../src/components/common/form-checkbox.vue';
@@ -28,6 +31,7 @@ const SortOrderSelect = '[data-testid="entries-sort-order"]';
 describe('LogbookEntriesList component', () => {
   let entryData: ApiList<LogEntryDTO>;
   let router: Router;
+  let features: ConfigCatClientMock;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -35,7 +39,11 @@ describe('LogbookEntriesList component', () => {
 
   beforeAll(() => {
     router = createRouter();
-    entryData = ListLogEntriesResponseSchema.parse(TestData);
+    features = new ConfigCatClientMock({});
+    entryData = ListLogEntriesResponseSchema.parse({
+      data: TestData.data.slice(0, 10),
+      totalCount: TestData.totalCount,
+    });
   });
 
   beforeEach(() => {
@@ -44,6 +52,12 @@ describe('LogbookEntriesList component', () => {
     opts = {
       global: {
         plugins: [pinia, router],
+        provide: {
+          [FeaturesServiceKey as symbol]: features,
+        },
+        stubs: {
+          StarRating: StarRatingStub,
+        },
       },
     };
   });
@@ -67,13 +81,13 @@ describe('LogbookEntriesList component', () => {
       entries: entryData,
     };
     const wrapper = mount(LogbookEntriesList, opts);
-    expect(wrapper.get(EntriesCount).text()).toBe('Showing 50 of 1400 entries');
+    expect(wrapper.get(EntriesCount).text()).toBe('Showing 10 of 1400 entries');
     expect(wrapper.find(EmptyListMessage).exists()).toBe(false);
     expect(wrapper.find(LoadMoreButton).isVisible()).toBe(true);
 
     const items = wrapper.findAllComponents(LogbookEntriesListItem);
 
-    expect(items).toHaveLength(50);
+    expect(items).toHaveLength(entryData.data.length);
     items.forEach((item, index) => {
       expect(
         item
@@ -91,13 +105,13 @@ describe('LogbookEntriesList component', () => {
       },
     };
     const wrapper = mount(LogbookEntriesList, opts);
-    expect(wrapper.get(EntriesCount).text()).toBe('Showing 50 of 50 entries');
+    expect(wrapper.get(EntriesCount).text()).toBe('Showing 10 of 10 entries');
     expect(wrapper.find(EmptyListMessage).exists()).toBe(false);
     expect(wrapper.find(LoadMoreButton).exists()).toBe(false);
 
     const items = wrapper.findAllComponents(LogbookEntriesListItem);
 
-    expect(items).toHaveLength(50);
+    expect(items).toHaveLength(entryData.data.length);
     items.forEach((item, index) => {
       expect(
         item
@@ -150,18 +164,18 @@ describe('LogbookEntriesList component', () => {
     expect(wrapper.findComponent(FormCheckbox).exists()).toBe(false);
   });
 
-  it('will bubble up select events from list items', () => {
+  it('will bubble up highlight events from list items', () => {
     opts.props = {
       entries: entryData,
     };
     const wrapper = mount(LogbookEntriesList, opts);
     const item = wrapper.getComponent(LogbookEntriesListItem);
-    item.vm.$emit('select', entryData.data[0]);
+    item.vm.$emit('highlight', entryData.data[0]);
 
     expect(wrapper.emitted('select')).toEqual([[entryData.data[0]]]);
   });
 
-  it('will show Create Entry and Import Entry buttons if the user is logged in and the list is in edit mode', () => {
+  it('will show Create Entry button if the user is logged in and the list is in edit mode', () => {
     currentUser.user = BasicUser;
     opts.props = {
       entries: entryData,
@@ -176,17 +190,9 @@ describe('LogbookEntriesList component', () => {
     expect(addEntry.element.href).toBe(
       `http://localhost/logbook/${BasicUser.username}/new`,
     );
-
-    const importEntries = wrapper.get<HTMLAnchorElement>(
-      '[data-testid="import-entries"]',
-    );
-    expect(importEntries.isVisible()).toBe(true);
-    expect(importEntries.element.href).toBe(
-      `http://localhost/importLogs/${BasicUser.username}`,
-    );
   });
 
-  it('will hide Add Entry and Import Entries buttons if the user is not authenticated', () => {
+  it('will hide Create Entry button if the user is not authenticated', () => {
     currentUser.user = null;
     opts.props = {
       entries: entryData,
@@ -197,7 +203,7 @@ describe('LogbookEntriesList component', () => {
     expect(wrapper.find('[data-testid="import-entries"]').exists()).toBe(false);
   });
 
-  it('will hide Add Entry and Import Entries buttons if the list is not in edit mode', () => {
+  it('will hide Create Entry button if the list is not in edit mode', () => {
     currentUser.user = BasicUser;
     opts.props = {
       entries: entryData,

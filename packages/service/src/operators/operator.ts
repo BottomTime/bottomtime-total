@@ -13,7 +13,6 @@ import {
 
 import { ConflictException, HttpException } from '@nestjs/common';
 
-import { DiveSiteFactory } from 'src/diveSites';
 import { MoreThan, Not, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
@@ -21,12 +20,16 @@ import {
   OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
+  OperatorTeamMemberEntity,
+  UserEntity,
 } from '../data';
-import { User } from '../users';
+import { DiveSiteFactory } from '../diveSites';
+import { User, UserFactory } from '../users';
 import { OperatorReview } from './operator-review';
 import { OperatorReviewQueryBuilder } from './operator-review-query-builder';
 import { OperatorSites } from './operator-sites';
 import { OperatorSocials } from './operator-socials';
+import { OperatorTeamMembers } from './operator-team-members';
 
 export type ListOperatorReviewsOptions = {
   creator?: User;
@@ -41,11 +44,17 @@ export class Operator {
   readonly socials: OperatorSocials;
   private newSlug: string | undefined;
 
+  readonly sites: OperatorSites;
+  readonly teamMembers: OperatorTeamMembers;
+
   constructor(
     private readonly operators: Repository<OperatorEntity>,
     private readonly operatorDiveSites: Repository<OperatorDiveSiteEntity>,
     private readonly reviews: Repository<OperatorReviewEntity>,
+    private readonly members: Repository<OperatorTeamMemberEntity>,
+    private readonly users: Repository<UserEntity>,
     private readonly siteFacotry: DiveSiteFactory,
+    private readonly userFactory: UserFactory,
     private readonly data: OperatorEntity,
   ) {
     this.socials = new OperatorSocials(this.data);
@@ -55,9 +64,13 @@ export class Operator {
       this.siteFacotry,
       this.data,
     );
+    this.teamMembers = new OperatorTeamMembers(
+      this.members,
+      this.users,
+      this.userFactory,
+      this.data,
+    );
   }
-
-  readonly sites: OperatorSites;
 
   get id(): string {
     return this.data.id;

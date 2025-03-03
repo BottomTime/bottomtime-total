@@ -14,11 +14,12 @@ import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
 import { FriendshipEntity, UserEntity } from '../../../src/data';
-import { User, UsersService } from '../../../src/users';
+import { User, UserFactory, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import SearchData from '../../fixtures/user-search-data.json';
 import { createTestUser, parseUserJSON } from '../../utils';
 import { createTestFriendship } from '../../utils/create-test-friendship';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 const TestUserData: Partial<UserEntity> = {
   id: '4e64038d-0abf-4c1a-b678-55f8afcb6b2d',
@@ -34,18 +35,20 @@ jest.mock('bcryptjs');
 describe('Users Service', () => {
   let Users: Repository<UserEntity>;
   let Friends: Repository<FriendshipEntity>;
+  let userFactory: UserFactory;
   let service: UsersService;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     Friends = dataSource.getRepository(FriendshipEntity);
-    service = new UsersService(Users);
+    userFactory = createUserFactory();
+    service = new UsersService(Users, userFactory);
   });
 
   describe('when retrieving users', () => {
     it('will retrieve a user by id', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(Users, userDocument);
+      const expected = userFactory.createUser(userDocument);
 
       await Users.save(userDocument);
       const actual = await service.getUserById(userDocument.id);
@@ -55,7 +58,7 @@ describe('Users Service', () => {
 
     it('will retrieve a user by username', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(Users, userDocument);
+      const expected = userFactory.createUser(userDocument);
 
       await Users.save(userDocument);
       const actual = await service.getUserByUsernameOrEmail(
@@ -67,7 +70,7 @@ describe('Users Service', () => {
 
     it('will retrieve a user by email', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(Users, userDocument);
+      const expected = userFactory.createUser(userDocument);
 
       await Users.save(userDocument);
       const actual = await service.getUserByUsernameOrEmail(

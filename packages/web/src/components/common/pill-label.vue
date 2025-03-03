@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`inline-block ${bgColor} rounded-full px-2 h-6 flex items-center w-fit shadow-sm shadow-grey-600 text-xs`"
+    :class="`inline-block ${bgColor} rounded-full px-2 h-5 flex items-center min-w-fit shadow-sm shadow-grey-600 text-xs`"
   >
     <slot></slot>
   </div>

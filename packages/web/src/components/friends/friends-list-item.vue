@@ -3,11 +3,7 @@
     class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center"
   >
     <div class="min-w-[64px]">
-      <UserAvatar
-        :avatar="friend.avatar"
-        :display-name="friend.name || friend.username"
-        size="medium"
-      />
+      <UserAvatar :profile="friend" size="medium" />
     </div>
 
     <div class="grow flex flex-col space-y-1">
@@ -29,27 +25,43 @@
         </span>
       </p>
 
-      <div class="flex flex-col xl:flex-row space-x-0 xl:space-x-3">
-        <p class="flex space-x-2">
-          <span class="font-bold min-w-20 text-right">Friends for:</span>
-          <span class="w-36">
-            {{ dayjs(friend.friendsSince).fromNow(true) }}
-          </span>
-        </p>
+      <div class="grid grid-cols-2 lg:grid-cols-4">
+        <div class="text-center">
+          <label class="font-bold">Friends since</label>
+          <p class="text-sm">
+            {{ dayjs(friend.friendsSince).fromNow() }}
+          </p>
+        </div>
 
-        <p class="flex space-x-2">
-          <span class="font-bold min-w-20 text-right">Member for:</span>
-          <span class="w-36">
-            {{ dayjs(friend.memberSince).fromNow(true) }}
-          </span>
-        </p>
+        <div class="text-center">
+          <label class="font-bold">Member since</label>
+          <p class="text-sm">
+            {{ dayjs(friend.memberSince).fromNow() }}
+          </p>
+        </div>
 
-        <p v-if="friend.location" class="flex space-x-2">
-          <span class="font-bold min-w-20 text-right">Location:</span>
-          <span class="w-36">
-            {{ friend.location }}
-          </span>
-        </p>
+        <div class="text-center">
+          <label class="font-bold">Location</label>
+          <p class="text-sm">
+            {{ friend.location || 'Unspecified' }}
+          </p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Pages</label>
+          <p class="text-sm space-x-2">
+            <RouterLink class="space-x-1" :to="`/profile/${friend.username}`">
+              <span>View profile</span>
+            </RouterLink>
+            <RouterLink
+              v-if="friend.logBookSharing !== LogBookSharing.Private"
+              class="space-x-1"
+              :to="`/logbook/${friend.username}`"
+            >
+              <span>View logbook</span>
+            </RouterLink>
+          </p>
+        </div>
       </div>
     </div>
 
@@ -66,10 +78,11 @@
 </template>
 
 <script lang="ts" setup>
-import { FriendDTO } from '@bottomtime/api';
+import { FriendDTO, LogBookSharing } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/relativeTime';
+import { RouterLink } from 'vue-router';
 
 import FormButton from '../common/form-button.vue';
 import UserAvatar from '../users/user-avatar.vue';

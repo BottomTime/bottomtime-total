@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@5.1.2
-  terraform: circleci/terraform@3.5.0
+  aws-cli: circleci/aws-cli@5.2.0
+  terraform: circleci/terraform@3.6.0
 
 commands:
   yarn_install:
@@ -128,6 +128,7 @@ jobs:
             - packages/edge-authenticator/dist/
             - packages/emails/dist/
             - packages/keepalive/dist/
+            - packages/review-aggregates/dist/
             - packages/service/docs/
             - packages/service/dist/
             - packages/web/dist/
@@ -222,11 +223,13 @@ jobs:
           command: |
             aws s3api create-bucket --endpoint-url http://localhost:4566 --bucket media
             aws sqs create-queue  --endpoint-url http://localhost:4566 --queue-name email
+            aws sqs create-queue  --endpoint-url http://localhost:4566 --queue-name reviews
       - run:
           name: Run Tests
           working_directory: packages/service/
           command: |
-            yarn prepare && yarn test --ci
+            yarn prepare
+            yarn test --ci
       - store_test_results:
           path: packages/service/reports/
       - run:

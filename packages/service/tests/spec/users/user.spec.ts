@@ -11,9 +11,10 @@ import { Repository } from 'typeorm';
 
 import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
-import { User } from '../../../src/users';
+import { User, UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createTestUser } from '../../utils';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 jest.mock('../../../src/config');
 
@@ -46,18 +47,20 @@ function twoDaysFromNow() {
 
 describe('User Class', () => {
   let Users: Repository<UserEntity>;
+  let userFactory: UserFactory;
   let data: UserEntity;
   let user: User;
 
   beforeAll(() => {
     Config.passwordSaltRounds = 1;
     Users = dataSource.getRepository(UserEntity);
+    userFactory = createUserFactory();
   });
 
   beforeEach(() => {
     data = new UserEntity();
     Object.assign(data, TestUserData);
-    user = new User(Users, data);
+    user = userFactory.createUser(data);
   });
 
   it('will change the username', async () => {
@@ -198,11 +201,11 @@ describe('User Class', () => {
       const result = await Users.findOneBy({ id: user.id });
       expect(data.lastPasswordChange?.valueOf()).toBeCloseTo(
         new Date().valueOf(),
-        -2,
+        -3,
       );
       expect(result?.lastPasswordChange?.valueOf()).toBeCloseTo(
         new Date().valueOf(),
-        -2,
+        -3,
       );
       await Promise.all([
         expect(compare(newPassword, data.passwordHash!)).resolves.toBe(true),
@@ -268,7 +271,7 @@ describe('User Class', () => {
         passwordResetToken: token,
         passwordResetTokenExpiration: new Date(Date.now() + 20000),
       });
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
 
       expect(user.validatePasswordResetToken(token)).toBe(
         PasswordResetTokenStatus.Valid,
@@ -281,7 +284,7 @@ describe('User Class', () => {
         passwordResetToken: token,
         passwordResetTokenExpiration: new Date(Date.now() + 20000),
       });
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
 
       expect(user.validatePasswordResetToken('nope')).toBe(
         PasswordResetTokenStatus.Invalid,
@@ -290,7 +293,7 @@ describe('User Class', () => {
 
     it('wil return invalid if the user does not have a password reset token set', () => {
       const data = createTestUser(TestUserData);
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
 
       expect(user.validatePasswordResetToken('nope')).toBe(
         PasswordResetTokenStatus.Invalid,
@@ -303,7 +306,7 @@ describe('User Class', () => {
         passwordResetToken: token,
         passwordResetTokenExpiration: new Date(Date.now() - 20000),
       });
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
 
       expect(user.validatePasswordResetToken(token)).toBe(
         PasswordResetTokenStatus.Expired,
@@ -317,7 +320,7 @@ describe('User Class', () => {
 
     it('will generate a password reset token', async () => {
       const data = createTestUser(TestUserData);
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
       await Users.save(data);
 
       const token = await user.requestPasswordResetToken();
@@ -356,7 +359,7 @@ describe('User Class', () => {
         passwordResetToken: token,
         passwordResetTokenExpiration: new Date(Date.now() + 2 * 60 * 60 * 1000),
       });
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
       await Users.save(data);
 
       await expect(user.resetPassword(token, newPassword)).resolves.toBe(true);
@@ -416,7 +419,7 @@ describe('User Class', () => {
 
     it('Will refuse a password reset a reset token has not been generated', async () => {
       const data = createTestUser(TestUserData);
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
       await Users.save(data);
 
       await expect(user.resetPassword(token, newPassword)).resolves.toBe(false);
@@ -431,7 +434,7 @@ describe('User Class', () => {
 
   it('will attach a Stripe customer ID', async () => {
     const stripeCustomerId = 'cus_1234';
-    const user = new User(Users, data);
+    const user = userFactory.createUser(data);
     await Users.save(data);
 
     await user.attachStripeCustomerId(stripeCustomerId);

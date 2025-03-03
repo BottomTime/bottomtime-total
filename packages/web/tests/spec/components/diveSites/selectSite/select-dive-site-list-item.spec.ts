@@ -10,6 +10,7 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 import { Pinia, createPinia } from 'pinia';
 
 import SelectDiveSiteListItem from '../../../../../src/components/diveSites/selectSite/select-dive-site-list-item.vue';
+import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
 
 const PartialDiveSite: DiveSiteDTO = {
   createdOn: new Date('2024-05-27T14:51:25.767Z').valueOf(),
@@ -48,6 +49,9 @@ describe('SelectDiveSiteListItem component', () => {
     opts = {
       global: {
         plugins: [pinia],
+        stubs: {
+          StarRating: StarRatingStub,
+        },
       },
       props: { site: PartialDiveSite },
     };
@@ -60,17 +64,20 @@ describe('SelectDiveSiteListItem component', () => {
 
   it('will render with full site data', () => {
     const wrapper = mount(SelectDiveSiteListItem, {
+      ...opts,
       props: { site: FullDiveSite },
     });
     expect(wrapper.html()).toMatchSnapshot();
   });
 
   it('will show as highlighted when selected property is true', () => {
-    opts.props = {
-      site: PartialDiveSite,
-      selected: true,
-    };
-    const wrapper = mount(SelectDiveSiteListItem, opts);
+    const wrapper = mount(SelectDiveSiteListItem, {
+      ...opts,
+      props: {
+        site: PartialDiveSite,
+        selected: true,
+      },
+    });
     expect(wrapper.html()).toMatchSnapshot();
   });
 

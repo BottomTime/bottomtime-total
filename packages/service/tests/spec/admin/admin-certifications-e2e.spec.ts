@@ -14,8 +14,14 @@ import * as uuid from 'uuid';
 
 import { AdminCertificationsController } from '../../../src/admin/admin-certifications.controller';
 import { CertificationsModule } from '../../../src/certifications';
-import { CertificationEntity, UserEntity } from '../../../src/data';
+import {
+  AgencyEntity,
+  CertificationEntity,
+  UserEntity,
+} from '../../../src/data';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
+import { TestAgencies } from '../../fixtures/agencies';
 import CertificationTestData from '../../fixtures/certifications.json';
 import { createAuthHeader, createTestApp } from '../../utils';
 
@@ -59,6 +65,8 @@ function requestUrl(certificationId?: string): string {
 describe('Certifications End-to-End', () => {
   let app: INestApplication;
   let server: HttpServer;
+
+  let Agencies: Repository<AgencyEntity>;
   let Users: Repository<UserEntity>;
   let Certifications: Repository<CertificationEntity>;
 
@@ -75,12 +83,13 @@ describe('Certifications End-to-End', () => {
       return cert;
     });
 
+    Agencies = dataSource.getRepository(AgencyEntity);
     Users = dataSource.getRepository(UserEntity);
     Certifications = dataSource.getRepository(CertificationEntity);
 
     [app, regularAuthHeader, adminAuthHeader] = await Promise.all([
       createTestApp({
-        imports: [CertificationsModule],
+        imports: [CertificationsModule, UsersModule],
         controllers: [AdminCertificationsController],
       }),
       createAuthHeader(RegularUserId),
@@ -97,7 +106,10 @@ describe('Certifications End-to-End', () => {
     adminUser = new UserEntity();
     Object.assign(adminUser, AdminUserData);
 
-    await Promise.all([Users.save(regularUser), Users.save(adminUser)]);
+    await Promise.all([
+      Agencies.save(TestAgencies),
+      Users.save([regularUser, adminUser]),
+    ]);
   });
 
   afterAll(async () => {
@@ -194,7 +206,7 @@ describe('Certifications End-to-End', () => {
 
   describe('when creating a certification', () => {
     const createData = {
-      agency: 'BSAC',
+      agency: TestAgencies[1].id,
       course: 'Intro to Underwater Stuff',
     };
 
@@ -212,10 +224,14 @@ describe('Certifications End-to-End', () => {
         .expect(201);
       expect(body).toMatchSnapshot();
 
-      const result = await Certifications.findOneBy({ id: body.id });
+      const result = await Certifications.findOne({
+        where: { id: body.id },
+        relations: ['agency'],
+      });
       expect(result).toEqual({
         id: body.id,
-        ...createData,
+        course: createData.course,
+        agency: TestAgencies[1],
       });
     });
 
@@ -252,7 +268,7 @@ describe('Certifications End-to-End', () => {
 
   describe('when updating a certification', () => {
     const updateData = {
-      agency: 'BSAC',
+      agency: TestAgencies[2].id,
       course: 'Advanced Reef Identification',
     };
     let updateUrl: string;
@@ -274,10 +290,14 @@ describe('Certifications End-to-End', () => {
 
       expect(body).toMatchSnapshot();
 
-      const result = await Certifications.findOneBy({ id: certData[7].id });
+      const result = await Certifications.findOne({
+        where: { id: certData[7].id },
+        relations: ['agency'],
+      });
       expect(result).toEqual({
         id: certData[7].id,
-        ...updateData,
+        course: updateData.course,
+        agency: TestAgencies[2],
       });
     });
 

@@ -1,8 +1,14 @@
 import { OperatorDTO, VerificationStatus } from '@bottomtime/api';
 
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { createRouter } from 'tests/fixtures/create-router';
+import { Router } from 'vue-router';
 
 import OperatorslistItem from '../../../../src/components/operators/operators-list-item.vue';
 import { useCurrentUser } from '../../../../src/store';
@@ -41,18 +47,33 @@ const FullTestData: OperatorDTO = {
 };
 
 describe('OperatorsListItem component', () => {
+  let router: Router;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof OperatorslistItem>;
 
-  beforeEach(() => {
+  beforeAll(() => {
+    router = createRouter([
+      {
+        path: '/',
+        component: { template: '<div></div>' },
+      },
+      {
+        path: '/shops/:operatorKey',
+        component: { template: '<div></div>' },
+      },
+    ]);
+  });
+
+  beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     opts = {
       global: {
-        plugins: [pinia],
+        plugins: [pinia, router],
       },
     };
+    await router.push('/');
   });
 
   it('will render with minimal properties', () => {
@@ -95,7 +116,7 @@ describe('OperatorsListItem component', () => {
     expect(wrapper.emitted('select')).toEqual([[FullTestData]]);
   });
 
-  it('will emit select event when edit button is clicked', async () => {
+  it('will navigate to the edit page when the edit button is clicked', async () => {
     currentUser.user = BasicUser;
     const wrapper = mount(OperatorslistItem, {
       ...opts,
@@ -104,7 +125,9 @@ describe('OperatorsListItem component', () => {
     await wrapper
       .get(`[data-testid="edit-${FullTestData.slug}"]`)
       .trigger('click');
-    expect(wrapper.emitted('select')).toEqual([[FullTestData]]);
+    await flushPromises();
+
+    expect(router.currentRoute.value.path).toBe(`/shops/${FullTestData.slug}`);
   });
 
   it('will emit delete event when delete button is clicked', async () => {

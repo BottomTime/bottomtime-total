@@ -13,24 +13,28 @@ import { resolve } from 'path';
 import { Repository } from 'typeorm';
 
 import {
-  OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
   UserEntity,
 } from '../../../src/data';
-import { CreateOperatorReviewOptions, Operator } from '../../../src/operators';
-import { User } from '../../../src/users';
+import {
+  CreateOperatorReviewOptions,
+  Operator,
+  OperatorFactory,
+} from '../../../src/operators';
+import { UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestReviews from '../../fixtures/operator-reviews.json';
 import TestUsers from '../../fixtures/user-search-data.json';
 import {
-  createDiveSiteFactory,
+  createOperatorFactory,
   createTestDiveOperatorReview,
   createTestOperator,
   createTestUser,
   parseOperatorReviewJSON,
   parseUserJSON,
 } from '../../utils';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 const TestData: OperatorEntity = {
   id: 'f6fc189e-126e-49ac-95aa-c2ffd9a03140',
@@ -69,6 +73,8 @@ describe('Operator class', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
   let Reviews: Repository<OperatorReviewEntity>;
+  let operatorFactory: OperatorFactory;
+  let userFactory: UserFactory;
 
   let owner: UserEntity;
   let otherUser: UserEntity;
@@ -79,6 +85,8 @@ describe('Operator class', () => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
     Reviews = dataSource.getRepository(OperatorReviewEntity);
+    operatorFactory = createOperatorFactory();
+    userFactory = createUserFactory();
 
     owner = createTestUser({
       accountTier: AccountTier.Basic,
@@ -109,13 +117,7 @@ describe('Operator class', () => {
       ...TestData,
       owner,
     };
-    operator = new Operator(
-      Operators,
-      dataSource.getRepository(OperatorDiveSiteEntity),
-      Reviews,
-      createDiveSiteFactory(),
-      data,
-    );
+    operator = operatorFactory.createOperator(data);
   });
 
   it('will return properties correctly', () => {
@@ -325,13 +327,7 @@ describe('Operator class', () => {
     newData.name = 'Different Operator';
     newData.slug = TestData.slug;
     newData.owner = owner;
-    const newOperator = new Operator(
-      Operators,
-      dataSource.getRepository(OperatorDiveSiteEntity),
-      Reviews,
-      createDiveSiteFactory(),
-      newData,
-    );
+    const newOperator = operatorFactory.createOperator(newData);
     await Operators.save(data);
 
     await expect(newOperator.save()).rejects.toThrow(ConflictException);
@@ -368,7 +364,7 @@ describe('Operator class', () => {
   });
 
   it('will transfer ownership to a new user', async () => {
-    const newOwner = new User(Users, otherUser);
+    const newOwner = userFactory.createUser(otherUser);
     await operator.transferOwnership(newOwner);
 
     expect(operator.owner.userId).toEqual(newOwner.id);
@@ -503,7 +499,7 @@ describe('Operator class', () => {
 
       it('will filter reviews by creator', async () => {
         const result = await operator.listReviews({
-          creator: new User(Users, creatorData[3]),
+          creator: userFactory.createUser(creatorData[3]),
         });
         expect({
           data: result.data.map((review) => ({
@@ -578,7 +574,7 @@ describe('Operator class', () => {
     describe('when creating a review', () => {
       it('will submit a new review', async () => {
         const options: CreateOperatorReviewOptions = {
-          creator: new User(Users, creatorData[2]),
+          creator: userFactory.createUser(creatorData[2]),
           rating: 3.88,
           comments: 'This place is okay.',
         };
@@ -606,7 +602,7 @@ describe('Operator class', () => {
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 46),
         });
         const options: CreateOperatorReviewOptions = {
-          creator: new User(Users, creator),
+          creator: userFactory.createUser(creator),
           rating: 3.88,
           comments: 'This place is okay.',
         };

@@ -51,7 +51,7 @@ export class FriendsService {
 
   private static toFriendDTO(friend: FriendshipEntity): FriendDTO {
     return {
-      id: friend.friend.id,
+      userId: friend.user.id,
       username: friend.friend.username,
       memberSince: friend.friend.memberSince.valueOf(),
       friendsSince: friend.friendsSince.valueOf(),
@@ -59,6 +59,7 @@ export class FriendsService {
       name: friend.friend.name ?? undefined,
       location: friend.friend.location ?? undefined,
       logBookSharing: friend.friend.logBookSharing,
+      accountTier: friend.friend.accountTier,
     };
   }
 
@@ -82,13 +83,14 @@ export class FriendsService {
       reason: request.reason ?? undefined,
       friendId: friend.id,
       friend: {
-        id: friend.id,
+        userId: friend.id,
         username: friend.username,
         memberSince: friend.memberSince.valueOf(),
         avatar: friend.avatar ?? undefined,
         name: friend.name ?? undefined,
         location: friend.location ?? undefined,
         logBookSharing: friend.logBookSharing,
+        accountTier: friend.accountTier,
       },
     };
   }

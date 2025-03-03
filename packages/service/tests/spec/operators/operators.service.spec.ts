@@ -10,7 +10,7 @@ import {
   CreateOperatorOptions,
   OperatorsService,
 } from '../../../src/operators/operators.service';
-import { User } from '../../../src/users';
+import { User, UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestData from '../../fixtures/operators.json';
 import TestOwners from '../../fixtures/user-search-data.json';
@@ -20,12 +20,14 @@ import {
   parseOperatorJSON,
 } from '../../utils';
 import { createTestUser, parseUserJSON } from '../../utils/create-test-user';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 describe('OperatorService', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
   let operatorFactory: OperatorFactory;
   let service: OperatorsService;
+  let userFactory: UserFactory;
 
   let owner: User;
 
@@ -34,6 +36,7 @@ describe('OperatorService', () => {
     Operators = dataSource.getRepository(OperatorEntity);
 
     operatorFactory = createOperatorFactory();
+    userFactory = createUserFactory();
 
     service = new OperatorsService(Operators, operatorFactory);
   });
@@ -48,7 +51,7 @@ describe('OperatorService', () => {
       location: 'Toronto, ON, Canada',
       name: 'Test User',
     });
-    owner = new User(Users, userData);
+    owner = userFactory.createUser(userData);
     await Users.save(userData);
   });
 
@@ -278,7 +281,7 @@ describe('OperatorService', () => {
 
     it('will perform a search for dive operators with a specific owner', async () => {
       const results = await service.searchOperators({
-        owner: new User(Users, owners[2]),
+        owner: userFactory.createUser(owners[2]),
       });
 
       expect(results.data).toHaveLength(3);

@@ -1,85 +1,101 @@
 <template>
-  <div
-    v-if="data.data.length === 0"
-    class="text-center text-lg m-6"
-    data-testid="no-results"
-  >
-    <span class="mr-2">
-      <i class="fas fa-exclamation-circle"></i>
-    </span>
-    <span class="italic">
-      No sites were found matching your search criteria.
-    </span>
-  </div>
-
   <!-- Dive sites list -->
-  <div v-else class="mx-2 mt-3">
+  <div class="mx-2 mt-3 space-y-2">
     <!-- Dive site entries -->
-    <div class="flex justify-center w-full">
-      <div class="w-full lg:w-[600px]">
-        <GoogleMap :sites="data.data" @site-selected="onMapClicked" />
+    <div v-if="showMap" class="w-full">
+      <div class="mx-auto w-auto md:w-[640px] aspect-video">
+        <GoogleMap :sites="sites.data" @site-selected="onMapClicked" />
       </div>
     </div>
 
-    <div
-      class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-3"
-      data-testid="sites-list-content"
-    >
+    <TransitionList class="px-2" data-testid="sites-list-content">
+      <li
+        v-if="sites.data.length === 0"
+        key="No Sites"
+        class="text-center text-lg m-6"
+        data-testid="no-results"
+      >
+        <span class="mr-2">
+          <i class="fas fa-exclamation-circle"></i>
+        </span>
+        <span class="italic">
+          No sites were found matching your search criteria.
+        </span>
+      </li>
+
       <DiveSitesListItem
-        v-for="site in data.data"
+        v-for="site in sites.data"
+        ref="items"
         :key="site.id"
         :site="site"
+        :selectable="multiSelect"
         @site-selected="$emit('site-selected', site)"
+        @toggle-selection="onToggleSiteSelected"
       />
-    </div>
 
-    <div v-if="canLoadMore" class="text-center font-bold text-lg">
-      <p v-if="isLoadingMore" data-testid="loading-more" class="p-2">
-        <span>
-          <i class="fas fa-spinner fa-spin"></i>
-        </span>
-        <span> Loading...</span>
-      </p>
-      <FormButton
-        v-else
-        type="link"
-        size="lg"
-        test-id="load-more"
-        @click="$emit('load-more')"
-      >
-        Load more...
-      </FormButton>
-    </div>
+      <li v-if="canLoadMore" key="Load More" class="text-center text-lg my-8">
+        <LoadingSpinner
+          v-if="isLoadingMore"
+          data-testid="loading-more"
+          message="Loading more sites..."
+        />
+        <a
+          v-else
+          class="space-x-1"
+          data-testid="load-more"
+          @click="$emit('load-more')"
+        >
+          <span>
+            <i class="fa-solid fa-arrow-down"></i>
+          </span>
+          <span>Load more</span>
+        </a>
+      </li>
+    </TransitionList>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ApiList, DiveSiteDTO } from '@bottomtime/api';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
-import FormButton from '../common/form-button.vue';
+import { Selectable } from '../../common';
 import GoogleMap from '../common/google-map.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
+import TransitionList from '../common/transition-list.vue';
 import DiveSitesListItem from './dive-sites-list-item.vue';
 
 type DiveSitesListProps = {
-  data: ApiList<DiveSiteDTO>;
+  sites: ApiList<Selectable<DiveSiteDTO>>;
   isLoadingMore?: boolean;
+  multiSelect?: boolean;
+  showMap?: boolean;
 };
 
 const props = withDefaults(defineProps<DiveSitesListProps>(), {
   isLoadingMore: false,
+  multiSelect: false,
+  showMap: true,
 });
 const emit = defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
   (e: 'load-more'): void;
 }>();
 
+const items = ref<InstanceType<typeof DiveSitesListItem>[]>([]);
+
 const canLoadMore = computed(
-  () => props.data.data.length < props.data.totalCount,
+  () => props.sites.data.length < props.sites.totalCount,
 );
 
 function onMapClicked(site: DiveSiteDTO) {
+  const item = items.value.find((i) => i.$props.site.id === site.id);
+  item?.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   emit('site-selected', site);
+}
+
+function onToggleSiteSelected(site: Selectable<DiveSiteDTO>) {
+  site.selected = !site.selected;
 }
 </script>

@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 
 import { FriendshipEntity, UserEntity } from '../../../src/data';
 import { EventsModule } from '../../../src/events';
-import { UsersService } from '../../../src/users';
+import { UserFactory, UsersService } from '../../../src/users';
 import { UsersController } from '../../../src/users/users.controller';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
@@ -31,7 +31,7 @@ describe('Searching Profiles E2E Tests', () => {
     authHeader = await createAuthHeader(users[0].id);
     app = await createTestApp({
       imports: [TypeOrmModule.forFeature([UserEntity]), EventsModule],
-      providers: [UsersService],
+      providers: [UsersService, UserFactory],
       controllers: [UsersController],
     });
     server = app.getHttpServer();

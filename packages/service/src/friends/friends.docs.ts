@@ -14,47 +14,8 @@
  *
  *   schemas:
  *     Friend:
- *       type: object
- *       required:
- *         - id
- *         - username
- *         - memberSince
- *       properties:
- *         id:
- *           title: ID
- *           type: string
- *           format: uuid
- *           description: The friend's unique ID.
- *           example: 00000000-0000-0000-0000-000000000000
- *         username:
- *           title: Username
- *           type: string
- *           pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
- *           description: The friend's unique username.
- *           example: friend.mcfriendface
- *         memberSince:
- *           title: Member Since
- *           type: integer
- *           format: int64
- *           description: The date and time the friend joined Bottom Time. (Specified in milliseconds since Unix Epoch time.)
- *           example: 1630000000000
- *         avatar:
- *           title: Avatar
- *           type: string
- *           format: uri
- *           description: The URL of the friend's avatar.
- *           example: https://example.com/avatar.png
- *         name:
- *           title: Name
- *           type: string
- *           description: The friend's name.
- *           example: Friend McFriendface
- *         location:
- *           title: Location
- *           type: string
- *           description: The friend's location.
- *           example: Seattle, WA
- *
+ *       allOf:
+ *         - $ref: "#/components/schemas/SuccinctProfile"
  *     FriendWithFriendsSince:
  *       allOf:
  *         - $ref: "#/components/schemas/Friend"

@@ -109,15 +109,15 @@ exports[`Dive Site Service when searching dive sites Will sort by rating in asc 
     "rating": 1.05,
   },
   {
+    "name": "sniveling weepy temporariness",
+    "rating": 1.07,
+  },
+  {
     "name": "utter extraneous calm",
     "rating": 1.07,
   },
   {
     "name": "voluminous good-natured antiquity",
-    "rating": 1.07,
-  },
-  {
-    "name": "sniveling weepy temporariness",
     "rating": 1.07,
   },
   {
@@ -531,6 +531,38 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "waterType": "mixed",
   },
   {
+    "averageDifficulty": 4.66,
+    "averageRating": undefined,
+    "createdOn": 1673554964054,
+    "creator": {
+      "accountTier": 0,
+      "avatar": "https://example.com/other-avatar.jpg",
+      "location": "Toronto, ON",
+      "logBookSharing": "public",
+      "memberSince": 1704720298620,
+      "name": "Other User",
+      "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac2",
+      "username": "Other.User",
+    },
+    "depth": {
+      "depth": 30.17,
+      "unit": "m",
+    },
+    "description": "Depulso cultura uxor abstergo quia admitto censura adopto. Reiciendis cilicium usque. Tabernus careo vapulus conspergo.",
+    "directions": "Assumenda succurro modi benigne commodi. Ipsam apparatus comptus. Articulus taceo demergo optio aliquam ager.",
+    "freeToDive": true,
+    "gps": {
+      "lat": -64.1704,
+      "lon": 168.3115,
+    },
+    "id": "e763f903-f5aa-4f33-8878-ae73c70417a4",
+    "location": "Lake Napoleon",
+    "name": "cruel wealthy lieu",
+    "shoreAccess": false,
+    "updatedOn": 1697572283619,
+    "waterType": "salt",
+  },
+  {
     "averageDifficulty": 2.69,
     "averageRating": undefined,
     "createdOn": 1690277599550,
@@ -593,38 +625,6 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "shoreAccess": false,
     "updatedOn": 1695664905290,
     "waterType": "mixed",
-  },
-  {
-    "averageDifficulty": 4.66,
-    "averageRating": undefined,
-    "createdOn": 1673554964054,
-    "creator": {
-      "accountTier": 0,
-      "avatar": "https://example.com/other-avatar.jpg",
-      "location": "Toronto, ON",
-      "logBookSharing": "public",
-      "memberSince": 1704720298620,
-      "name": "Other User",
-      "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac2",
-      "username": "Other.User",
-    },
-    "depth": {
-      "depth": 30.17,
-      "unit": "m",
-    },
-    "description": "Depulso cultura uxor abstergo quia admitto censura adopto. Reiciendis cilicium usque. Tabernus careo vapulus conspergo.",
-    "directions": "Assumenda succurro modi benigne commodi. Ipsam apparatus comptus. Articulus taceo demergo optio aliquam ager.",
-    "freeToDive": true,
-    "gps": {
-      "lat": -64.1704,
-      "lon": 168.3115,
-    },
-    "id": "e763f903-f5aa-4f33-8878-ae73c70417a4",
-    "location": "Lake Napoleon",
-    "name": "cruel wealthy lieu",
-    "shoreAccess": false,
-    "updatedOn": 1697572283619,
-    "waterType": "salt",
   },
 ]
 `;

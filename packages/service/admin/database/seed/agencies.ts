@@ -1,0 +1,68 @@
+import { AgencyEntity } from '../../../src/data';
+
+export const SeedAgencies: AgencyEntity[] = [
+  {
+    id: '5ab222fa-3a71-4dbb-908a-92f281c16705',
+    name: 'PADI',
+    longName: 'Professional Association of Diving Instructors',
+    logo: '/img/agencies/padi.png',
+    website: 'https://www.padi.com',
+    ordinal: 1,
+  },
+  {
+    id: '7db437c8-4336-4a7b-b5b8-778f3c69905d',
+    name: 'SSI',
+    longName: 'Scuba Schools International',
+    logo: '/img/agencies/ssi.png',
+    website: 'https://www.divessi.com',
+    ordinal: 2,
+  },
+  {
+    id: '384d9fcb-6050-4760-a441-abc3e22d7e6e',
+    name: 'CMAS',
+    longName: 'Confédération Mondiale des Activités Subaquatiques',
+    logo: '/img/agencies/cmas.png',
+    website: 'https://www.cmas.org',
+    ordinal: 3,
+  },
+  {
+    id: '4967e7e8-dae1-43f8-88d5-f26aa273aba2',
+    name: 'NAUI',
+    longName: 'National Association of Underwater Instructors',
+    logo: '/img/agencies/naui.png',
+    website: 'https://www.naui.org',
+    ordinal: 4,
+  },
+  {
+    id: '04b4cd16-fceb-4692-8acf-cf2d15fac0b5',
+    name: 'BSAC',
+    longName: 'British Sub-Aqua Club',
+    logo: '/img/agencies/bsac.png',
+    website: 'https://www.bsac.com',
+    ordinal: 5,
+  },
+  {
+    id: '0f409465-5d1e-46c6-afcb-ab68843b7ec0',
+    name: 'SDI',
+    longName: 'Scuba Diving International',
+    logo: '/img/agencies/sdi.png',
+    website: 'https://www.tdisdi.com',
+    ordinal: 6,
+  },
+  {
+    id: '8acbfb2d-9546-4c2a-82b5-31b675fdcef8',
+    name: 'RAID',
+    longName: 'Rebreather Association of International Divers',
+    logo: '/img/agencies/raid.png',
+    website: 'https://www.diveraid.com',
+    ordinal: 7,
+  },
+  {
+    id: 'fc1087d3-b58e-4664-9f1c-899a93439432',
+    name: 'TDI',
+    longName: 'Technical Diving International',
+    logo: '/img/agencies/tdi.png',
+    website: 'https://www.tdisdi.com',
+    ordinal: 8,
+  },
+];

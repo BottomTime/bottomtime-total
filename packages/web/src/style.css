@@ -13,8 +13,8 @@ body * {
   @apply transition-colors duration-[35ms];
 }
 
-a {
-  @apply font-bold text-link underline hover:text-link-hover cursor-pointer;
+a:not(.no-style) {
+  @apply font-bold text-link hover:text-link-hover cursor-pointer;
 }
 
 /* 1. declare transition */

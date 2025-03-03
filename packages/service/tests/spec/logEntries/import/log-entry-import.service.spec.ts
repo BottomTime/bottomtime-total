@@ -26,6 +26,7 @@ import {
   createOperatorFactory,
   createTestLogEntryImport,
   createTestLogEntryImportRecord,
+  createUserFactory,
   parseLogEntryImportJSON,
 } from '../../../utils';
 import { createTestUser } from '../../../utils/create-test-user';
@@ -50,6 +51,7 @@ describe('Log Entry Import Service', () => {
   let Users: Repository<UserEntity>;
   let service: LogEntryImportService;
   let importFactory: LogEntryImportFactory;
+  let userFactory: UserFactory;
 
   let ownerData: UserEntity;
   let otherUserData: UserEntity;
@@ -62,8 +64,8 @@ describe('Log Entry Import Service', () => {
     Imports = dataSource.getRepository(LogEntryImportEntity);
     ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
+    userFactory = createUserFactory();
 
-    const userFactory = new UserFactory(Users);
     const entryFactory = new LogEntryFactory(
       Entries,
       EntriesAir,
@@ -87,7 +89,7 @@ describe('Log Entry Import Service', () => {
     });
 
     ownerData = createTestUser(OwnerData);
-    owner = new User(Users, ownerData);
+    owner = userFactory.createUser(ownerData);
     otherUserData = createTestUser(OtherUserData);
     await Users.save([ownerData, otherUserData]);
 
@@ -236,7 +238,7 @@ describe('Log Entry Import Service', () => {
     });
 
     it('will return an empty set if no imports match the criteria', async () => {
-      const someOtherUser = new User(Users, createTestUser());
+      const someOtherUser = userFactory.createUser(createTestUser());
       const results = await service.listImports({
         owner: someOtherUser,
       });

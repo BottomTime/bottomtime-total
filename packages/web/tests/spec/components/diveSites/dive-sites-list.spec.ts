@@ -11,6 +11,7 @@ import { Pinia, createPinia } from 'pinia';
 import DiveSitesListItem from '../../../../src/components/diveSites/dive-sites-list-item.vue';
 import DiveSitesList from '../../../../src/components/diveSites/dive-sites-list.vue';
 import SearchResults from '../../../fixtures/dive-sites-search-results.json';
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 const NoResults = '[data-testid="no-results"]';
 const LoadMore = '[data-testid="load-more"]';
@@ -30,13 +31,16 @@ describe('Dive Sites List component', () => {
     opts = {
       global: {
         plugins: [pinia],
+        stubs: {
+          StarRating: StarRatingStub,
+        },
       },
     };
   });
 
   it('will indicate when there are no results to show', () => {
     opts.props = {
-      data: {
+      sites: {
         data: [],
         totalCount: 0,
       },
@@ -50,7 +54,7 @@ describe('Dive Sites List component', () => {
 
   it('will display the results', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
@@ -68,7 +72,7 @@ describe('Dive Sites List component', () => {
 
   it('will emit the site-selected event when a site is clicked', async () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
@@ -83,19 +87,19 @@ describe('Dive Sites List component', () => {
 
   it('will display load more if some results are not shown', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
     };
     const wrapper = mount(DiveSitesList, opts);
 
-    expect(wrapper.find(LoadMore).isVisible()).toBe(true);
+    expect(wrapper.get(LoadMore).isVisible()).toBe(true);
   });
 
   it('will emit load more event when load more is clicked', async () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
@@ -109,7 +113,7 @@ describe('Dive Sites List component', () => {
 
   it('will not display load more if all results are shown', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: 10,
       },
@@ -121,7 +125,7 @@ describe('Dive Sites List component', () => {
 
   it('will show a loading spinner if actively loading more results', () => {
     opts.props = {
-      data: {
+      sites: {
         data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },

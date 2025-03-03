@@ -1,6 +1,6 @@
 <template>
   <FormBox>
-    <form class="flex flex-col gap-4" @submit.prevent="">
+    <form class="flex flex-col" @submit.prevent="">
       <TextHeading level="h3">Search</TextHeading>
 
       <FormField label="Search query">
@@ -16,7 +16,7 @@
       </FormField>
 
       <FormField label="Location">
-        <FormLocationSelect
+        <FormLocationPicker
           v-model="state.gps"
           test-id="operator-location"
           show-radius
@@ -76,7 +76,6 @@
 <script lang="ts" setup>
 import {
   AccountTier,
-  GpsCoordinates,
   GpsCoordinatesWithRadius,
   SearchOperatorsParams,
   UserRole,
@@ -91,7 +90,7 @@ import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
 import FormField from '../common/form-field.vue';
-import FormLocationSelect from '../common/form-location-select.vue';
+import FormLocationPicker from '../common/form-location-picker.vue';
 import FormSearchBox from '../common/form-search-box.vue';
 import FormSelect from '../common/form-select.vue';
 import TextHeading from '../common/text-heading.vue';
@@ -101,7 +100,7 @@ interface OperatorsSearchProps {
 }
 
 interface OperatorsSearchFormState {
-  gps?: GpsCoordinates | GpsCoordinatesWithRadius;
+  gps?: GpsCoordinatesWithRadius;
   onlyOwnedShops: boolean;
   query: string;
   showInactive: boolean;
@@ -167,7 +166,7 @@ function onSearch() {
     location: state.gps
       ? { lat: state.gps.lat, lon: state.gps.lon }
       : undefined,
-    radius: state.gps && 'radius' in state.gps ? state.gps.radius : undefined,
+    radius: state.gps ? state.gps.radius : undefined,
     showInactive: state.showInactive || undefined,
     verification: state.verificationStatus || undefined,
   });

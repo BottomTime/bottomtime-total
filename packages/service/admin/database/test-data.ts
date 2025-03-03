@@ -6,11 +6,13 @@ import { DataSource, Repository } from 'typeorm';
 import {
   AlertEntity,
   DiveSiteEntity,
+  DiveSiteReviewEntity,
   FriendRequestEntity,
   FriendshipEntity,
   LogEntryEntity,
   NotificationEntity,
   OperatorEntity,
+  OperatorReviewEntity,
   UserEntity,
 } from '../../src/data';
 import { getDataSource } from './data-source';
@@ -24,17 +26,23 @@ import {
   fakeNotification,
   fakeUser,
 } from './fakes';
+import { fakeDiveOperatorReview } from './fakes/fake-dive-operator-review';
+import { fakeDiveSiteReview } from './fakes/fake-dive-site-review';
 
 export type EntityCounts = {
   alerts: number;
   diveOperators: number;
+  diveOperatorReviews: number;
   diveSites: number;
+  diveSiteReviews: number;
   friendRequests: number;
   friends: number;
   logEntries: number;
   notifications: number;
   users: number;
   targetUser?: string;
+  targetDiveSite?: string;
+  targetOperator?: string;
 };
 
 /**
@@ -104,6 +112,21 @@ async function createDiveOperators(
   );
 }
 
+async function createDiveOperatorReviews(
+  OperatorReviews: Repository<OperatorReviewEntity>,
+  userIds: string[],
+  operatorIds: string[],
+  count: number,
+): Promise<void> {
+  await batch(
+    () => fakeDiveOperatorReview(userIds, operatorIds),
+    async (reviews) => {
+      await OperatorReviews.save(reviews);
+    },
+    count,
+  );
+}
+
 async function createDiveSites(
   Sites: Repository<DiveSiteEntity>,
   userIds: string[],
@@ -113,6 +136,21 @@ async function createDiveSites(
     () => fakeDiveSite(userIds),
     async (sites) => {
       await Sites.save(sites);
+    },
+    count,
+  );
+}
+
+async function createDiveSiteReviews(
+  SiteReviews: Repository<DiveSiteReviewEntity>,
+  userIds: string[],
+  siteIds: string[],
+  count: number,
+): Promise<void> {
+  await batch(
+    () => fakeDiveSiteReview(userIds, siteIds),
+    async (reviews) => {
+      await SiteReviews.save(reviews);
     },
     count,
   );
@@ -229,10 +267,12 @@ export async function createTestData(
     const FriendRequests = ds.getRepository(FriendRequestEntity);
     const Friends = ds.getRepository(FriendshipEntity);
     const Operators = ds.getRepository(OperatorEntity);
+    const OperatorReviews = ds.getRepository(OperatorReviewEntity);
     const LogEntries = ds.getRepository(LogEntryEntity);
     const Notifications = ds.getRepository(NotificationEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);
+    const SiteReviews = ds.getRepository(DiveSiteReviewEntity);
 
     console.log('Seeding database (this might take a few minutes!)...');
 
@@ -251,6 +291,23 @@ export async function createTestData(
     if (counts.diveSites > 0) {
       console.log(`Creating ${counts.diveSites} dive sites...`);
       await createDiveSites(Sites, userIds, counts.diveSites);
+    }
+
+    if (counts.diveSiteReviews > 0) {
+      console.log(`Creating ${counts.diveSiteReviews} site reviews...`);
+      const siteIds = (
+        await Sites.find({
+          select: ['id'],
+          where: { id: counts.targetDiveSite },
+          take: 1000,
+        })
+      ).map((site) => site.id);
+      await createDiveSiteReviews(
+        SiteReviews,
+        userIds,
+        siteIds,
+        counts.diveSiteReviews,
+      );
     }
 
     if (counts.alerts > 0) {
@@ -336,6 +393,23 @@ export async function createTestData(
     if (counts.diveOperators > 0) {
       console.log(`Creating ${counts.diveOperators} dive operators...`);
       await createDiveOperators(Operators, userIds, counts.diveOperators);
+    }
+
+    if (counts.diveOperatorReviews > 0) {
+      console.log(`Creating ${counts.diveOperatorReviews} operator reviews...`);
+      const operatorIds = (
+        await Operators.find({
+          select: ['id'],
+          where: { slug: counts.targetOperator?.trim().toLowerCase() },
+          take: 1000,
+        })
+      ).map((operator) => operator.id);
+      await createDiveOperatorReviews(
+        OperatorReviews,
+        userIds,
+        operatorIds,
+        counts.diveOperatorReviews,
+      );
     }
 
     console.log('Finished inserting test data');

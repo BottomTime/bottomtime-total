@@ -5,9 +5,15 @@ import {
   SearchOperatorsResponseSchema,
 } from '@bottomtime/api';
 
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { createRouter } from 'tests/fixtures/create-router';
+import { Router } from 'vue-router';
 
 import OperatorsListItem from '../../../../src/components/operators/operators-list-item.vue';
 import OperatorsList from '../../../../src/components/operators/operators-list.vue';
@@ -22,16 +28,30 @@ const LoadMoreButton = '[data-testid="operators-load-more"]';
 
 describe('OperatorsList component', () => {
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let router: Router;
   let testData: ApiList<OperatorDTO>;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof OperatorsList>;
 
   beforeAll(() => {
-    testData = SearchOperatorsResponseSchema.parse(TestData);
+    router = createRouter([
+      {
+        path: '/',
+        component: { template: '<div></div>' },
+      },
+      {
+        path: '/shops/createNew',
+        component: { template: '<div></div>' },
+      },
+    ]);
+    testData = SearchOperatorsResponseSchema.parse({
+      data: TestData.data.slice(0, 10),
+      totalCount: TestData.totalCount,
+    });
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     opts = {
@@ -42,9 +62,11 @@ describe('OperatorsList component', () => {
         },
       },
       global: {
-        plugins: [pinia],
+        plugins: [pinia, router],
       },
     };
+
+    await router.push('/');
   });
 
   it('will render an empty list', () => {
@@ -156,14 +178,15 @@ describe('OperatorsList component', () => {
     expect(wrapper.find(CreateShopButton).isVisible()).toBe(true);
   });
 
-  it('will emit "create-shop" event when "Create Shop" button is clicked', async () => {
+  it('will navigate to the New Shop page when the Create Shop button is clicked', async () => {
     currentUser.user = {
       ...BasicUser,
       accountTier: AccountTier.ShopOwner,
     };
     const wrapper = mount(OperatorsList, opts);
     await wrapper.get(CreateShopButton).trigger('click');
-    expect(wrapper.emitted('create-shop')).toBeDefined();
+    await flushPromises();
+    expect(router.currentRoute.value.path).toBe('/shops/createNew');
   });
 
   it('will emit "load-more" event when "Load More" button is clicked', async () => {

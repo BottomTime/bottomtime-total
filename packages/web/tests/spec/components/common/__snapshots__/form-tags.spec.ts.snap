@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormTags component when in edit mode will render with no tags 1`] = `
+"<div class="flex flex-wrap gap-2 text-sm">
+  <!--v-if-->
+  <div class="flex flex-wrap gap-2 items-baseline"><button class="flex items-center gap-1 bg-link hover:bg-link-hover px-1.5 py-1 rounded-full"><span><i class="fa-solid fa-plus"></i></span><span>Add</span></button></div>
+</div>"
+`;
+
+exports[`FormTags component when in edit mode will render with tags 1`] = `
+"<div class="flex flex-wrap gap-2 text-sm">
+  <p class="rounded-full flex gap-1 items-center bg-secondary text-grey-900 px-1.5 py-1 shadow-sm shadow-grey-500 cursor-default"><span>#Taggified</span><button class="hover:bg-danger-hover rounded-full px-1" data-testid="btn-remove-tag-Taggified"><i class="fa-solid fa-xmark"></i><span class="sr-only">Remove tag "Taggified"</span></button></p>
+  <p class="rounded-full flex gap-1 items-center bg-secondary text-grey-900 px-1.5 py-1 shadow-sm shadow-grey-500 cursor-default"><span>#Omg Another tag</span><button class="hover:bg-danger-hover rounded-full px-1" data-testid="btn-remove-tag-Omg Another tag"><i class="fa-solid fa-xmark"></i><span class="sr-only">Remove tag "Omg Another tag"</span></button></p>
+  <!--v-if-->
+  <div class="flex flex-wrap gap-2 items-baseline"><button class="flex items-center gap-1 bg-link hover:bg-link-hover px-1.5 py-1 rounded-full"><span><i class="fa-solid fa-plus"></i></span><span>Add</span></button></div>
+</div>"
+`;
+
+exports[`FormTags component when in readonly mode will render with no tags 1`] = `
+"<div class="flex flex-wrap gap-2 text-sm">
+  <p>No tags</p>
+  <!--v-if-->
+</div>"
+`;
+
+exports[`FormTags component when in readonly mode will render with tags 1`] = `
+"<div class="flex flex-wrap gap-2 text-sm">
+  <p class="rounded-full flex gap-1 items-center bg-secondary text-grey-900 px-1.5 py-1 shadow-sm shadow-grey-500 cursor-default"><span>#Taggified</span>
+    <!--v-if-->
+  </p>
+  <p class="rounded-full flex gap-1 items-center bg-secondary text-grey-900 px-1.5 py-1 shadow-sm shadow-grey-500 cursor-default"><span>#Omg Another tag</span>
+    <!--v-if-->
+  </p>
+  <!--v-if-->
+  <!--v-if-->
+</div>"
+`;

@@ -12,8 +12,6 @@ import {
   mount,
 } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
@@ -23,8 +21,7 @@ import { useCurrentUser } from '../../../../src/store';
 import DiveSitesView from '../../../../src/views/sites/dive-sites-view.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import SearchResults from '../../../fixtures/dive-sites-search-results.json';
-
-dayjs.extend(relativeTime);
+import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 describe('Dive Sites View', () => {
   let searchResults: ApiList<DiveSiteDTO>;
@@ -65,6 +62,7 @@ describe('Dive Sites View', () => {
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };
@@ -156,15 +154,17 @@ describe('Dive Sites View', () => {
       .mockResolvedValue(expected);
 
     await wrapper.get('[data-testid="search-dive-sites"]').setValue('cove');
-    await wrapper.get('[data-testid="select-location"]').trigger('click');
-    await wrapper.get('[data-testid="latitude"]').setValue('24.99129899138199');
+    await wrapper.get('[data-testid="location-picker-set"]').trigger('click');
     await wrapper
-      .get('[data-testid="longitude"]')
+      .get('[data-testid="location-picker-lat"]')
+      .setValue('24.99129899138199');
+    await wrapper
+      .get('[data-testid="location-picker-lon"]')
       .setValue('-76.36965622408646');
-    await wrapper.get('[data-testid="confirm-location"]').trigger('click');
+    await wrapper.get('[data-testid="location-picker-save"]').trigger('click');
     await flushPromises();
 
-    await wrapper.get('[data-testid="search-range"]').setValue('150');
+    await wrapper.get('[data-testid="location-picker-radius"]').setValue('150');
     await wrapper.get('[data-testid="rating"]').setValue('3');
     await wrapper.get('[data-testid="difficulty"]').setValue('3.5');
     await wrapper.get('[data-testid="shore-access-false"]').setValue(true);

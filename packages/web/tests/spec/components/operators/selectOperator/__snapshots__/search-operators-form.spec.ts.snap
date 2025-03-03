@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchOperatorsForm component will display a message if there are no results to show 1`] = `"Showing 0 of 0 results."`;
+
+exports[`SearchOperatorsForm component will load more results on request 1`] = `"Showing 20 of 651 results."`;
+
+exports[`SearchOperatorsForm component will perform a basic search based on user's current location 1`] = `"Showing 49 of 651 results."`;
+
+exports[`SearchOperatorsForm component will perform a basic search if user's location cannot be determined 1`] = `"Showing 49 of 651 results."`;
+
+exports[`SearchOperatorsForm component will perform a more robust search 1`] = `"Showing 49 of 651 results."`;

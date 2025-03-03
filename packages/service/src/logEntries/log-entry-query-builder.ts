@@ -1,4 +1,4 @@
-import { LogEntrySortBy, SortOrder } from '@bottomtime/api';
+import { GpsCoordinates, LogEntrySortBy, SortOrder } from '@bottomtime/api';
 
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
@@ -42,6 +42,9 @@ export class LogEntryQueryBuilder {
         'entries.averageDepth',
         'entries.maxDepth',
         'entries.depthUnit',
+
+        'entries.notes',
+        'entries.rating',
 
         'owners.id',
         'owners.accountTier',
@@ -97,6 +100,20 @@ export class LogEntryQueryBuilder {
     return this;
   }
 
+  withLocation(location?: GpsCoordinates, radius?: number): this {
+    if (location) {
+      this.query = this.query.andWhere(
+        'ST_DWithin(sites.gps::geography, ST_MakePoint(:lon, :lat), :distance)',
+        {
+          lon: location.lon,
+          lat: location.lat,
+          distance: (radius ?? 50) * 1000,
+        },
+      );
+    }
+    return this;
+  }
+
   withOwner(ownerId?: string): this {
     if (ownerId) {
       this.query = this.query.andWhere('owners.id = :ownerId', { ownerId });
@@ -104,8 +121,40 @@ export class LogEntryQueryBuilder {
     return this;
   }
 
+  withQuery(query?: string): this {
+    if (query) {
+      this.query = this.query.andWhere(
+        "entries.fulltext @@ websearch_to_tsquery('english', :query) OR sites.fulltext @@ websearch_to_tsquery('english', :query) OR operators.fulltext @@ websearch_to_tsquery('english', :query)",
+        { query },
+      );
+    }
+    return this;
+  }
+
   withPagination(skip?: number, limit?: number): this {
     this.query = this.query.skip(skip ?? 0).take(limit ?? 50);
+    return this;
+  }
+
+  withRatingRange(minRating?: number, maxRating?: number): this {
+    if (minRating && maxRating) {
+      this.query = this.query.andWhere(
+        'entries.rating BETWEEN :minRating AND :maxRating',
+        {
+          minRating,
+          maxRating,
+        },
+      );
+    } else if (minRating) {
+      this.query = this.query.andWhere('entries.rating >= :minRating', {
+        minRating,
+      });
+    } else if (maxRating) {
+      this.query = this.query.andWhere('entries.rating <= :maxRating', {
+        maxRating,
+      });
+    }
+
     return this;
   }
 
@@ -120,6 +169,14 @@ export class LogEntryQueryBuilder {
         this.query = this.query
           .orderBy('entries.logNumber', sortOrderField, 'NULLS LAST')
           .addOrderBy('entries.entryTime', sortOrderField);
+        break;
+
+      case LogEntrySortBy.Rating:
+        this.query = this.query.orderBy(
+          'entries.rating',
+          sortOrderField,
+          'NULLS LAST',
+        );
         break;
 
       case LogEntrySortBy.EntryTime:

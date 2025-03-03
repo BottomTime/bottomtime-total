@@ -14,13 +14,13 @@
 
   <PageTitle title="Dive Sites" />
   <div class="grid gap-6 grid-cols-1 lg:grid-cols-3 xl:grid-cols-5">
-    <FormBox class="w-full">
+    <FormBox class="w-full sticky top-16 z-[40]">
       <SearchDiveSitesForm :params="state.searchParams" @search="onSearch" />
     </FormBox>
 
-    <div class="lg:col-span-2 xl:col-span-4">
+    <div class="col-span-1 lg:col-span-2 xl:col-span-4">
       <FormBox
-        class="flex flex-row gap-2 sticky top-16 items-baseline justify-between shadow-lg z-30"
+        class="flex flex-col justify-between items-center md:flex-row md:justify-between md:items-baseline gap-1 sticky top-28 lg:top-16 shadow-lg z-[40]"
       >
         <p>
           <span>Showing </span>
@@ -44,13 +44,18 @@
             test-id="create-dive-site"
             @click="onCreateSite"
           >
-            Create Site
+            <p class="space-x-1">
+              <span>
+                <i class="fa-solid fa-plus"></i>
+              </span>
+              <span>Create Site</span>
+            </p>
           </FormButton>
         </div>
       </FormBox>
 
       <DiveSitesList
-        :data="state.results"
+        :sites="state.results"
         :is-loading-more="state.isLoadingMore"
         @site-selected="(site) => (state.selectedSite = site)"
         @load-more="onLoadMore"
@@ -142,9 +147,13 @@ const selectedSortOrder = ref(
 );
 
 async function refresh(): Promise<void> {
+  state.isLoading = true;
+
   await oops(async () => {
     state.results = await client.diveSites.searchDiveSites(state.searchParams);
   });
+
+  state.isLoading = false;
 }
 
 async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {

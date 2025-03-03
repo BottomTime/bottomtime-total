@@ -8,9 +8,9 @@ import {
 } from '../../../../src/auth/oauth.service';
 import { verifyOAuth } from '../../../../src/auth/strategies/oauth-helpers';
 import { UserEntity, UserOAuthEntity } from '../../../../src/data';
-import { User, UserFactory, UsersService } from '../../../../src/users';
+import { UserFactory, UsersService } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
-import { createTestUser } from '../../../utils/create-test-user';
+import { createTestUser, createUserFactory } from '../../../utils';
 
 const Provider = 'Shmoogle';
 const ProviderId = '12345';
@@ -28,8 +28,8 @@ describe('OAuth helpers', () => {
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     OAuth = dataSource.getRepository(UserOAuthEntity);
-    userFactory = new UserFactory(Users);
-    usersService = new UsersService(Users);
+    userFactory = createUserFactory();
+    usersService = new UsersService(Users, userFactory);
     service = new OAuthService(usersService, userFactory, OAuth);
   });
 
@@ -48,7 +48,7 @@ describe('OAuth helpers', () => {
 
     describe('when current user is not authenticated', () => {
       it('will return the linked account if it exists', async () => {
-        const expected = new User(Users, user);
+        const expected = userFactory.createUser(user);
         const spy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(expected);
@@ -60,7 +60,7 @@ describe('OAuth helpers', () => {
       });
 
       it('will create a new account if the linked account does not exist', async () => {
-        const expected = new User(Users, user);
+        const expected = userFactory.createUser(user);
         const getSpy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(undefined);
@@ -78,7 +78,7 @@ describe('OAuth helpers', () => {
       });
 
       it('will generate a username if the username is taken', async () => {
-        const expected = new User(Users, user);
+        const expected = userFactory.createUser(user);
         const getSpy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(undefined);
@@ -97,7 +97,7 @@ describe('OAuth helpers', () => {
       });
 
       it('will omit the email address if it is already attached to a different account', async () => {
-        const expected = new User(Users, user);
+        const expected = userFactory.createUser(user);
         const getSpy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(undefined);
@@ -118,7 +118,7 @@ describe('OAuth helpers', () => {
 
     describe('when current user is authenticated', () => {
       it('will link user account to provider account and return the user', async () => {
-        const expected = new User(Users, user);
+        const expected = userFactory.createUser(user);
         const getSpy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(undefined);
@@ -134,10 +134,10 @@ describe('OAuth helpers', () => {
       });
 
       it("will throw an UnauthorizedException if the provider account is already linked to a different user's account", async () => {
-        const currentUser = new User(Users, user);
+        const currentUser = userFactory.createUser(user);
         const spy = jest
           .spyOn(service, 'getOAuthUser')
-          .mockResolvedValue(new User(Users, otherUser));
+          .mockResolvedValue(userFactory.createUser(otherUser));
 
         await expect(
           verifyOAuth(service, options, currentUser),
@@ -147,7 +147,7 @@ describe('OAuth helpers', () => {
       });
 
       it('will link the accounts and return the current user if', async () => {
-        const expected = new User(Users, user);
+        const expected = userFactory.createUser(user);
         const getSpy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(undefined);

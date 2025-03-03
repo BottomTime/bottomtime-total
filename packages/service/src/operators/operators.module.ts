@@ -5,6 +5,8 @@ import {
   OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
+  OperatorTeamMemberEntity,
+  UserEntity,
 } from '../data';
 import { DiveSitesModule } from '../diveSites';
 import { EventsModule } from '../events';
@@ -15,6 +17,7 @@ import { OperatorLogoController } from './operator-logo.controller';
 import { OperatorReviewController } from './operator-review.controller';
 import { OperatorReviewsController } from './operator-reviews.controller';
 import { OperatorSitesController } from './operator-sites.controller';
+import { OperatorTeamController } from './operator-team.controller';
 import { OperatorsController } from './operators.controller';
 import { OperatorsService } from './operators.service';
 
@@ -24,6 +27,8 @@ import { OperatorsService } from './operators.service';
       OperatorEntity,
       OperatorDiveSiteEntity,
       OperatorReviewEntity,
+      OperatorTeamMemberEntity,
+      UserEntity,
     ]),
     StorageModule,
     EventsModule,
@@ -37,6 +42,7 @@ import { OperatorsService } from './operators.service';
     OperatorReviewsController,
     OperatorReviewController,
     OperatorSitesController,
+    OperatorTeamController,
   ],
   exports: [OperatorsService, OperatorFactory],
 })

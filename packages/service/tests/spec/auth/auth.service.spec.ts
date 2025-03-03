@@ -7,9 +7,9 @@ import { Repository } from 'typeorm';
 import { AuthService } from '../../../src/auth';
 import { Config } from '../../../src/config';
 import { InvalidTokenEntity, UserEntity } from '../../../src/data';
-import { User, UsersService } from '../../../src/users';
+import { UserFactory, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
-import { createTestUser } from '../../utils';
+import { createTestUser, createUserFactory } from '../../utils';
 
 const Password = 'XTdc4LG,+5R/QTgb';
 const TestUserData: Partial<UserEntity> = {
@@ -39,6 +39,7 @@ jest.mock('../../../src/config');
 describe('Auth Service', () => {
   let Users: Repository<UserEntity>;
   let InvalidatedTokens: Repository<InvalidTokenEntity>;
+  let userFactory: UserFactory;
   let usersService: UsersService;
   let service: AuthService;
 
@@ -46,7 +47,8 @@ describe('Auth Service', () => {
     Users = dataSource.getRepository(UserEntity);
     InvalidatedTokens = dataSource.getRepository(InvalidTokenEntity);
 
-    usersService = new UsersService(Users);
+    userFactory = createUserFactory();
+    usersService = new UsersService(Users, userFactory);
     service = new AuthService(usersService, InvalidatedTokens);
   });
 
@@ -112,7 +114,7 @@ describe('Auth Service', () => {
     it('will return the user if the token is valid', async () => {
       const user = createTestUser(TestUserData);
       const payload = createJwtPayload(`user|${TestUserData.id}`);
-      const expected = new User(Users, user);
+      const expected = userFactory.createUser(user);
       await Users.save(user);
 
       const actual = await service.validateJwt(payload);
@@ -124,7 +126,7 @@ describe('Auth Service', () => {
   describe('when authenticating a user', () => {
     it('will return a user if username and password match', async () => {
       const userData = createTestUser(TestUserData);
-      const expected = new User(Users, userData);
+      const expected = userFactory.createUser(userData);
       await Users.save(userData);
 
       const actual = await service.authenticateUser(
@@ -141,7 +143,7 @@ describe('Auth Service', () => {
 
     it('will return a user if email and password match', async () => {
       const userData = createTestUser(TestUserData);
-      const expected = new User(Users, userData);
+      const expected = userFactory.createUser(userData);
 
       await Users.save(userData);
       const actual = await service.authenticateUser(
@@ -308,7 +310,7 @@ describe('Auth Service', () => {
   it('will issue a session cookie', async () => {
     const res = createResponse();
     const userData = createTestUser(TestUserData);
-    const user = new User(Users, userData);
+    const user = userFactory.createUser(userData);
 
     await service.issueSessionCookie(user, res);
 

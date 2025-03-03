@@ -1,3 +1,4 @@
+export * from './agency.entity';
 export * from './alert.entity';
 export * from './badge.entity';
 export * from './certification.entity';
@@ -18,8 +19,10 @@ export * from './notification.entity';
 export * from './notification-whitelist.entity';
 export * from './operator-dive-site.entity';
 export * from './operator-review.entity';
+export * from './operator-team-member.entity';
 export * from './operators.entity';
 export * from './tank.entity';
 export * from './user-certification.entity';
 export * from './user-oauth.entity';
+export * from './user-professional-affiliation.entity';
 export * from './user.entity';

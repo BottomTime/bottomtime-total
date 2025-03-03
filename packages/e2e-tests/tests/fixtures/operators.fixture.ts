@@ -22,18 +22,24 @@ export class OperatorsFixture {
     await this.page.getByTestId('slug').fill(data.slug);
     await this.page.getByTestId('description').fill(data.description);
     await this.page.getByTestId('active').setChecked(data.active);
-    await this.page.getByTestId('btn-operator-location').click();
-    await this.page.getByTestId('address-dlg-address').fill(data.address);
+    await this.page.getByTestId('operator-address').fill(data.address);
     if (data.gps) {
+      await this.page.getByTestId('location-picker-set').click();
       await this.page
-        .getByTestId('address-dlg-lat')
+        .getByTestId('location-picker-lat')
         .fill(data.gps.lat.toString());
       await this.page
-        .getByTestId('address-dlg-lon')
+        .getByTestId('location-picker-lon')
         .fill(data.gps.lon.toString());
+      await this.page.getByTestId('location-picker-save').click();
+    } else {
+      const gps = await this.page
+        .getByTestId('location-picker-gps')
+        .innerText();
+      if (gps !== 'Unspecified') {
+        await this.page.getByTestId('location-picker-clear').click();
+      }
     }
-    await this.page.getByTestId('address-dlg-address').fill(data.address);
-    await this.page.getByTestId('address-dlg-confirm').click();
     await this.page.getByTestId('email').fill(data.email || '');
     await this.page.getByTestId('phone').fill(data.phone || '');
     await this.page.getByTestId('website').fill(data.website || '');

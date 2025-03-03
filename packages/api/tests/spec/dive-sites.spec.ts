@@ -82,7 +82,7 @@ describe('Dive Site API client', () => {
           shoreAccess: 'true',
           difficulty: '1,3',
           rating: '3.5,5',
-          location: '47.6,-122.3',
+          location: '47.60000,-122.30000',
           radius: '250',
         },
       },
@@ -91,10 +91,6 @@ describe('Dive Site API client', () => {
         body: searchResults,
       },
     );
-    `
-/api/diveSites?creator=bob&limit=200&query=Puget%20Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250
-/api/diveSites?creator=bob&limit=200&query=Puget%20Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250
-`;
 
     const result = await apiClient.searchDiveSites({
       query: 'Puget Sound',

@@ -93,6 +93,10 @@ exports[`Log entries E2E tests when creating log entries will create and return 
   "notes": "I did a dive!",
   "site": {
     "averageRating": 3.09,
+    "depth": {
+      "depth": 12.86,
+      "unit": "m",
+    },
     "description": "Cui sopor assumenda minus conduco vehemens varius ipsa uredo. Strenuus conculco bis. Capitulus teneo desidero dedecor arbitro voluptatum.",
     "gps": {
       "lat": -57.4046,
@@ -186,28 +190,24 @@ exports[`Log entries E2E tests when creating log entries will return a 400 respo
 exports[`Log entries E2E tests when fetching recent dive operators will allow admins to query the most recent dive operators for any user 1`] = `
 [
   {
-    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
-    "name": "soft, ornery grape",
-  },
-  {
-    "id": "509efe6b-00cd-4393-9017-dec82dc4154a",
-    "name": "vigorous, average goddess",
-  },
-  {
-    "id": "e1282190-0709-4af9-a8b5-043330b342db",
-    "name": "opulent, wilted wheel",
+    "id": "9034a701-68ae-4653-aebd-e5725c9debc4",
+    "name": "athletic, poised cursor",
   },
   {
     "id": "be616b6d-35ec-42c9-a0bc-5d5fecac99e3",
     "name": "fortunate, young chives",
   },
   {
+    "id": "c6a2f063-3876-469d-b479-ed3c67bd3f34",
+    "name": "messy, unimportant accord",
+  },
+  {
     "id": "d18d63a5-3552-4f5e-9379-4c3a4786cbaa",
     "name": "nutty, husky badger",
   },
   {
-    "id": "c6a2f063-3876-469d-b479-ed3c67bd3f34",
-    "name": "messy, unimportant accord",
+    "id": "e1282190-0709-4af9-a8b5-043330b342db",
+    "name": "opulent, wilted wheel",
   },
   {
     "id": "c2f48c4e-cc27-4099-bd0c-00e9d43fc222",
@@ -218,12 +218,16 @@ exports[`Log entries E2E tests when fetching recent dive operators will allow ad
     "name": "shimmering, genuine drama",
   },
   {
-    "id": "9034a701-68ae-4653-aebd-e5725c9debc4",
-    "name": "athletic, poised cursor",
+    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
+    "name": "soft, ornery grape",
   },
   {
     "id": "ba4e0815-6a63-4ad3-9db8-85a1d5469d6f",
     "name": "sure-footed, smoggy acknowledgment",
+  },
+  {
+    "id": "509efe6b-00cd-4393-9017-dec82dc4154a",
+    "name": "vigorous, average goddess",
   },
 ]
 `;
@@ -247,28 +251,8 @@ exports[`Log entries E2E tests when fetching recent dive operators will return a
 exports[`Log entries E2E tests when fetching recent dive operators will return the most recently visited dive operators 1`] = `
 [
   {
-    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
-    "name": "soft, ornery grape",
-  },
-  {
-    "id": "65704209-2883-4851-be84-78a6b95b9ad3",
-    "name": "miniature, unlawful hydrocarbon",
-  },
-  {
-    "id": "5b8b9f97-3b8f-4510-a75f-c4ac682ca555",
-    "name": "passionate, attractive checkroom",
-  },
-  {
-    "id": "509efe6b-00cd-4393-9017-dec82dc4154a",
-    "name": "vigorous, average goddess",
-  },
-  {
-    "id": "e1282190-0709-4af9-a8b5-043330b342db",
-    "name": "opulent, wilted wheel",
-  },
-  {
-    "id": "bfe6330e-71b6-4065-9fd5-35f946f61c72",
-    "name": "mysterious, artistic dude",
+    "id": "9034a701-68ae-4653-aebd-e5725c9debc4",
+    "name": "athletic, poised cursor",
   },
   {
     "id": "be616b6d-35ec-42c9-a0bc-5d5fecac99e3",
@@ -279,12 +263,32 @@ exports[`Log entries E2E tests when fetching recent dive operators will return t
     "name": "general, useless duel",
   },
   {
+    "id": "c6a2f063-3876-469d-b479-ed3c67bd3f34",
+    "name": "messy, unimportant accord",
+  },
+  {
+    "id": "65704209-2883-4851-be84-78a6b95b9ad3",
+    "name": "miniature, unlawful hydrocarbon",
+  },
+  {
+    "id": "bfe6330e-71b6-4065-9fd5-35f946f61c72",
+    "name": "mysterious, artistic dude",
+  },
+  {
+    "id": "b7384c5c-9592-4060-a069-6f102fd76312",
+    "name": "necessary, trivial savory",
+  },
+  {
     "id": "d18d63a5-3552-4f5e-9379-4c3a4786cbaa",
     "name": "nutty, husky badger",
   },
   {
-    "id": "c6a2f063-3876-469d-b479-ed3c67bd3f34",
-    "name": "messy, unimportant accord",
+    "id": "e1282190-0709-4af9-a8b5-043330b342db",
+    "name": "opulent, wilted wheel",
+  },
+  {
+    "id": "5b8b9f97-3b8f-4510-a75f-c4ac682ca555",
+    "name": "passionate, attractive checkroom",
   },
   {
     "id": "c2f48c4e-cc27-4099-bd0c-00e9d43fc222",
@@ -295,16 +299,16 @@ exports[`Log entries E2E tests when fetching recent dive operators will return t
     "name": "shimmering, genuine drama",
   },
   {
-    "id": "9034a701-68ae-4653-aebd-e5725c9debc4",
-    "name": "athletic, poised cursor",
+    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
+    "name": "soft, ornery grape",
   },
   {
     "id": "ba4e0815-6a63-4ad3-9db8-85a1d5469d6f",
     "name": "sure-footed, smoggy acknowledgment",
   },
   {
-    "id": "b7384c5c-9592-4060-a069-6f102fd76312",
-    "name": "necessary, trivial savory",
+    "id": "509efe6b-00cd-4393-9017-dec82dc4154a",
+    "name": "vigorous, average goddess",
   },
 ]
 `;
@@ -514,8 +518,13 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
     "slug": "soft-ornery-grape",
     "website": "https://fake-endive.info/",
   },
+  "rating": 2.7124099200591445,
   "site": {
     "averageRating": 1.43,
+    "depth": {
+      "depth": 36.14,
+      "unit": "ft",
+    },
     "description": "Mollitia crebro solutio comedo velit theca cresco. Tardus una attonbitus aurum versus confero triumphus canto sumptus. Asporto dolore adaugeo censura amplus synagoga unde demoror ara commodo.",
     "gps": {
       "lat": 27.2481,
@@ -614,8 +623,13 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
     "slug": "soft-ornery-grape",
     "website": "https://fake-endive.info/",
   },
+  "rating": 2.7124099200591445,
   "site": {
     "averageRating": 1.43,
+    "depth": {
+      "depth": 36.14,
+      "unit": "ft",
+    },
     "description": "Mollitia crebro solutio comedo velit theca cresco. Tardus una attonbitus aurum versus confero triumphus canto sumptus. Asporto dolore adaugeo censura amplus synagoga unde demoror ara commodo.",
     "gps": {
       "lat": 27.2481,
@@ -640,62 +654,62 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
   "data": [
     {
       "air": undefined,
-      "entryTime": 1679179491134,
-      "id": "33792d0a-b8f6-4a8c-8280-156254193aa5",
+      "entryTime": 1691314875221,
+      "id": "51c35886-a95b-4305-be3a-46e8b36a3a4d",
       "owner": "Ayla.Rippin",
-      "site": "far-off critical machine",
+      "site": "meaty weird good",
     },
     {
       "air": undefined,
-      "entryTime": 1680075577702,
-      "id": "e06b6a65-f4c9-4486-8f24-020b91109cf7",
+      "entryTime": 1692105390941,
+      "id": "3207ada6-eadc-4d3a-97cc-aae5d9e5e463",
       "owner": "Ayla.Rippin",
-      "site": "deadly lean mobile",
+      "site": "spotless gifted gallon",
     },
     {
       "air": undefined,
-      "entryTime": 1680585547793,
-      "id": "d34bd212-d0ce-456c-8b04-1b2206686299",
-      "owner": "Ayla.Rippin",
-      "site": "silky sharp brilliant",
+      "entryTime": 1697280753192,
+      "id": "6829e1a6-a3d6-4c7f-b273-348802e895b2",
+      "owner": "Julia15",
+      "site": "wiry linear guide",
     },
     {
       "air": undefined,
-      "entryTime": 1680872051148,
-      "id": "a5ce9dd4-f436-4930-831c-497eac34256a",
+      "entryTime": 1699418696731,
+      "id": "216ddf91-9cd4-4345-99a3-cfeea61ad12b",
       "owner": "Ayla.Rippin",
-      "site": "well-worn upbeat trillion",
+      "site": "original pitiful resource",
     },
     {
       "air": undefined,
-      "entryTime": 1680960960889,
-      "id": "73dbc6e1-465f-4911-9a64-c3164448e17d",
-      "owner": "Ayla.Rippin",
-      "site": "yummy fitting waterwheel",
+      "entryTime": 1704497684421,
+      "id": "a7a11aa8-7a5a-4e73-b86c-850e18747adb",
+      "owner": "Julia15",
+      "site": "vast creative spruce",
     },
     {
       "air": undefined,
-      "entryTime": 1683614665216,
-      "id": "d4afca6c-61bd-47ea-89d7-afbb228fd65d",
-      "owner": "Ayla.Rippin",
-      "site": "joint bogus exit",
+      "entryTime": 1705173119839,
+      "id": "5f6add07-b6ed-4f9e-9b66-2ecbb7b00b34",
+      "owner": "Lucy55",
+      "site": "cultured pointless glass",
     },
     {
       "air": undefined,
-      "entryTime": 1684921970536,
-      "id": "3c03c6ae-cf09-4ad8-91a4-e3e3508b7a29",
-      "owner": "Ayla.Rippin",
-      "site": "modern sorrowful girdle",
+      "entryTime": 1708632038040,
+      "id": "a02929d3-7359-491a-9ff5-e2161abe589a",
+      "owner": "Reina54",
+      "site": "basic long-term coupon",
     },
     {
       "air": undefined,
-      "entryTime": 1690727643431,
-      "id": "c9cde5b9-689f-49d2-a25b-f2a271ded83a",
+      "entryTime": 1708646790612,
+      "id": "21f30425-de80-4f19-91c6-e4b952b300a6",
       "owner": "Ayla.Rippin",
-      "site": "rundown joyous put",
+      "site": "bustling normal convert",
     },
   ],
-  "totalCount": 28,
+  "totalCount": 21,
 }
 `;
 
@@ -1354,10 +1368,11 @@ exports[`Log entries E2E tests when searching log entries will return a 400 resp
     },
     {
       "code": "invalid_enum_value",
-      "message": "Invalid enum value. Expected 'entryTime' | 'logNumber', received 'wetness'",
+      "message": "Invalid enum value. Expected 'entryTime' | 'logNumber' | 'rating', received 'wetness'",
       "options": [
         "entryTime",
         "logNumber",
+        "rating",
       ],
       "path": [
         "sortBy",
@@ -1456,21 +1471,6 @@ exports[`Log entries E2E tests when updating an existing log entry will allow an
   "id": "216ddf91-9cd4-4345-99a3-cfeea61ad12b",
   "logNumber": 102,
   "notes": "I did a dive!",
-  "operator": {
-    "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
-    "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
-Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
-    "gps": {
-      "lat": 6.9546,
-      "lon": -52.6869,
-    },
-    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
-    "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
-    "name": "soft, ornery grape",
-    "phone": "1-869-633-8778 x70097",
-    "slug": "soft-ornery-grape",
-    "website": "https://fake-endive.info/",
-  },
   "tags": [],
   "timing": {
     "bottomTime": 46,
@@ -1603,21 +1603,6 @@ exports[`Log entries E2E tests when updating an existing log entry will update t
   "id": "216ddf91-9cd4-4345-99a3-cfeea61ad12b",
   "logNumber": 102,
   "notes": "I did a dive!",
-  "operator": {
-    "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
-    "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
-Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
-    "gps": {
-      "lat": 6.9546,
-      "lon": -52.6869,
-    },
-    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
-    "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
-    "name": "soft, ornery grape",
-    "phone": "1-869-633-8778 x70097",
-    "slug": "soft-ornery-grape",
-    "website": "https://fake-endive.info/",
-  },
   "tags": [],
   "timing": {
     "bottomTime": 46,

@@ -158,6 +158,7 @@ const TestLogEntryData: Partial<LogEntryEntity> = {
 
   notes: 'This was a great dive!',
   tags: [],
+  rating: 3.2,
 };
 
 dayjs.extend(tz);

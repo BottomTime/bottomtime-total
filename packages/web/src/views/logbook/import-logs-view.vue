@@ -1,6 +1,10 @@
 <template>
   <PageTitle title="Import Logs" />
   <BreadCrumbs :items="breadcrumbs" />
+
+  <div>Recent Imports</div>
+
+  <div>Start An Import</div>
 </template>
 
 <script lang="ts" setup>

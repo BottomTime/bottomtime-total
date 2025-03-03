@@ -1,7 +1,13 @@
 <template>
   <li ref="listItemElement" :class="classes">
     <div>
+      <FormCheckbox
+        v-if="multiSelect"
+        :model-value="site.selected ?? false"
+        @update:model-value="$emit('toggle-checked', site)"
+      />
       <FormButton
+        v-else
         ref="selectButton"
         size="sm"
         :test-id="`select-site-${site.id}`"
@@ -10,7 +16,7 @@
         Select
       </FormButton>
     </div>
-    <div>
+    <div class="grow space-y-2">
       <div class="flex align-baseline justify-between">
         <button
           :data-testid="`site-name-${site.id}`"
@@ -22,20 +28,42 @@
         </button>
 
         <p v-if="site.averageRating" class="flex gap-2">
-          <StarRating :rating="site.averageRating" />
+          <StarRating :model-value="site.averageRating" readonly />
         </p>
       </div>
 
-      <div class="flex ml-2 justify-between">
+      <div class="">
         <p v-if="site.description" class="text-sm text-justify italic">
           {{ site.description }}
         </p>
       </div>
 
-      <div class="flex justify-evenly text-sm">
+      <div class="flex justify-between text-sm">
         <div class="text-center">
-          <p class="font-bold">Location</p>
+          <label class="font-bold">Location</label>
           <p>{{ site.location }}</p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Depth</label>
+          <p>
+            <DepthText
+              v-if="site.depth"
+              :depth="site.depth.depth"
+              :unit="site.depth.unit"
+            />
+            <span>Unspecified</span>
+          </p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Free to dive</label>
+          <p>{{ booleanText(site.freeToDive) }}</p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Shore dive</label>
+          <p>{{ booleanText(site.shoreAccess) }}</p>
         </div>
       </div>
     </div>
@@ -43,47 +71,55 @@
 </template>
 
 <script lang="ts" setup>
-import { SuccinctDiveSiteDTO } from '@bottomtime/api';
+import { DiveSiteDTO } from '@bottomtime/api';
 
 import { computed, ref, watch } from 'vue';
 
+import DepthText from '../../common/depth-text.vue';
 import FormButton from '../../common/form-button.vue';
+import FormCheckbox from '../../common/form-checkbox.vue';
 import StarRating from '../../common/star-rating.vue';
 
 interface SelectDiveSiteListItemProps {
+  multiSelect?: boolean;
   selected?: boolean;
-  site: SuccinctDiveSiteDTO;
+  site: DiveSiteDTO & { selected?: boolean };
 }
 
 const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
+  multiSelect: false,
   selected: false,
 });
 defineEmits<{
-  (e: 'select', site: SuccinctDiveSiteDTO): void;
-  (e: 'highlight', site: SuccinctDiveSiteDTO): void;
+  (e: 'select', site: DiveSiteDTO): void;
+  (e: 'highlight', site: DiveSiteDTO): void;
+  (e: 'toggle-checked', site: DiveSiteDTO & { selected?: boolean }): void;
 }>();
 
 const listItemElement = ref<HTMLLIElement | null>(null);
 const classes = computed(() => ({
   border: props.selected,
-  'odd:bg-blue-500/40': true,
-  'odd:dark:bg-blue-600/40': true,
   'border-success': props.selected,
-  'rounded-md': true,
-  'p-2': true,
   'space-y-2': true,
   flex: true,
   'gap-2': true,
   'items-center': true,
 }));
 
+function booleanText(value?: boolean): string {
+  if (value === true) return 'Yes';
+  if (value === false) return 'No';
+  return 'Unspecified';
+}
+
 watch(
   () => props.selected,
   (val) => {
     // The scrollIntoView method ought to work in most browsers but will blow up in tests.
+    // Hence, the try/catch.
     try {
-      if (val && listItemElement.value?.scrollIntoView) {
-        listItemElement.value?.scrollIntoView({
+      if (val) {
+        listItemElement.value?.scrollIntoView?.({
           behavior: 'smooth',
           block: 'center',
         });

@@ -164,6 +164,7 @@ export default defineConfig({
             BTWEB_VITE_BASE_URL: 'http://localhost:4851/',
             BTWEB_VITE_STRIPE_API_KEY:
               'pk_test_51PktwnI1ADsIvyhFBiMxntz2E4VQYFOTgHfuJBiR3H3ZQBLDx96cDVGcp1AZA5Le0uXUw0msCs63lbdofgR54dzs00h1P6bHfN',
+            BTWEB_VITE_ENABLE_PLACES_API: false,
             BTWEB_LOG_LEVEL: 'debug',
             BTWEB_PORT: '4851',
             BTWEB_COOKIE_NAME: CookieName,

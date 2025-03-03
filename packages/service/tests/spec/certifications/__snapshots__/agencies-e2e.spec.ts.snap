@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Agencies E2E tests will retrieve a single agency by its id 1`] = `
+{
+  "id": "d85b955b-04f3-4803-ba74-c31c27bc26de",
+  "logo": "https://www.naui.org",
+  "longName": "National Association of Underwater Instructors",
+  "name": "NAUI",
+  "website": "https://www.naui.org",
+}
+`;
+
+exports[`Agencies E2E tests will retrieve the list of agencies 1`] = `
+{
+  "data": [
+    {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+      "logo": "https://www.padi.com",
+      "longName": "Professional Association of Diving Instructors",
+      "name": "PADI",
+      "website": "https://www.padi.com",
+    },
+    {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de",
+      "logo": "https://www.naui.org",
+      "longName": "National Association of Underwater Instructors",
+      "name": "NAUI",
+      "website": "https://www.naui.org",
+    },
+    {
+      "id": "a6a87695-02fb-4caf-b5c2-6af5afbb0ff8",
+      "logo": "https://www.divessi.com",
+      "longName": "Scuba Schools International",
+      "name": "SSI",
+      "website": "https://www.divessi.com",
+    },
+  ],
+  "totalCount": 3,
+}
+`;

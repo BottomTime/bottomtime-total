@@ -24,6 +24,7 @@ export interface AppConfig {
     sqs: {
       emailQueueUrl: string;
       endpoint?: string;
+      reviewsQueueUrl: string;
     };
   };
 
@@ -96,6 +97,9 @@ const ConfigSchema = z
       .string()
       .default('http://localstack:4566/000000000000/email'),
     BT_AWS_SQS_ENDPOINT: z.string().optional(),
+    BT_AWS_SQS_REVIEWS_QUEUE_URL: z
+      .string()
+      .default('http://localstack:4566/000000000000/reviews'),
 
     // Edge authorization
     BT_EDGEAUTH_AUDIENCE: z.string().default('dev.bottomti.me'),
@@ -172,6 +176,7 @@ const ConfigSchema = z
       sqs: {
         emailQueueUrl: env.BT_AWS_SQS_EMAIL_QUEUE_URL,
         endpoint: env.BT_AWS_SQS_ENDPOINT,
+        reviewsQueueUrl: env.BT_AWS_SQS_REVIEWS_QUEUE_URL,
       },
     },
 

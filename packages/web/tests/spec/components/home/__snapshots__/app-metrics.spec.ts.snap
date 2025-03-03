@@ -3,7 +3,7 @@
 exports[`AppMetrics component will render error message if request for metrics fails 1`] = `"App Metrics Failed to load app metrics due to a server error. Please try again later."`;
 
 exports[`AppMetrics component will request and display app metrics 1`] = `
-"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md space-y-3 shadow-lg">
+"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-md shadow-grey-800 space-y-3 shadow-lg">
   <div class="text-center">
     <h1 class="text-2xl font-bold font-title">App Metrics</h1>
   </div>

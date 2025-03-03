@@ -171,3 +171,42 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   principal     = "events.amazonaws.com"
   source_arn    = aws_scheduler_schedule.keepalive.arn
 }
+
+### REVIEW AGGREGATION FUNCTION
+# data "archive_file" "review_aggregator" {
+#   type        = "zip"
+#   output_path = "${path.module}/archive/review_aggregator.zip"
+#   source_dir  = "${path.module}/../packages/review-aggregator/dist/"
+# }
+
+# resource "aws_lambda_function" "review_aggregator" {
+#   function_name = "bottomtime-keepalive-${var.env}"
+#   role          = aws_iam_role.review_aggregator_lambda_fn.arn
+
+#   filename         = data.archive_file.review_aggregator.output_path
+#   source_code_hash = data.archive_file.review_aggregator.output_base64sha256
+
+#   description = "Review Aggregation Lambda Function"
+#   handler     = "index.handler"
+#   runtime     = "nodejs20.x"
+#   timeout     = 60
+
+#   logging_config {
+#     log_group  = aws_cloudwatch_log_group.keepalive_logs.id
+#     log_format = "JSON"
+#   }
+
+#   tags = {
+#     Environment = var.env
+#     Region      = data.aws_region.current.name
+#   }
+
+#   environment {
+#     variables = {
+#       BT_PING_URL = "https://${local.web_fqdn}/"
+#     }
+#   }
+
+#   depends_on = [aws_cloudwatch_log_group.keepalive_logs, aws_iam_role_policy_attachment.keepalive_lambda_logging]
+
+# }

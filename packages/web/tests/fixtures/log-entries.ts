@@ -1,11 +1,14 @@
 import {
   AccountTier,
   DepthUnit,
+  ExposureSuit,
   LogBookSharing,
   LogEntryDTO,
   PressureUnit,
   TankMaterial,
   TemperatureUnit,
+  TrimCorrectness,
+  WeightCorrectness,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -27,6 +30,20 @@ export const BlankLogEntry: LogEntryDTO = {
 };
 
 export const MinimalLogEntry: LogEntryDTO = {
+  air: [
+    {
+      count: 1,
+      endPressure: 1000,
+      hePercent: 19,
+      material: TankMaterial.Aluminum,
+      name: 'My tank',
+      pressureUnit: PressureUnit.PSI,
+      startPressure: 3000,
+      volume: 12,
+      workingPressure: 207,
+      o2Percent: 32,
+    },
+  ],
   creator: {
     accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.FriendsOnly,
@@ -49,6 +66,7 @@ export const FullLogEntry: LogEntryDTO = {
     {
       count: 1,
       endPressure: 1000,
+      hePercent: 19,
       material: TankMaterial.Aluminum,
       name: 'My tank',
       pressureUnit: PressureUnit.PSI,
@@ -84,22 +102,34 @@ export const FullLogEntry: LogEntryDTO = {
     location: 'California',
   },
   timing: {
-    duration: 88.34,
+    duration: 2455,
     entryTime: new Date('2023-01-31T09:16:12').valueOf(),
     timezone: 'Europe/Dublin',
-    bottomTime: 77.77,
+    bottomTime: 2103,
+    surfaceInterval: 4110,
   },
-  tags: ['wreck', 'night'],
+  tags: ['Wreck dive', 'Night dive'],
   updatedAt: new Date('2024-07-23T12:52:10Z').valueOf(),
   id: '4ca3e53c-1364-40b2-a6db-ce8e92380b1f',
   logNumber: 12,
   depths: {
     maxDepth: 33.3,
+    averageDepth: 27.3,
     depthUnit: DepthUnit.Feet,
   },
   equipment: {
     weight: 6.5,
     weightUnit: WeightUnit.Pounds,
+    weightCorrectness: WeightCorrectness.Good,
+    trimCorrectness: TrimCorrectness.KneesDown,
+    exposureSuit: ExposureSuit.Drysuit,
+    boots: true,
+    gloves: true,
+    camera: false,
+    hood: true,
+    scooter: false,
+    torch: true,
   },
   notes: 'This was a great dive!',
+  rating: 3.8,
 };

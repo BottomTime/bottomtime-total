@@ -2,12 +2,14 @@ import { AppMetricsDTO } from '../types';
 import { AlertsApiClient } from './alerts';
 import { ApiClientOptions } from './api-client-options';
 import { AuthApiClient } from './auth';
+import { DiveSiteReviewsApiClient } from './dive-site-reviews';
 import { DiveSitesApiClient } from './dive-sites';
 import { Fetcher } from './fetcher';
 import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
 import { MembershipsApiClient } from './memberships';
 import { NotificationsApiClient } from './notifications';
+import { OperatorReviewsApiClient } from './operator-reviews';
 import { OperatorsApiClient } from './operators';
 import { TanksApiClient } from './tanks';
 import { UserAccountsApiClient } from './user-accounts';
@@ -18,11 +20,13 @@ export class ApiClient {
 
   readonly alerts: AlertsApiClient;
   readonly auth: AuthApiClient;
+  readonly diveSiteReviews: DiveSiteReviewsApiClient;
   readonly diveSites: DiveSitesApiClient;
   readonly friends: FriendsApiClient;
   readonly logEntries: LogEntriesApiClient;
   readonly memberships: MembershipsApiClient;
   readonly notifications: NotificationsApiClient;
+  readonly operatorReviews: OperatorReviewsApiClient;
   readonly operators: OperatorsApiClient;
   readonly tanks: TanksApiClient;
   readonly userAccounts: UserAccountsApiClient;
@@ -33,11 +37,13 @@ export class ApiClient {
 
     this.alerts = new AlertsApiClient(this.client);
     this.auth = new AuthApiClient(this.client);
+    this.diveSiteReviews = new DiveSiteReviewsApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
     this.friends = new FriendsApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
     this.memberships = new MembershipsApiClient(this.client);
     this.notifications = new NotificationsApiClient(this.client);
+    this.operatorReviews = new OperatorReviewsApiClient(this.client);
     this.operators = new OperatorsApiClient(this.client);
     this.tanks = new TanksApiClient(this.client);
     this.userAccounts = new UserAccountsApiClient(this.client);

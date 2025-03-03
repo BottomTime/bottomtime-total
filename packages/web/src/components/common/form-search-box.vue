@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative m-1">
     <FormTextBox
       v-model="query"
       :autofocus="autofocus"

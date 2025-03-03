@@ -1,5 +1,5 @@
 import { Alert } from '../../alerts';
-import { Certification } from '../../certifications';
+import { Certification, ProfessionalAssociation } from '../../certifications';
 import { DiveSite, DiveSiteReview } from '../../diveSites';
 import { LogEntry, LogEntryImport } from '../../logEntries';
 import { Notification } from '../../notifications';
@@ -11,6 +11,7 @@ declare global {
   namespace Express {
     interface Request {
       targetAlert: Alert | undefined;
+      targetBuddy: BTUser | undefined;
       targetCertification: Certification | undefined;
       targetDiveOperator: Operator | undefined;
       targetDiveOperatorReview: OperatorReview | undefined;
@@ -20,6 +21,7 @@ declare global {
       targetLogEntry: LogEntry | undefined;
       targetLogEntryImport: LogEntryImport | undefined;
       targetNotification: Notification | undefined;
+      targetProfessionalAssociation: ProfessionalAssociation | undefined;
       targetTank: Tank | undefined;
       targetUser: BTUser | undefined;
     }

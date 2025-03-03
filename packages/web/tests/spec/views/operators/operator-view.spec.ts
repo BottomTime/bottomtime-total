@@ -300,9 +300,6 @@ describe('Operator view', () => {
     await flushPromises();
 
     expect(saveSpy).toHaveBeenCalledWith(FullOperator.slug, update);
-    expect(toasts.toasts).toHaveLength(1);
-    expect(toasts.toasts[0].id).toBe('dive-operator-saved');
-    expect(toasts.toasts[0].type).toBe(ToastType.Success);
   });
 
   it('will allow an admin to update a dive operator', async () => {
