@@ -56,9 +56,7 @@ test.describe('Operators', () => {
       await page.getByTestId('operators-create-shop').click();
       await operators.updateOperator(OperatorData);
 
-      await expect(
-        page.getByTestId(`select-${OperatorData.slug}`),
-      ).toBeVisible();
+      await expect(page.getByTestId('toast-dive-operator-saved')).toBeVisible();
 
       const operator = await api.operators.getOperator(OperatorData.slug);
       expect(operator.name).toBe(OperatorData.name);
@@ -98,16 +96,15 @@ test.describe('Operators', () => {
       await operators.gotoOperators();
 
       await page.getByTestId('operator-search').fill('awesome');
-      await page.getByTestId('operator-location-select-btn').click();
-      await page.getByTestId('latitude').fill('25');
-      await page.getByTestId('longitude').fill('-80');
-      await page.getByTestId('confirm-location').click();
+      await page.getByTestId('operator-location-set').click();
+      await page.getByTestId('operator-location-lat').fill('25');
+      await page.getByTestId('operator-location-lon').fill('-80');
+      await page.getByTestId('operator-location-save').click();
       await page.getByTestId('operator-location-radius').fill('500');
       await page.getByText('Show only my shops').click();
       await page.getByTestId('btn-operator-search').click();
 
-      await page.getByTestId(`select-${OperatorData.slug}`).click();
-      await page.getByTestId('drawer-fullscreen').getByRole('button').click();
+      await page.getByTestId(`edit-${OperatorData.slug}`).click();
       await page.waitForURL(`**/shops/${OperatorData.slug}`);
 
       await operators.updateOperator(updated);

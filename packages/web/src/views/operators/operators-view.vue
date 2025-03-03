@@ -162,7 +162,7 @@ async function onSearch(params: SearchOperatorsParams): Promise<void> {
     query: {
       query: params.query || undefined,
       location: params.location
-        ? `${params.location.lat},${params.location.lon}`
+        ? encodeURIComponent(`${params.location.lat},${params.location.lon}`)
         : undefined,
       radius: params.radius || undefined,
       owner: params.owner || undefined,
