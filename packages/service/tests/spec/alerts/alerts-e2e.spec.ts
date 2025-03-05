@@ -1,6 +1,6 @@
 import { UserRole } from '@bottomtime/api';
 
-import { INestApplication } from '@nestjs/common';
+import { HttpServer, INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
@@ -57,7 +57,7 @@ function getUrl(alertId?: string): string {
 
 describe('Alerts End-to-End Tests', () => {
   let app: INestApplication;
-  let server: unknown;
+  let server: HttpServer;
   let Alerts: Repository<AlertEntity>;
   let Users: Repository<UserEntity>;
   let alertData: AlertEntity[];
