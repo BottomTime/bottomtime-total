@@ -1,4 +1,10 @@
 <template>
+  <RequestSignaturesDialog
+    :log-entry="entry"
+    :visible="state.showRequestSignatures"
+    @close="state.showRequestSignatures = false"
+  />
+
   <TabsPanel
     :tabs="tabs"
     :active-tab="state.activeTab"
@@ -310,6 +316,21 @@
             </p>
           </div>
         </div>
+
+        <!-- Signatures -->
+        <div
+          class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6"
+        >
+          <TextHeading class="-ml-3" level="h2">Signatures</TextHeading>
+
+          <LogEntrySignaturesList :signatures="state.signatures" />
+
+          <div class="text-center">
+            <FormButton @click="state.showRequestSignatures = true">
+              Request signatures...
+            </FormButton>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -323,9 +344,11 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   DiveSiteDTO,
   ExposureSuit,
   LogEntryDTO,
+  LogEntrySignatureDTO,
   OperatorDTO,
   TrimCorrectness,
   WeightCorrectness,
@@ -339,6 +362,7 @@ import { TabInfo } from '../../common';
 import { useOops } from '../../oops';
 import DepthText from '../common/depth-text.vue';
 import DurationText from '../common/duration-text.vue';
+import FormButton from '../common/form-button.vue';
 import FormTags from '../common/form-tags.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
 import PressureText from '../common/pressure-text.vue';
@@ -347,10 +371,12 @@ import TabsPanel from '../common/tabs-panel.vue';
 import TemperatureText from '../common/temperature-text.vue';
 import TextHeading from '../common/text-heading.vue';
 import WeightText from '../common/weight-text.vue';
+import RequestSignaturesDialog from '../dialog/request-signatures-dialog.vue';
 import PreviewDiveSite from '../diveSites/preview-dive-site.vue';
 import PreviewOperator from '../operators/preview-operator.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import EquipmentIndicator from './equipment-indicator.vue';
+import LogEntrySignaturesList from './log-entry-signatures-list.vue';
 import ViewDiveProfile from './view-dive-profile.vue';
 
 enum TabKey {
@@ -368,6 +394,8 @@ interface ViewLogbookEntryState {
   isLoadingData: boolean;
   site?: DiveSiteDTO;
   operator?: OperatorDTO;
+  signatures: ApiList<LogEntrySignatureDTO>;
+  showRequestSignatures: boolean;
 }
 
 const client = useClient();
@@ -384,6 +412,11 @@ const props = withDefaults(defineProps<ViewLogbookEntryProps>(), {
 const state = reactive<ViewLogbookEntryState>({
   activeTab: TabKey.General,
   isLoadingData: true,
+  signatures: {
+    data: [],
+    totalCount: 0,
+  },
+  showRequestSignatures: false,
 });
 
 const current = computed(() => {
@@ -498,6 +531,13 @@ onMounted(async () => {
       }
     }),
   ]);
+
+  await oops(async () => {
+    state.signatures = await client.logEntries.listLogEntrySignatures(
+      props.entry.creator.username,
+      props.entry.id,
+    );
+  });
 
   state.isLoadingData = false;
 });

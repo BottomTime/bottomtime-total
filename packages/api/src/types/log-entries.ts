@@ -317,3 +317,8 @@ export const LogEntrySignatureSchema = z.object({
   certificationNumber: z.string().max(200).optional(),
 });
 export type LogEntrySignatureDTO = z.infer<typeof LogEntrySignatureSchema>;
+
+export const ListLogEntrySignaturesResponseSchema = z.object({
+  data: LogEntrySignatureSchema.array(),
+  totalCount: z.number().int(),
+});

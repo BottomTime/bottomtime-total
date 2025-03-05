@@ -35,6 +35,9 @@
 
         <!-- Notes -->
         <EditNotes v-model="formData.notes" />
+
+        <!-- Signatures -->
+        <EditSignatures v-if="entry.id" :entry="entry" />
       </div>
 
       <div
@@ -103,6 +106,7 @@ import EditConditions from './edit-conditions.vue';
 import EditDiveLocation from './edit-dive-location.vue';
 import EditEquipment from './edit-equipment.vue';
 import EditNotes from './edit-notes.vue';
+import EditSignatures from './edit-signatures.vue';
 import { LogEntryFormData, dtoToFormData, formDataToDTO } from './types';
 
 interface EditLogbookEntryProps {

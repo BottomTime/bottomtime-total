@@ -3,6 +3,7 @@ import {
   CreateOrUpdateDiveSiteReviewDTO,
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  CreateOrUpdateLogEntrySignatureDTO,
   CreateOrUpdateOperatorReviewDTO,
   DiveSiteDTO,
   DiveSiteReviewDTO,
@@ -11,10 +12,13 @@ import {
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
+  ListLogEntrySignaturesResponseSchema,
   LogEntryDTO,
   LogEntrySampleDTO,
   LogEntrySampleSchema,
   LogEntrySchema,
+  LogEntrySignatureDTO,
+  LogEntrySignatureSchema,
   OperatorDTO,
   OperatorReviewDTO,
   OperatorReviewSchema,
@@ -210,5 +214,41 @@ export class LogEntriesApiClient {
       DiveSiteReviewSchema,
     );
     return data;
+  }
+
+  async listLogEntrySignatures(
+    username: string,
+    entryId: string,
+  ): Promise<ApiList<LogEntrySignatureDTO>> {
+    const { data } = await this.apiClient.get(
+      `${this.getLogEntryUrl(username, entryId)}/signatures`,
+      undefined,
+      ListLogEntrySignaturesResponseSchema,
+    );
+    return data;
+  }
+
+  async signLogEntry(
+    username: string,
+    entryId: string,
+    buddy: string,
+    options: CreateOrUpdateLogEntrySignatureDTO,
+  ): Promise<LogEntrySignatureDTO> {
+    const { data } = await this.apiClient.put(
+      `${this.getLogEntryUrl(username, entryId)}/signatures/${buddy}`,
+      options,
+      LogEntrySignatureSchema,
+    );
+    return data;
+  }
+
+  async deleteLogEntrySignature(
+    username: string,
+    entryId: string,
+    buddy: string,
+  ): Promise<void> {
+    await this.apiClient.delete(
+      `${this.getLogEntryUrl(username, entryId)}/signatures/${buddy}`,
+    );
   }
 }

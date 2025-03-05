@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <form @submit.prevent="$emit('submit')">
+      <form @submit.prevent="">
         <fieldset :disabled="disabled">
           <!-- Content -->
           <div class="grow p-4" data-testid="dialog-content">
