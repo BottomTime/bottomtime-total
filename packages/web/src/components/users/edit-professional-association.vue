@@ -53,14 +53,16 @@
       <FormField label="Start Date" control-id="date">
         <FormFuzzyDate
           v-model="state.startDate"
-          control-id="date"
-          test-id="date"
+          control-id="start-date"
+          test-id="start-date"
         />
       </FormField>
 
       <div class="text-center space-x-3">
         <FormButton
           type="primary"
+          control-id="btn-save-assoc"
+          test-id="btn-save-assoc"
           submit
           :is-loading="isSaving"
           @click="onSave"
@@ -68,7 +70,13 @@
           Save
         </FormButton>
 
-        <FormButton @click="$emit('cancel')"> Cancel </FormButton>
+        <FormButton
+          control-id="btn-cancel-assoc"
+          test-id="btn-cancel-assoc"
+          @click="$emit('cancel')"
+        >
+          Cancel
+        </FormButton>
       </div>
     </fieldset>
   </form>

@@ -1,4 +1,5 @@
 import {
+  ApiClient,
   ApiList,
   FriendDTO,
   FriendsSortBy,
@@ -10,6 +11,8 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 import { createRouter } from 'tests/fixtures/create-router';
 import { Router } from 'vue-router';
 
@@ -27,17 +30,25 @@ const NoFriendsMessage = '[data-testid="no-friends"]';
 const SortOrderDropdown = '[data-testid="sort-order"]';
 
 describe('Friends list component', () => {
+  let client: ApiClient;
   let router: Router;
   let friendData: ApiList<FriendDTO>;
+
+  let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof FriendsList>;
 
   beforeAll(() => {
+    client = new ApiClient();
     router = createRouter();
+    pinia = createPinia();
     friendData = ListFriendsResposneSchema.parse(FriendTestData);
 
     opts = {
       global: {
-        plugins: [router],
+        plugins: [router, pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
       },
     };
   });

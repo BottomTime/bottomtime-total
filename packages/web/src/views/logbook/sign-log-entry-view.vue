@@ -12,6 +12,7 @@
     <div
       v-else-if="currentUser.user?.username === route.params.username"
       class="text-center text-xl space-x-3 my-4"
+      data-testid="no-self-sign-msg"
     >
       <span>
         <i class="fa-solid fa-hand"></i>
@@ -19,13 +20,14 @@
       <span>Sorry, but you can't sign your own entry!</span>
     </div>
 
-    <SignEntry
-      v-else
-      :agencies="state.agencies"
-      :entry="state.logEntry"
-      :professional-associations="state.professionalAssociations"
-      :username="route.params.username as string"
-    />
+    <div v-else class="flex flex-col gap-3 items-center">
+      <PreviewLogEntry :entry="state.logEntry" />
+      <SignEntry
+        class="w-fit"
+        :entry="state.logEntry"
+        @signed="onEntrySigned"
+      />
+    </div>
   </RequireAuth2>
 </template>
 
@@ -38,7 +40,7 @@ import {
 
 import dayjs from 'dayjs';
 import { computed, onMounted, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb } from '../../common';
@@ -47,6 +49,7 @@ import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth2 from '../../components/common/require-auth2.vue';
+import PreviewLogEntry from '../../components/logbook/preview-log-entry.vue';
 import SignEntry from '../../components/logbook/sign-entry.vue';
 import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
@@ -62,6 +65,7 @@ const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
 const route = useRoute();
+const router = useRouter();
 
 const state = reactive<SignLogEntryViewState>({
   agencies: [],
@@ -93,6 +97,14 @@ const breadcrumbItems = computed<Breadcrumb[]>(() => [
         },
       ]),
 ]);
+
+function onEntrySigned() {
+  setTimeout(async () => {
+    await router.push(
+      `/logbook/${route.params.username}/${route.params.entryId}`,
+    );
+  }, 3000);
+}
 
 onMounted(async () => {
   await oops(

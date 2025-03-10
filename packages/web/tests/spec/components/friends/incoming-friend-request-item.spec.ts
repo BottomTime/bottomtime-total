@@ -1,11 +1,15 @@
 import {
   AccountTier,
+  ApiClient,
   FriendRequestDTO,
   FriendRequestDirection,
   LogBookSharing,
 } from '@bottomtime/api';
 
-import { mount } from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
+
+import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 
 import IncomingFriendRequestListItem from '../../../../src/components/friends/incoming-friend-request-item.vue';
 
@@ -32,14 +36,32 @@ const DismissButton = `[data-testid="dismiss-request-${TestRequestItem.friendId}
 const SelectLink = `[data-testid="select-request-${TestRequestItem.friendId}"]`;
 
 describe('Incoming friend request list item', () => {
+  let client: ApiClient;
+
+  let pinia: Pinia;
+  let opts: ComponentMountingOptions<typeof IncomingFriendRequestListItem>;
   let request: FriendRequestDTO;
+
+  beforeAll(() => {
+    client = new ApiClient();
+  });
 
   beforeEach(() => {
     request = { ...TestRequestItem };
+    pinia = createPinia();
+    opts = {
+      global: {
+        plugins: [pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
+      },
+    };
   });
 
   it('will render correctly', () => {
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     expect(wrapper.html()).toMatchSnapshot();
@@ -48,6 +70,7 @@ describe('Incoming friend request list item', () => {
   it('will render correctly for an accepted request', () => {
     request.accepted = true;
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     expect(wrapper.html()).toMatchSnapshot();
@@ -56,6 +79,7 @@ describe('Incoming friend request list item', () => {
   it('will render correctly for a declined request with no reason', () => {
     request.accepted = false;
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     expect(wrapper.html()).toMatchSnapshot();
@@ -65,6 +89,7 @@ describe('Incoming friend request list item', () => {
     request.accepted = false;
     request.reason = 'Nope. Denied!';
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     expect(wrapper.html()).toMatchSnapshot();
@@ -72,6 +97,7 @@ describe('Incoming friend request list item', () => {
 
   it('will emit "select" event when select link is clicked', async () => {
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     await wrapper.get(SelectLink).trigger('click');
@@ -80,6 +106,7 @@ describe('Incoming friend request list item', () => {
 
   it('will emit "accept" event when accept button is clicked', async () => {
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     await wrapper.get(AcceptButton).trigger('click');
@@ -88,6 +115,7 @@ describe('Incoming friend request list item', () => {
 
   it('will emit "decline" event when decline button is clicked', async () => {
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     await wrapper.get(DeclineButton).trigger('click');
@@ -98,6 +126,7 @@ describe('Incoming friend request list item', () => {
     request.accepted = false;
     request.reason = 'Nope. Denied!';
     const wrapper = mount(IncomingFriendRequestListItem, {
+      ...opts,
       props: { request },
     });
     await wrapper.get(DismissButton).trigger('click');

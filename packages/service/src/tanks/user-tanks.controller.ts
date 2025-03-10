@@ -32,7 +32,7 @@ const UsernameParam = 'username';
 const TankIdParam = 'tankId';
 
 @Controller(`api/users/:${UsernameParam}/tanks`)
-@UseGuards(AssertAuth, AssertTargetUser, AssertTankPrivilege)
+@UseGuards(AssertTargetUser)
 export class UserTanksController {
   constructor(
     @Inject(TanksService) private readonly tanksService: TanksService,
@@ -215,6 +215,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post()
+  @UseGuards(AssertAuth, AssertTargetUser, AssertTankPrivilege)
   async createTank(
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -287,7 +288,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${TankIdParam}`)
-  @UseGuards(ValidateIds(TankIdParam), AssertTank)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertTankPrivilege, AssertTank)
   async updateTank(
     @SelectedTank() tank: Tank,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -345,7 +346,7 @@ export class UserTanksController {
    */
   @Delete(`:${TankIdParam}`)
   @HttpCode(204)
-  @UseGuards(ValidateIds(TankIdParam), AssertTank)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertTankPrivilege, AssertTank)
   async deleteTank(@SelectedTank() tank: Tank): Promise<void> {
     await tank.delete();
   }

@@ -325,9 +325,30 @@
 
           <LogEntrySignaturesList :signatures="state.signatures" />
 
-          <div class="text-center">
-            <FormButton @click="state.showRequestSignatures = true">
+          <div v-if="currentUser.user" class="text-center">
+            <FormButton
+              v-if="currentUser.user.id === entry.creator.userId"
+              @click="state.showRequestSignatures = true"
+            >
               Request signatures...
+            </FormButton>
+
+            <div v-if="state.showSignEntry" class="flex justify-center">
+              <SignEntry
+                class="text-left w-fit"
+                :entry="entry"
+                show-cancel
+                @cancel="state.showSignEntry = false"
+                @signed="onSigned"
+              />
+            </div>
+            <FormButton
+              v-else-if="
+                !hasSigned && currentUser.user.id !== entry.creator.userId
+              "
+              @click="state.showSignEntry = true"
+            >
+              Sign this entry...
             </FormButton>
           </div>
         </div>
@@ -360,6 +381,7 @@ import { computed, onMounted, reactive } from 'vue';
 import { useClient } from '../../api-client';
 import { TabInfo } from '../../common';
 import { useOops } from '../../oops';
+import { useCurrentUser } from '../../store';
 import DepthText from '../common/depth-text.vue';
 import DurationText from '../common/duration-text.vue';
 import FormButton from '../common/form-button.vue';
@@ -377,6 +399,7 @@ import PreviewOperator from '../operators/preview-operator.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import EquipmentIndicator from './equipment-indicator.vue';
 import LogEntrySignaturesList from './log-entry-signatures-list.vue';
+import SignEntry from './sign-entry.vue';
 import ViewDiveProfile from './view-dive-profile.vue';
 
 enum TabKey {
@@ -396,9 +419,11 @@ interface ViewLogbookEntryState {
   operator?: OperatorDTO;
   signatures: ApiList<LogEntrySignatureDTO>;
   showRequestSignatures: boolean;
+  showSignEntry: boolean;
 }
 
 const client = useClient();
+const currentUser = useCurrentUser();
 const oops = useOops();
 
 const tabs = computed<TabInfo[]>(() => [
@@ -417,6 +442,7 @@ const state = reactive<ViewLogbookEntryState>({
     totalCount: 0,
   },
   showRequestSignatures: false,
+  showSignEntry: false,
 });
 
 const current = computed(() => {
@@ -512,8 +538,17 @@ const exposureSuit = computed(() => {
   }
 });
 
+const hasSigned = computed(() =>
+  state.signatures.data.some((s) => s.buddy.userId === currentUser.user?.id),
+);
+
 function onTabChanged(tab: string) {
   state.activeTab = tab as TabKey;
+}
+
+function onSigned(signature: LogEntrySignatureDTO) {
+  state.signatures.data.push(signature);
+  state.showSignEntry = false;
 }
 
 onMounted(async () => {

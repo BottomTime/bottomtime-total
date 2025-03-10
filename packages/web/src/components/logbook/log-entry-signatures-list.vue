@@ -24,7 +24,7 @@
         class="flex gap-3 p-2"
       >
         <figure>
-          <UserAvatar :profile="signature.buddy" size="small" />
+          <UserAvatar :profile="signature.buddy" size="small" show-name />
         </figure>
 
         <div class="grow">

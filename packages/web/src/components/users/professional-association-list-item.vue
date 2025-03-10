@@ -6,8 +6,8 @@
 
     <div class="flex flex-col gap-2 grow">
       <a
-        :id="association.id"
-        :href="`#${association.id}`"
+        :id="`a-${association.id}`"
+        :href="`#a-${association.id}`"
         class="flex items-baseline gap-3"
         @click="$emit('edit', association)"
       >
@@ -25,7 +25,11 @@
     </div>
 
     <div>
-      <FormButton rounded="left" @click="$emit('edit', association)">
+      <FormButton
+        rounded="left"
+        :test-id="`edit-assoc-${association.id}`"
+        @click="$emit('edit', association)"
+      >
         <span>
           <i class="fa-solid fa-pen"></i>
         </span>
@@ -38,6 +42,7 @@
       <FormButton
         rounded="right"
         type="danger"
+        :test-id="`delete-assoc-${association.id}`"
         @click="$emit('delete', association)"
       >
         <span>

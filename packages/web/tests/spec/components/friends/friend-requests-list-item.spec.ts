@@ -1,11 +1,15 @@
 import {
   AccountTier,
+  ApiClient,
   FriendRequestDTO,
   FriendRequestDirection,
   LogBookSharing,
 } from '@bottomtime/api';
 
-import { mount } from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
+
+import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 
 import FriendRequestsListItem from '../../../../src/components/friends/friend-requests-list-item.vue';
 import IncomingFriendRequestItem from '../../../../src/components/friends/incoming-friend-request-item.vue';
@@ -29,15 +33,32 @@ const TestRequestItem: FriendRequestDTO = {
 };
 
 describe('Friend requests list item', () => {
+  let client: ApiClient;
   let request: FriendRequestDTO;
+  let pinia: Pinia;
+  let opts: ComponentMountingOptions<typeof FriendRequestsListItem>;
+
+  beforeAll(() => {
+    client = new ApiClient();
+  });
 
   beforeEach(() => {
     request = { ...TestRequestItem };
+    pinia = createPinia();
+    opts = {
+      global: {
+        plugins: [pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
+      },
+    };
   });
 
   it('will render an incoming item', () => {
     request.direction = FriendRequestDirection.Incoming;
     const wrapper = mount(FriendRequestsListItem, {
+      ...opts,
       props: { request },
     });
 
@@ -52,6 +73,7 @@ describe('Friend requests list item', () => {
   it('will render an outgoing item', () => {
     request.direction = FriendRequestDirection.Outgoing;
     const wrapper = mount(FriendRequestsListItem, {
+      ...opts,
       props: { request },
     });
 
@@ -67,6 +89,7 @@ describe('Friend requests list item', () => {
     it(`will echo a "${event}" event from an incoming request item`, () => {
       request.direction = FriendRequestDirection.Incoming;
       const wrapper = mount(FriendRequestsListItem, {
+        ...opts,
         props: { request },
       });
 
@@ -81,6 +104,7 @@ describe('Friend requests list item', () => {
     it(`will echo a "${event}" event from an outgoing request item`, () => {
       request.direction = FriendRequestDirection.Outgoing;
       const wrapper = mount(FriendRequestsListItem, {
+        ...opts,
         props: { request },
       });
 

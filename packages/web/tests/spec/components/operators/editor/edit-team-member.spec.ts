@@ -1,7 +1,9 @@
-import { TeamMemberDTO } from '@bottomtime/api';
+import { ApiClient, TeamMemberDTO } from '@bottomtime/api';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
+import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 import EditTeamMember from 'src/components/operators/editor/edit-team-member.vue';
 import UserAvatar from 'src/components/users/user-avatar.vue';
 import { BasicUser } from 'tests/fixtures/users';
@@ -22,12 +24,25 @@ const TeamMemberJoined = {
 const TeamMemberTitle = '#team-member-title';
 
 describe('EditTeamMember component', () => {
+  let client: ApiClient;
+  let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof EditTeamMember>;
 
+  beforeAll(() => {
+    client = new ApiClient();
+  });
+
   beforeEach(() => {
+    pinia = createPinia();
     opts = {
       props: {
         teamMember: TestTeamMember,
+      },
+      global: {
+        plugins: [pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
       },
     };
   });

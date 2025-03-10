@@ -228,6 +228,30 @@ export class LogEntriesApiClient {
     return data;
   }
 
+  async getLogEntrySignature(
+    username: string,
+    entryId: string,
+    buddy: string,
+  ): Promise<LogEntrySignatureDTO> {
+    const { data } = await this.apiClient.get(
+      `${this.getLogEntryUrl(username, entryId)}/signatures/${buddy}`,
+      undefined,
+      LogEntrySignatureSchema,
+    );
+    return data;
+  }
+
+  async logEntrySignatureExists(
+    username: string,
+    entryId: string,
+    buddy: string,
+  ): Promise<boolean> {
+    const status = await this.apiClient.head(
+      `${this.getLogEntryUrl(username, entryId)}/signatures/${buddy}`,
+    );
+    return status === 200;
+  }
+
   async signLogEntry(
     username: string,
     entryId: string,

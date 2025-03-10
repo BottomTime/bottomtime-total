@@ -30,6 +30,7 @@ describe('ViewLogbookEntry component', () => {
           [ApiClientKey as symbol]: client,
         },
         stubs: {
+          teleport: true,
           StarRating: StarRatingStub,
         },
       },

@@ -1,4 +1,4 @@
-import { DiveSiteReviewDTO } from '@bottomtime/api';
+import { ApiClient, DiveSiteReviewDTO } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -7,6 +7,7 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 import DifficultyInput from 'src/components/common/difficulty-input.vue';
 import DiveSiteReviewsListItem from 'src/components/diveSites/dive-site-reviews-list-item.vue';
 import { useCurrentUser } from 'src/store';
@@ -27,10 +28,15 @@ const EditButton = `#edit-review-${TestReview.id}`;
 const DeleteButton = `#delete-review-${TestReview.id}`;
 
 describe('DiveSiteReviewsListItem component', () => {
+  let client: ApiClient;
   let opts: ComponentMountingOptions<typeof DiveSiteReviewsListItem>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+
+  beforeAll(() => {
+    client = new ApiClient();
+  });
 
   beforeEach(() => {
     pinia = createPinia();
@@ -41,6 +47,9 @@ describe('DiveSiteReviewsListItem component', () => {
       },
       global: {
         plugins: [pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
         stubs: {
           StarRating: StarRatingStub,
         },

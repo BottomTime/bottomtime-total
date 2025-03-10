@@ -144,17 +144,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       expect(response.body).toMatchSnapshot();
     });
 
-    it('will return a 401 response if user is not logged in', async () => {
-      await request(server).get(tankUrl(regularUser.username)).expect(401);
-    });
-
-    it('will return a 403 response if user is not an administrator and does not own the requested tank profile', async () => {
-      await request(server)
-        .get(tankUrl(adminUser.username))
-        .set(...regularAuthHeader)
-        .expect(403);
-    });
-
     it('will return a 404 response if the user does not exist', async () => {
       await request(server)
         .get(tankUrl('Not.A.User'))
@@ -176,36 +165,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         .expect(200);
 
       expect(response).toMatchSnapshot();
-    });
-
-    it('will return a 401 response if the user is not logged in', async () => {
-      const tankData = new TankEntity();
-      Object.assign(tankData, TestTankData[0]);
-      tankData.user = regularUser;
-      await Tanks.save(tankData);
-
-      await request(server)
-        .get(tankUrl(regularUser.username, tankData.id))
-        .expect(401);
-    });
-
-    it('will return a 403 response if the user is not an administrator and does not own the requested tank profile', async () => {
-      const tankData = new TankEntity();
-      Object.assign(tankData, TestTankData[0]);
-      tankData.user = adminUser;
-      await Tanks.save(tankData);
-
-      await request(server)
-        .get(tankUrl(adminUser.username, tankData.id))
-        .set(...regularAuthHeader)
-        .expect(403);
-    });
-
-    it('will return a 404 response if the tank ID is invalid', async () => {
-      await request(server)
-        .get(tankUrl(regularUser.username, 'invalid-id'))
-        .set(...regularAuthHeader)
-        .expect(404);
     });
 
     it('will return a 404 response if the user does not exist', async () => {
@@ -503,19 +462,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         .expect(403);
     });
 
-    it('will return a 404 response if the tank ID is invalid', async () => {
-      await request(server)
-        .put(tankUrl(regularUser.username, 'invalid-id'))
-        .set(...regularAuthHeader)
-        .send({
-          material: TankMaterial.Steel,
-          name: 'My Tank',
-          volume: 14.5,
-          workingPressure: 219,
-        })
-        .expect(404);
-    });
-
     it('will return a 404 response if the user does not exist', async () => {
       const tankData = new TankEntity();
       Object.assign(tankData, TestTankData[0]);
@@ -600,13 +546,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         .delete(tankUrl(adminUser.username, tankData.id))
         .set(...regularAuthHeader)
         .expect(403);
-    });
-
-    it('will return a 404 response if the tank ID is invalid', async () => {
-      await request(server)
-        .delete(tankUrl(regularUser.username, 'invalid-id'))
-        .set(...regularAuthHeader)
-        .expect(404);
     });
 
     it('will return a 404 response if the user does not exist', async () => {

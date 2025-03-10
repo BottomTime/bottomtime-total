@@ -106,6 +106,9 @@ export const dbModule: CommandModule<{
                 'The ID of the dive site for which site reviews will be generated',
               type: 'string',
             })
+            .epilogue(
+              'HINT: When generating test user accounts the passwords will be set to "Password1" for easy access!',
+            )
             .help();
         },
         async (yargs) => {

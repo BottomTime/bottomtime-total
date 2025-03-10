@@ -40,16 +40,10 @@
   <PageTitle title="Professional Associations" />
   <BreadCrumbs :items="BreadcrumbItems" />
 
-  <RequireAuth2
-    :authorizer="
-      () =>
-        route.params.username === currentUser.user?.username ||
-        currentUser.user?.role === UserRole.Admin
-    "
-  >
+  <RequireAuth2 :authorizer="isAuthorized">
     <div>
       <FormBox class="flex justify-between items-center">
-        <p>
+        <p data-testid="association-counts">
           <span>Showing </span>
           <span class="text-sm font-mono font-bold">
             {{ state.associations.data.length }}
@@ -72,7 +66,7 @@
               <span>
                 <i class="fa-solid fa-plus"></i>
               </span>
-              <span>Add</span>
+              <span>Add Association</span>
             </p>
           </FormButton>
         </div>
@@ -81,10 +75,11 @@
       <div v-if="state.isLoading" class="text-center text-lg my-4">
         <LoadingSpinner message="Fetching professional associations..." />
       </div>
-      <TransitionList v-else class="mx-2">
+      <TransitionList v-else class="mx-2" data-testid="associations-list">
         <li
           v-if="!state.associations.data.length"
           class="text-lg text-center my-4"
+          data-testid="no-associations-msg"
         >
           <p>
             You do not have any professional associations yet.
@@ -112,7 +107,7 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -170,6 +165,13 @@ const state = reactive<ProfessionalAssociationViewState>({
   showConfirmDelete: false,
   showEditAssociation: false,
 });
+
+function isAuthorized(): boolean {
+  return (
+    route.params.username === currentUser.user?.username ||
+    currentUser.user?.role === UserRole.Admin
+  );
+}
 
 function onAddAssociation() {
   state.selectedAssociation = undefined;
@@ -262,7 +264,15 @@ async function onConfirmDeleteAssociation(): Promise<void> {
   state.isDeleting = false;
 }
 
-onMounted(async () => {
+async function refreshList(): Promise<void> {
+  state.associations = {
+    data: [],
+    totalCount: 0,
+  };
+
+  if (!isAuthorized()) return;
+
+  state.isLoading = true;
   await oops(async () => {
     state.associations =
       await client.certifications.listProfessionalAssociations(
@@ -272,5 +282,9 @@ onMounted(async () => {
     state.agencies = agencies.data;
   });
   state.isLoading = false;
-});
+}
+
+onMounted(refreshList);
+
+watch(() => currentUser.user, refreshList);
 </script>

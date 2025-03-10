@@ -1,15 +1,19 @@
-import { AccountTier, FriendDTO, LogBookSharing } from '@bottomtime/api';
+import {
+  AccountTier,
+  ApiClient,
+  FriendDTO,
+  LogBookSharing,
+} from '@bottomtime/api';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
+import 'tests/dayjs';
 import { createRouter } from 'tests/fixtures/create-router';
 import { Router } from 'vue-router';
 
 import FriendsListItem from '../../../../src/components/friends/friends-list-item.vue';
-
-dayjs.extend(relativeTime);
 
 const FullTestFriendData: FriendDTO = {
   userId: '80fd5b82-e90d-4417-a8a5-51d8311e91a7',
@@ -36,14 +40,21 @@ const SelectLink = `[data-testid="select-friend-${FullTestFriendData.username}"]
 const UnfriendButton = `[data-testid="unfriend-${FullTestFriendData.username}"]`;
 
 describe('Friends list item component', () => {
+  let client: ApiClient;
   let router: Router;
+  let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof FriendsListItem>;
 
   beforeAll(() => {
     router = createRouter();
+    client = new ApiClient();
+    pinia = createPinia();
     opts = {
       global: {
-        plugins: [router],
+        plugins: [router, pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
       },
     };
     jest.useFakeTimers({

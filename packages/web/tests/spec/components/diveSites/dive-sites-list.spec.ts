@@ -1,4 +1,5 @@
 import {
+  ApiClient,
   ApiList,
   DiveSiteDTO,
   SearchDiveSitesResponseSchema,
@@ -7,6 +8,7 @@ import {
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 
 import DiveSitesListItem from '../../../../src/components/diveSites/dive-sites-list-item.vue';
 import DiveSitesList from '../../../../src/components/diveSites/dive-sites-list.vue';
@@ -17,12 +19,14 @@ const NoResults = '[data-testid="no-results"]';
 const LoadMore = '[data-testid="load-more"]';
 
 describe('Dive Sites List component', () => {
+  let client: ApiClient;
   let searchResults: ApiList<DiveSiteDTO>;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof DiveSitesList>;
 
   beforeAll(() => {
+    client = new ApiClient();
     searchResults = SearchDiveSitesResponseSchema.parse(SearchResults);
   });
 
@@ -31,6 +35,9 @@ describe('Dive Sites List component', () => {
     opts = {
       global: {
         plugins: [pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
         stubs: {
           StarRating: StarRatingStub,
         },
