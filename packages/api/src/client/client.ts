@@ -2,6 +2,7 @@ import { AppMetricsDTO } from '../types';
 import { AlertsApiClient } from './alerts';
 import { ApiClientOptions } from './api-client-options';
 import { AuthApiClient } from './auth';
+import { CertificationsApiClient } from './certifications';
 import { DiveSiteReviewsApiClient } from './dive-site-reviews';
 import { DiveSitesApiClient } from './dive-sites';
 import { Fetcher } from './fetcher';
@@ -20,6 +21,7 @@ export class ApiClient {
 
   readonly alerts: AlertsApiClient;
   readonly auth: AuthApiClient;
+  readonly certifications: CertificationsApiClient;
   readonly diveSiteReviews: DiveSiteReviewsApiClient;
   readonly diveSites: DiveSitesApiClient;
   readonly friends: FriendsApiClient;
@@ -37,6 +39,7 @@ export class ApiClient {
 
     this.alerts = new AlertsApiClient(this.client);
     this.auth = new AuthApiClient(this.client);
+    this.certifications = new CertificationsApiClient(this.client);
     this.diveSiteReviews = new DiveSiteReviewsApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
     this.friends = new FriendsApiClient(this.client);

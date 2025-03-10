@@ -4,6 +4,8 @@
     target="_blank"
     rel="noopener noreferrer"
     :class="`no-style group relative rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 ${height} ${width} shadow-inner shadow-grey-800 cursor-pointer`"
+    @mouseenter="onMouseEnter"
+    @mouseleave="onMouseLeave"
   >
     <span class="relative">
       <img
@@ -27,32 +29,56 @@
 
     <div
       v-if="profile"
-      class="absolute top-[105%] left-2 min-w-44 opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 flex flex-wrap bg-secondary-dark p-1 rounded-md shadow-lg shadow-grey-800/60 text-xs z-[55] transition-opacity ease-in-out duration-200"
+      class="absolute top-[105%] left-2 min-w-80 opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 flex flex-wrap bg-secondary-dark p-1 rounded-md shadow-lg shadow-grey-800/60 text-xs z-[55] transition-opacity ease-in-out duration-200"
     >
-      <label class="font-bold text-right w-2/5">Joined:</label>
-      <span class="w-3/5 px-1 text-pretty">
+      <label class="font-bold text-right w-1/5">Joined:</label>
+      <span class="w-4/5 px-1 text-pretty">
         {{ dayjs(profile?.memberSince).fromNow() }}
       </span>
 
-      <label class="font-bold text-right w-2/5">Username:</label>
-      <span class="w-3/5 px-1 text-pretty">@{{ profile.username }}</span>
+      <label class="font-bold text-right w-1/5">Username:</label>
+      <span class="w-4/5 px-1 text-pretty">@{{ profile.username }}</span>
 
-      <label class="font-bold text-right w-2/5">Location:</label>
-      <span class="w-3/5 px-1 text-pretty">
+      <label class="font-bold text-right w-1/5">Location:</label>
+      <span class="w-4/5 px-1 text-pretty">
         {{ profile.location || 'Not specified' }}
       </span>
+
+      <template v-if="fullProfile">
+        <label class="font-bold text-right w-1/5">Diving since:</label>
+        <span class="w-4/5 px-1 text-pretty">
+          {{ fullProfile.startedDiving || 'Not specified' }}
+        </span>
+
+        <label class="font-bold text-right w-1/5">Experience:</label>
+        <span class="w-4/5 px-1 text-pretty">
+          {{ fullProfile.experienceLevel || 'Not specified' }}
+        </span>
+
+        <label class="font-bold text-right w-1/5">Bio:</label>
+        <span class="w-4/5 px-1 text-pretty">
+          {{ fullProfile.bio || 'Not specified' }}
+        </span>
+      </template>
     </div>
   </a>
 </template>
 
 <script setup lang="ts">
 /* eslint-disable deprecation/deprecation */
-import { AccountTier, AvatarSize, SuccinctProfileDTO } from '@bottomtime/api';
+import {
+  AccountTier,
+  AvatarSize,
+  ProfileDTO,
+  SuccinctProfileDTO,
+} from '@bottomtime/api';
 
 import dayjs from 'dayjs';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
+import { useClient } from '../../api-client';
 import { getAvatarURL } from '../../avatars';
+import { useOops } from '../../oops';
 
 type UserAvatarProps = {
   /** @deprecated Use the `profile` property instead. */
@@ -62,15 +88,20 @@ type UserAvatarProps = {
   displayName?: string;
 
   size?: 'x-small' | 'small' | 'medium' | 'large' | 'x-large';
-  profile?: SuccinctProfileDTO;
+  profile?: SuccinctProfileDTO | ProfileDTO;
   showName?: boolean;
   testId?: string;
 };
+
+const client = useClient();
+const oops = useOops();
 
 const props = withDefaults(defineProps<UserAvatarProps>(), {
   size: 'small',
   showName: false,
 });
+const profileTimer = ref<ReturnType<typeof setTimeout> | null>(null);
+const fullProfile = ref<ProfileDTO | null>(null);
 
 const size = computed(() => {
   switch (props.size) {
@@ -164,4 +195,27 @@ const avatar = computed(() => {
       return getAvatarURL(props.avatar, AvatarSize.Small);
   }
 });
+
+async function fetchFullProfile(): Promise<void> {
+  await oops(async () => {
+    if (!props.profile) return;
+    fullProfile.value = await client.userProfiles.getProfile(
+      props.profile.username,
+    );
+  });
+}
+
+function onMouseEnter() {
+  if (fullProfile.value) return;
+  profileTimer.value = setTimeout(async () => {
+    profileTimer.value = null;
+    await fetchFullProfile();
+  }, 1000);
+}
+
+function onMouseLeave() {
+  if (profileTimer.value) {
+    clearTimeout(profileTimer.value);
+  }
+}
 </script>

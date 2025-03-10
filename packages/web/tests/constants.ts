@@ -9,3 +9,10 @@ export const DrawerPanel = {
   Fullscreen: '[data-testid="drawer-fullscreen"]',
   Title: '[data-testid="drawer-title"]',
 } as const;
+
+export const RequireAuth = {
+  LoginForm: '[data-testid="login-form"]',
+  ForbiddenMessage: '[data-testid="forbidden-message"]',
+} as const;
+
+export const NotFoundMessage = '[data-testid="not-found-message"]';

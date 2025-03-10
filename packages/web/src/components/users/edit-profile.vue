@@ -143,6 +143,22 @@
             />
           </FormField>
 
+          <div class="flex justify-center mt-6 gap-3">
+            <FormButton
+              type="primary"
+              :is-loading="isSaving"
+              test-id="save-profile"
+              submit
+              @click="onSave"
+            >
+              Save Changes
+            </FormButton>
+
+            <FormButton test-id="cancel-profile" @click="onReset">
+              Cancel
+            </FormButton>
+          </div>
+
           <div v-if="tanks" data-testid="tank-profiles">
             <TextHeading>Personal Tank Profiles</TextHeading>
             <div v-if="tanks.totalCount" class="space-y-5">
@@ -156,37 +172,28 @@
                 <p class="text-lg italic">
                   {{ tanks.data.map((tank) => `"${tank.name}"`).join(', ') }}
                 </p>
-                <NavLink :to="`/profile/${profile.username}/tanks`">
+                <RouterLink :to="`/profile/${profile.username}/tanks`">
                   Manage Tank Profiles...
-                </NavLink>
+                </RouterLink>
               </div>
             </div>
 
             <div v-else class="text-lg italic my-4">
               <span>You haven't created any personal tank profiles yet. </span>
-              <NavLink :to="`/profile/${props.profile.username}/tanks`">
+              <RouterLink :to="`/profile/${props.profile.username}/tanks`">
                 Click here
-              </NavLink>
+              </RouterLink>
               <span> to create one.</span>
             </div>
           </div>
+
+          <div>
+            <TextHeading>Professional Associations</TextHeading>
+            <RouterLink :to="`/profile/${profile.username}/associations`">
+              Manage Professional Associations...
+            </RouterLink>
+          </div>
         </div>
-      </div>
-
-      <div class="flex justify-center mt-6 gap-3">
-        <FormButton
-          type="primary"
-          :is-loading="isSaving"
-          test-id="save-profile"
-          submit
-          @click="onSave"
-        >
-          Save Changes
-        </FormButton>
-
-        <FormButton test-id="cancel-profile" @click="onReset">
-          Cancel
-        </FormButton>
       </div>
     </fieldset>
   </form>
@@ -202,6 +209,7 @@ import {
 } from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Coordinates, SelectOption, ToastType } from '../../common';
@@ -213,7 +221,6 @@ import FormFuzzyDate from '../common/form-fuzzy-date.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
-import NavLink from '../common/nav-link.vue';
 import TextHeading from '../common/text-heading.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UploadImageDialog from '../dialog/upload-image-dialog.vue';

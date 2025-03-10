@@ -1,19 +1,19 @@
 import {
+  ApiClient,
   ApiList,
   ProfileDTO,
   SearchUsersResponseSchema,
 } from '@bottomtime/api';
 
-import { mount } from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
+import 'tests/dayjs';
 
 import SearchFriendsListItem from '../../../../src/components/friends/search-friends-list-item.vue';
 import SearchFriendsList from '../../../../src/components/friends/search-friends-list.vue';
 import UsersTestData from '../../../fixtures/user-search-results.json';
-
-dayjs.extend(relativeTime);
 
 const CountsMessage = '[data-testid="search-friends-counts"]';
 const FriendsList = '[data-testid="search-friends-list"]';
@@ -22,18 +22,33 @@ const NoFriendsMessage = '[data-testid="search-friends-no-results"]';
 const LoadingMoreMessage = '[data-testid="search-friends-loading-more"]';
 
 describe('Search friends list component', () => {
+  let client: ApiClient;
   let searchData: ApiList<ProfileDTO>;
+
+  let pinia: Pinia;
+  let opts: ComponentMountingOptions<typeof SearchFriendsList>;
 
   beforeAll(() => {
     const userData = SearchUsersResponseSchema.parse(UsersTestData);
+    client = new ApiClient();
     searchData = {
       data: userData.data.map((user) => user.profile),
       totalCount: userData.totalCount,
+    };
+    pinia = createPinia();
+    opts = {
+      global: {
+        plugins: [pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
+      },
     };
   });
 
   it('will render loading spinner if "isLoading" is true', () => {
     const wrapper = mount(SearchFriendsList, {
+      ...opts,
       props: { isLoading: true, users: { data: [], totalCount: 0 } },
     });
     expect(
@@ -44,6 +59,7 @@ describe('Search friends list component', () => {
 
   it('will render correctly with empty list', () => {
     const wrapper = mount(SearchFriendsList, {
+      ...opts,
       props: { users: { data: [], totalCount: 0 } },
     });
     expect(
@@ -55,6 +71,7 @@ describe('Search friends list component', () => {
 
   it('will render correcty for partial list', () => {
     const wrapper = mount(SearchFriendsList, {
+      ...opts,
       props: {
         users: {
           data: searchData.data.slice(0, 50),
@@ -79,6 +96,7 @@ describe('Search friends list component', () => {
 
   it('will render correctly for full list', () => {
     const wrapper = mount(SearchFriendsList, {
+      ...opts,
       props: {
         users: {
           data: searchData.data,
@@ -102,6 +120,7 @@ describe('Search friends list component', () => {
 
   it('will show loading spinner while loading more results', () => {
     const wrapper = mount(SearchFriendsList, {
+      ...opts,
       props: {
         isLoadingMore: true,
         users: {
@@ -117,6 +136,7 @@ describe('Search friends list component', () => {
 
   it('will re-emit "send-request" events from the list items', () => {
     const wrapper = mount(SearchFriendsList, {
+      ...opts,
       props: { users: searchData },
     });
 

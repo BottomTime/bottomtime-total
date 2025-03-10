@@ -5,6 +5,7 @@ export const LogbookRouteNames = {
   NamedLogs: 'named-logs',
   NewLogEntry: 'new-log-entry',
   LogEntry: 'log-entry',
+  SignLogEntry: 'sign-log-entry',
 };
 
 export const LogbookRoutes: RouteRecordRaw[] = [
@@ -27,5 +28,10 @@ export const LogbookRoutes: RouteRecordRaw[] = [
     path: '/logbook/:username/:entryId',
     name: LogbookRouteNames.LogEntry,
     component: () => import('../views/logbook/log-entry-view.vue'),
+  },
+  {
+    path: '/logbook/:username/:entryId/sign',
+    name: LogbookRouteNames.SignLogEntry,
+    component: () => import('../views/logbook/sign-log-entry-view.vue'),
   },
 ];

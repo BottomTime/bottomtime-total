@@ -10,6 +10,7 @@ export const UserRouteNames = {
   Profile: 'profile',
   NamedProfile: 'named-profile',
   Notifications: 'notifications',
+  ProfessionalAssociations: 'associations',
   ProfileTanks: 'profile-tanks',
   ProfileNewTank: 'profile-new-tank',
   ProfileTank: 'profile-tank',
@@ -60,6 +61,12 @@ export const UserRoutes: RouteRecordRaw[] = [
     path: '/profile/:username',
     name: UserRouteNames.NamedProfile,
     component: () => import('../views/users/profile-view.vue'),
+  },
+  {
+    path: '/profile/:username/associations',
+    name: UserRouteNames.ProfessionalAssociations,
+    component: () =>
+      import('../views/users/professional-associations-view.vue'),
   },
   {
     path: '/profile/:username/tanks',

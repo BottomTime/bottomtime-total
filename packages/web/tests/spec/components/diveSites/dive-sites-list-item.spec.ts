@@ -1,6 +1,9 @@
+import { ApiClient } from '@bottomtime/api';
+
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 import DiveSitesListItem from 'src/components/diveSites/dive-sites-list-item.vue';
 
 import {
@@ -10,13 +13,21 @@ import {
 import StarRatingStub from '../../../stubs/star-rating-stub.vue';
 
 describe('Dive Sites List Item component', () => {
+  let client: ApiClient;
   let pinia: Pinia;
   let global: ComponentMountingOptions<typeof DiveSitesListItem>['global'];
+
+  beforeAll(() => {
+    client = new ApiClient();
+  });
 
   beforeEach(() => {
     pinia = createPinia();
     global = {
       plugins: [pinia],
+      provide: {
+        [ApiClientKey as symbol]: client,
+      },
       stubs: {
         StarRating: StarRatingStub,
       },

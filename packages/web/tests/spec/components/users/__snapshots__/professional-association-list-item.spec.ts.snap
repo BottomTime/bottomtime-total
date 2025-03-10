@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfessionalAssociationListItem component will render association 1`] = `
+"<li class="flex items-center gap-3">
+  <figure class="rounded-full"><img src="https://www.padi.com" class="w-[64px] h-[64px]"></figure>
+  <div class="flex flex-col gap-2 grow"><a id="a-078ef22c-1380-459d-a9c4-7b1ac296298c" href="#a-078ef22c-1380-459d-a9c4-7b1ac296298c" class="flex items-baseline gap-3"><span class="text-2xl font-bold">PADI - Assistant Instructor</span><span class="text-lg font-mono">#123456</span></a>
+    <p class="space-x-2"><span class="font-bold">Since:</span><span>2021-01-01</span></p>
+  </div>
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="edit-assoc-078ef22c-1380-459d-a9c4-7b1ac296298c" type="button">
+      <!--v-if--><span><i class="fa-solid fa-pen"></i></span><span class="sr-only"> Edit PADI Assistant Instructor #123456</span>
+    </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-assoc-078ef22c-1380-459d-a9c4-7b1ac296298c" type="button">
+      <!--v-if--><span><i class="fa-solid fa-trash"></i></span><span class="sr-only"> Delete PADI Assistant Instructor #123456</span>
+    </button></div>
+</li>"
+`;

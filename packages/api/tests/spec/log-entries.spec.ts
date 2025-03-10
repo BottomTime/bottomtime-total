@@ -2,8 +2,10 @@ import mockFetch from 'fetch-mock-jest';
 
 import {
   ApiList,
+  BuddyType,
   CreateOrUpdateDiveSiteReviewDTO,
   CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntrySignatureDTO,
   CreateOrUpdateOperatorReviewDTO,
   DepthUnit,
   DiveSiteDTO,
@@ -11,6 +13,7 @@ import {
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   LogEntryDTO,
+  LogEntrySignatureDTO,
   LogEntrySortBy,
   PressureUnit,
   SearchDiveSitesResponseSchema,
@@ -23,9 +26,11 @@ import {
 } from '../../src';
 import { Fetcher } from '../../src/client/fetcher';
 import { LogEntriesApiClient } from '../../src/client/log-entries';
+import { TestAgencies } from '../fixtures/agencies';
 import DiveSiteTestData from '../fixtures/dive-sites-search-results.json';
 import LogEntryTestData from '../fixtures/log-entries-search-results.json';
-import { BasicUser } from '../fixtures/users';
+import { TestSignatures } from '../fixtures/log-entry-signatures';
+import { BasicUser, UserWithEmptyProfile } from '../fixtures/users';
 
 const timestamp = new Date('2024-04-30T20:48:16.436Z');
 const PartialTestData: LogEntryDTO = {
@@ -611,5 +616,78 @@ describe('Log entries API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(results).toMatchSnapshot();
+  });
+
+  it('will list signatures for a log entry', async () => {
+    const username = 'Joanna.33';
+    const entryId = '76a63fb5-a3cd-4ef3-ba91-6dc03fe9a581';
+    const expected = {
+      data: TestSignatures,
+      totalCount: TestSignatures.length,
+    };
+    mockFetch.get(`/api/users/${username}/logbook/${entryId}/signatures`, {
+      status: 200,
+      body: expected,
+    });
+
+    const actual = await client.listLogEntrySignatures(username, entryId);
+
+    expect(actual).toEqual(expected);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will sign a log entry', async () => {
+    const username = 'Joanna.33';
+    const entryId = '76a63fb5-a3cd-4ef3-ba91-6dc03fe9a581';
+    const options: CreateOrUpdateLogEntrySignatureDTO = {
+      buddyType: BuddyType.Divemaster,
+      agency: TestAgencies[1].id,
+      certificationNumber: '1111111',
+    };
+    const expected: LogEntrySignatureDTO = {
+      buddy: UserWithEmptyProfile.profile,
+      type: BuddyType.Divemaster,
+      id: 'e736b50a-7774-47f3-8b07-50260a8a4602',
+      signedOn: new Date().valueOf(),
+      agency: TestAgencies[1],
+      certificationNumber: '1111111',
+    };
+    mockFetch.put(
+      {
+        url: ``,
+        body: options,
+      },
+      {
+        status: 200,
+        body: expected,
+      },
+    );
+
+    const actual = await client.signLogEntry(
+      username,
+      entryId,
+      UserWithEmptyProfile.username,
+      options,
+    );
+
+    expect(actual).toEqual(expected);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will delete a log entry signature', async () => {
+    const username = 'Joanna.33';
+    const entryId = '76a63fb5-a3cd-4ef3-ba91-6dc03fe9a581';
+    mockFetch.delete(
+      `/api/users/${username}/logbook/${entryId}/signatures/${UserWithEmptyProfile.username}`,
+      201,
+    );
+
+    await client.deleteLogEntrySignature(
+      username,
+      entryId,
+      UserWithEmptyProfile.username,
+    );
+
+    expect(mockFetch.done()).toBe(true);
   });
 });

@@ -68,3 +68,12 @@ export const ProfessionalAssociationSchema =
 export type ProfessionalAssociationDTO = z.infer<
   typeof ProfessionalAssociationSchema
 >;
+
+export const ListAgenciesResponseSchema = z.object({
+  data: AgencySchema.array(),
+  totalCount: z.number().int(),
+});
+export const ListProfessionalAssociationsResponseSchema = z.object({
+  data: ProfessionalAssociationSchema.array(),
+  totalCount: z.number().int(),
+});

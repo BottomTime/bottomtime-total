@@ -15,6 +15,7 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
@@ -91,6 +92,7 @@ describe('Operator view', () => {
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };

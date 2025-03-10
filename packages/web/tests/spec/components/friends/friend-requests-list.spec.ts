@@ -1,10 +1,14 @@
 import {
+  ApiClient,
   ApiList,
   FriendRequestDTO,
   ListFriendRequestsResponseSchema,
 } from '@bottomtime/api';
 
-import { mount } from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
+
+import { Pinia, createPinia } from 'pinia';
+import { ApiClientKey } from 'src/api-client';
 
 import FriendRequestsListItem from '../../../../src/components/friends/friend-requests-list-item.vue';
 import FriendRequestsList from '../../../../src/components/friends/friend-requests-list.vue';
@@ -16,14 +20,29 @@ const RequestCounts = '[data-testid="request-counts"]';
 const RequestsList = '[data-testid="friend-requests-list"]';
 
 describe('Friend requests list component', () => {
+  let client: ApiClient;
   let requestsData: ApiList<FriendRequestDTO>;
 
+  let pinia: Pinia;
+  let opts: ComponentMountingOptions<typeof FriendRequestsList>;
+
   beforeAll(() => {
+    client = new ApiClient();
     requestsData = ListFriendRequestsResponseSchema.parse(TestRequestData);
+    pinia = createPinia();
+    opts = {
+      global: {
+        plugins: [pinia],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
+      },
+    };
   });
 
   it('will render an empty list', () => {
     const wrapper = mount(FriendRequestsList, {
+      ...opts,
       props: {
         requests: {
           data: [],
@@ -40,6 +59,7 @@ describe('Friend requests list component', () => {
 
   it('will render a partial list', () => {
     const wrapper = mount(FriendRequestsList, {
+      ...opts,
       props: {
         requests: {
           data: requestsData.data.slice(0, 12),
@@ -62,6 +82,7 @@ describe('Friend requests list component', () => {
 
   it('will render a full list', () => {
     const wrapper = mount(FriendRequestsList, {
+      ...opts,
       props: {
         requests: requestsData,
       },
@@ -81,6 +102,7 @@ describe('Friend requests list component', () => {
 
   it('will emit "load-more" event if button is clicked', async () => {
     const wrapper = mount(FriendRequestsList, {
+      ...opts,
       props: {
         requests: {
           data: requestsData.data.slice(0, 12),
@@ -96,6 +118,7 @@ describe('Friend requests list component', () => {
 
   it('will show loading spinner if loading more is active', () => {
     const wrapper = mount(FriendRequestsList, {
+      ...opts,
       props: {
         requests: {
           data: requestsData.data.slice(0, 12),
@@ -114,6 +137,7 @@ describe('Friend requests list component', () => {
   ['accept', 'cancel', 'dismiss', 'decline', 'select'].forEach((event) => {
     it(`will bubble up a "${event}" event when a list item raises it`, async () => {
       const wrapper = mount(FriendRequestsList, {
+        ...opts,
         props: {
           requests: requestsData,
         },
