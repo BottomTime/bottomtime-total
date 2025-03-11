@@ -85,7 +85,9 @@
       >
         <FormBox class="space-y-3">
           <TextHeading class="space-x-3">
-            <span></span>
+            <span>
+              <i class="fa-solid fa-certificate"></i>
+            </span>
             <span>Manage Agencies</span>
           </TextHeading>
           <p class="text-sm italic">

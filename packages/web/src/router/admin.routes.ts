@@ -8,6 +8,7 @@ export const AdminRouteNames = {
   EditAlert: 'edit-alert',
   AdminTanks: 'admin-tanks',
   AdminNewTank: 'admin-new-tank',
+  AdminOperators: 'admin-operators',
   AdminTank: 'admin-tank',
   AdminUsers: 'admin-users',
   AdminUser: 'admin-user',
@@ -38,6 +39,11 @@ export const AdminRoutes: RouteRecordRaw[] = [
     path: '/admin/alerts/:alertId',
     name: AdminRouteNames.EditAlert,
     component: () => import('../views/admin/alert-view.vue'),
+  },
+  {
+    path: '/admin/shops',
+    name: AdminRouteNames.AdminOperators,
+    component: () => import('../views/admin/operators-view.vue'),
   },
   {
     path: '/admin/tanks',
