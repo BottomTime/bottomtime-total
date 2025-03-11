@@ -164,7 +164,7 @@ async function onConfirmDeleteAgency(): Promise<void> {
 
   await oops(async () => {
     if (!state.selectedAgency) return;
-    // await client.certifications.deleteAgency(state.selectedAgency.id);
+    await client.certifications.deleteAgency(state.selectedAgency.id);
 
     const index = state.agencies.data.findIndex(
       (a) => a.id === state.selectedAgency?.id,
@@ -187,18 +187,18 @@ async function onSaveAgency(agency: AgencyDTO): Promise<void> {
   state.isSaving = true;
 
   await oops(async () => {
-    // if (agency.id) {
-    //   const saved = await client.certifications.updateAgency(agency.id, agency);
+    if (agency.id) {
+      const saved = await client.certifications.updateAgency(agency.id, agency);
 
-    //   const index = state.agencies.data.findIndex((a) => a.id === saved.id);
-    //   if (index > -1) {
-    //     state.agencies.data.splice(index, 1, saved);
-    //   }
-    // } else {
-    //   const created = await client.certifications.createAgency(agency);
-    //   state.agencies.data.splice(0, 0, created);
-    //   state.agencies.totalCount++;
-    // }
+      const index = state.agencies.data.findIndex((a) => a.id === saved.id);
+      if (index > -1) {
+        state.agencies.data.splice(index, 1, saved);
+      }
+    } else {
+      const created = await client.certifications.createAgency(agency);
+      state.agencies.data.splice(0, 0, created);
+      state.agencies.totalCount++;
+    }
 
     toasts.success('agency-saved', 'Agency has been saved successfully.');
 

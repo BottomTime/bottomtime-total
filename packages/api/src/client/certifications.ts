@@ -1,6 +1,9 @@
 import {
   AgencyDTO,
+  AgencySchema,
   ApiList,
+  CreateOrUpdateAgencyDTO,
+  CreateOrUpdateAgencySchema,
   CreateOrUpdateProfessionalAssociationParamsDTO,
   ListAgenciesResponseSchema,
   ListProfessionalAssociationsResponseSchema,
@@ -19,6 +22,40 @@ export class CertificationsApiClient {
       ListAgenciesResponseSchema,
     );
     return data;
+  }
+
+  async getAgency(agencyId: string): Promise<AgencyDTO> {
+    const { data } = await this.apiClient.get(
+      `/api/agencies/${agencyId}`,
+      undefined,
+      AgencySchema,
+    );
+    return data;
+  }
+
+  async createAgency(options: CreateOrUpdateAgencyDTO): Promise<AgencyDTO> {
+    const { data } = await this.apiClient.post(
+      '/api/agencies',
+      CreateOrUpdateAgencySchema.parse(options),
+      AgencySchema,
+    );
+    return data;
+  }
+
+  async updateAgency(
+    agencyId: string,
+    options: CreateOrUpdateAgencyDTO,
+  ): Promise<AgencyDTO> {
+    const { data } = await this.apiClient.put(
+      `/api/agencies/${agencyId}`,
+      CreateOrUpdateAgencySchema.parse(options),
+      AgencySchema,
+    );
+    return data;
+  }
+
+  async deleteAgency(agencyId: string): Promise<void> {
+    await this.apiClient.delete(`/api/agencies/${agencyId}`);
   }
 
   async listProfessionalAssociations(

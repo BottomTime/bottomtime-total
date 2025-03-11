@@ -135,7 +135,8 @@ async function onSave(): Promise<void> {
   if (isValid) {
     emit('save', {
       id: props.agency?.id || '',
-      logo: props.agency?.logo || '',
+      logo:
+        props.agency?.logo || `/img/agencies/${state.name.toLowerCase()}.png`,
       name: state.name,
       longName: state.longName,
       website: state.website,
