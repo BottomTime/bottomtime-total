@@ -17,9 +17,9 @@
       @save-settings="onSaveSettings"
     />
   </DrawerPanel>
-  <div class="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-8 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
     <!-- Search criteria panel -->
-    <FormBox class="xl:col-start-2 xl:col-span-2">
+    <FormBox>
       <form class="flex flex-col sticky top-20" @submit.prevent="">
         <FormField :responsive="false">
           <FormTextBox
@@ -72,21 +72,28 @@
       </form>
     </FormBox>
 
-    <div class="lg:col-span-3 xl:col-span-4">
+    <div class="lg:col-span-3">
       <!-- Summary bar and sort order select -->
-      <FormBox class="flex flex-row gap-2 items-baseline sticky top-16">
-        <span class="font-bold">Showing Users:</span>
-        <span>{{ state.results.data.length }}</span>
-        <span>of</span>
-        <span class="grow">{{ state.results.totalCount }}</span>
-        <label for="sort-order" class="font-bold">Sort order:</label>
-        <FormSelect
-          v-model="state.searchParams.sortOrder"
-          control-id="sort-order"
-          test-id="sort-order"
-          :options="SortOrderOptions"
-          @change="refreshUsers"
-        />
+      <FormBox
+        class="flex flex-row gap-2 justify-between items-baseline sticky top-16"
+      >
+        <p>
+          <span>Showing </span>
+          <span class="font-bold">{{ state.results.data.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ state.results.totalCount }}</span>
+          <span> users</span>
+        </p>
+        <div class="flex gap-2 items-baseline">
+          <label for="sort-order" class="font-bold">Sort order:</label>
+          <FormSelect
+            v-model="state.searchParams.sortOrder"
+            control-id="sort-order"
+            test-id="sort-order"
+            :options="SortOrderOptions"
+            @change="refreshUsers"
+          />
+        </div>
       </FormBox>
 
       <!-- Loading message -->
