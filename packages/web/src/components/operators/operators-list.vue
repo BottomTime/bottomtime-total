@@ -57,24 +57,22 @@
     </TransitionList>
 
     <div
-      v-if="isLoadingMore"
-      class="flex justify-center gap-3"
+      v-if="operators.data.length < operators.totalCount"
+      class="text-center text-lg my-4"
       data-testid="operators-loading"
     >
-      <LoadingSpinner message="Loading more results..." />
-    </div>
-
-    <div
-      v-else-if="operators.data.length < operators.totalCount"
-      class="flex justify-center gap-3"
-    >
-      <FormButton
-        type="link"
-        test-id="operators-load-more"
+      <LoadingSpinner v-if="isLoadingMore" message="Loading more results..." />
+      <a
+        v-else
+        class="space-x-1"
+        data-testid="operators-load-more"
         @click="$emit('load-more')"
       >
-        <p class="text-lg">Load more results...</p>
-      </FormButton>
+        <span>
+          <i class="fa-solid fa-arrow-down"></i>
+        </span>
+        <span>Load more results...</span>
+      </a>
     </div>
   </div>
 </template>

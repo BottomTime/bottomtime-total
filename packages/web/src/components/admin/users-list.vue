@@ -2,7 +2,7 @@
   <DrawerPanel
     :title="state.selectedUser?.username"
     :visible="!!state.selectedUser"
-    :full-screen="`/admin/users/${state.selectedUser?.username}`"
+    :edit="`/admin/users/${state.selectedUser?.username}`"
     @close="onCloseManageUser"
   >
     <ManageUser

@@ -1,24 +1,7 @@
-import {
-  AgencyDTO,
-  ApiList,
-  CreateOrUpdateAgencyDTO,
-  CreateOrUpdateAgencySchema,
-} from '@bottomtime/api';
+import { AgencyDTO, ApiList } from '@bottomtime/api';
 
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Inject,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 
-import { bodyValidator } from '../zod-validator';
 import { AgenciesService } from './agencies.service';
 import { Agency } from './agency';
 import { AssertTargetAgency, TargetAgency } from './assert-target-agency.guard';
@@ -110,36 +93,5 @@ export class AgenciesController {
   @UseGuards(AssertTargetAgency)
   async getAgency(@TargetAgency() agency: Agency): Promise<AgencyDTO> {
     return agency.toJSON();
-  }
-
-  @Post()
-  async createAgency(
-    @Body(bodyValidator(CreateOrUpdateAgencySchema))
-    options: CreateOrUpdateAgencyDTO,
-  ): Promise<AgencyDTO> {
-    const agency = await this.service.createAgency(options);
-    return agency.toJSON();
-  }
-
-  @Put(AgencyIdParam)
-  @UseGuards(AssertTargetAgency)
-  async updateAgency(
-    @TargetAgency() agency: Agency,
-    @Body(bodyValidator(CreateOrUpdateAgencySchema))
-    options: CreateOrUpdateAgencyDTO,
-  ): Promise<AgencyDTO> {
-    agency.logo = options.logo;
-    agency.longName = options.longName;
-    agency.name = options.name;
-    agency.website = options.website;
-    await agency.save();
-    return agency.toJSON();
-  }
-
-  @Delete(AgencyIdParam)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(AssertTargetAgency)
-  async deleteAgency(@TargetAgency() agency: Agency): Promise<void> {
-    await agency.delete();
   }
 }

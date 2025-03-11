@@ -35,7 +35,7 @@ export class CertificationsApiClient {
 
   async createAgency(options: CreateOrUpdateAgencyDTO): Promise<AgencyDTO> {
     const { data } = await this.apiClient.post(
-      '/api/agencies',
+      '/api/admin/agencies',
       CreateOrUpdateAgencySchema.parse(options),
       AgencySchema,
     );
@@ -47,7 +47,7 @@ export class CertificationsApiClient {
     options: CreateOrUpdateAgencyDTO,
   ): Promise<AgencyDTO> {
     const { data } = await this.apiClient.put(
-      `/api/agencies/${agencyId}`,
+      `/api/admin/agencies/${agencyId}`,
       CreateOrUpdateAgencySchema.parse(options),
       AgencySchema,
     );
@@ -55,7 +55,7 @@ export class CertificationsApiClient {
   }
 
   async deleteAgency(agencyId: string): Promise<void> {
-    await this.apiClient.delete(`/api/agencies/${agencyId}`);
+    await this.apiClient.delete(`/api/admin/agencies/${agencyId}`);
   }
 
   async listProfessionalAssociations(

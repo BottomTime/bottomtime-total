@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin Agencies E2E tests when creating an agency will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_string",
+      "message": "Invalid",
+      "path": [
+        "name",
+      ],
+      "validation": "regex",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "longName",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "logo",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid url",
+      "path": [
+        "website",
+      ],
+      "validation": "url",
+    },
+  ],
+}
+`;
+
+exports[`Admin Agencies E2E tests when creating an agency will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "name",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "logo",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "website",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;

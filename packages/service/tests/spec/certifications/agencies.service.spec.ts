@@ -1,3 +1,6 @@
+import { CreateOrUpdateAgencyDTO } from '@bottomtime/api';
+
+import { createAgencyFactory } from 'tests/utils';
 import { Repository } from 'typeorm';
 
 import { AgenciesService } from '../../../src/certifications';
@@ -37,7 +40,7 @@ describe('Agencies Service', () => {
 
   beforeAll(() => {
     Agencies = dataSource.getRepository(AgencyEntity);
-    service = new AgenciesService(Agencies);
+    service = new AgenciesService(Agencies, createAgencyFactory());
   });
 
   beforeEach(async () => {
@@ -59,5 +62,19 @@ describe('Agencies Service', () => {
     await expect(
       service.getAgency('58db47e0-05bb-4083-b1a4-43c9a6696703'),
     ).resolves.toBeUndefined();
+  });
+
+  it('will create a new agency', async () => {
+    const options: CreateOrUpdateAgencyDTO = {
+      logo: '/img/agencies/divo.png',
+      name: 'DIVO',
+      longName: 'Diving Instructor and Vendor Organization',
+      website: 'https://www.divo.com',
+    };
+    const agency = await service.createAgency(options);
+    expect(agency.toEntity()).toMatchObject(options);
+
+    const saved = await Agencies.findOneByOrFail({ id: agency.id });
+    expect(saved).toEqual(agency.toEntity());
   });
 });

@@ -1,6 +1,6 @@
 import { ApiList, CreateOrUpdateAgencyDTO } from '@bottomtime/api';
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -8,12 +8,15 @@ import { v7 as uuid } from 'uuid';
 
 import { AgencyEntity } from '../data';
 import { Agency } from './agency';
+import { AgencyFactory } from './agency-factory';
 
 @Injectable()
 export class AgenciesService {
   constructor(
     @InjectRepository(AgencyEntity)
     private readonly agencies: Repository<AgencyEntity>,
+
+    @Inject(AgencyFactory) private readonly agencyFactory: AgencyFactory,
   ) {}
 
   private async getNextAvailableOrdinal(): Promise<number> {
@@ -46,7 +49,7 @@ export class AgenciesService {
       website: options.website,
     };
 
-    const agency = new Agency(this.agencies, data);
+    const agency = this.agencyFactory.createAgency(data);
     await agency.save();
 
     return agency;
