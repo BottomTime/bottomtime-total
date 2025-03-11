@@ -1,6 +1,7 @@
 import { RouteRecordRaw } from 'vue-router';
 
 export const AdminRouteNames = {
+  AdminAgencies: 'admin-agencies',
   AdminDashboard: 'admin-dashboard',
   AdminAlerts: 'admin-alerts',
   NewAlert: 'new-alert',
@@ -17,6 +18,11 @@ export const AdminRoutes: RouteRecordRaw[] = [
     path: '/admin',
     name: AdminRouteNames.AdminDashboard,
     component: () => import('../views/admin/dashboard-view.vue'),
+  },
+  {
+    path: '/admin/agencies',
+    name: AdminRouteNames.AdminAgencies,
+    component: () => import('../views/admin/agencies-view.vue'),
   },
   {
     path: '/admin/alerts',
