@@ -113,35 +113,40 @@
         <span> No users found matching your search criteria.</span>
       </p>
 
-      <ul v-else data-testid="users-list">
+      <TransitionList v-else class="mx-2" data-testid="users-list">
         <UsersListItem
           v-for="user in state.results.data"
           :key="user.id"
           :user="user"
           @user-click="onUserClick"
         />
+      </TransitionList>
+      <div
+        v-if="state.results.data.length < state.results.totalCount"
+        class="text-center text-lg my-4"
+      >
+        <div
+          v-if="state.isLoadingMore"
+          class="mt-4 flex gap-3 justify-center align-middle"
+        >
+          <span>
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+          <span>Loading...</span>
+        </div>
 
-        <li class="text-center text-lg mt-2">
-          <div
-            v-if="state.isLoadingMore"
-            class="mt-4 flex gap-3 justify-center align-middle"
-          >
-            <span>
-              <i class="fas fa-spinner fa-spin"></i>
-            </span>
-            <span>Loading...</span>
-          </div>
-
-          <FormButton
-            v-else-if="state.results.data.length < state.results.totalCount"
-            type="link"
-            test-id="users-list-load-more"
-            @click="onLoadMore"
-          >
-            Load more results
-          </FormButton>
-        </li>
-      </ul>
+        <a
+          v-else
+          data-testid="users-list-load-more"
+          class="space-x-1"
+          @click="onLoadMore"
+        >
+          <span>
+            <i class="fa-solid fa-arrow-down"></i>
+          </span>
+          <span>Load more results...</span>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -170,6 +175,7 @@ import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
+import TransitionList from '../common/transition-list.vue';
 import ManageUser from './manage-user.vue';
 import UsersListItem from './users-list-item.vue';
 
