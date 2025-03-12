@@ -6,8 +6,8 @@
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-items-stretch"
     >
-      <a
-        href="/admin/users"
+      <RouterLink
+        to="/admin/users"
         class="text-grey-800 dark:text-grey-50 no-underline"
       >
         <FormBox class="space-y-3">
@@ -22,10 +22,10 @@
             suspending/re-activating accounts, updating profiles and so on.
           </p>
         </FormBox>
-      </a>
+      </RouterLink>
 
-      <a
-        href="/admin/alerts"
+      <RouterLink
+        to="/admin/alerts"
         class="text-grey-800 dark:text-grey-50 no-underline"
       >
         <FormBox class="space-y-3">
@@ -41,10 +41,10 @@
             visible or expire.
           </p>
         </FormBox>
-      </a>
+      </RouterLink>
 
-      <a
-        href="/admin/tanks"
+      <RouterLink
+        to="/admin/tanks"
         class="text-grey-800 dark:text-grey-50 no-underline"
       >
         <FormBox class="space-y-3">
@@ -59,10 +59,10 @@
             log entries.
           </p>
         </FormBox>
-      </a>
+      </RouterLink>
 
-      <a
-        href="/admin/shops"
+      <RouterLink
+        to="/admin/shops"
         class="text-grey-800 dark:text-grey-50 no-underline"
       >
         <FormBox class="space-y-3">
@@ -77,7 +77,24 @@
             verification requests.
           </p>
         </FormBox>
-      </a>
+      </RouterLink>
+
+      <RouterLink
+        to="/admin/agencies"
+        class="text-grey-800 dark:text-grey-50 no-underline"
+      >
+        <FormBox class="space-y-3">
+          <TextHeading class="space-x-3">
+            <span>
+              <i class="fa-solid fa-certificate"></i>
+            </span>
+            <span>Manage Agencies</span>
+          </TextHeading>
+          <p class="text-sm italic">
+            Manage dive agencies that provide certifications and courses.
+          </p>
+        </FormBox>
+      </RouterLink>
     </div>
   </RequireAuth>
 </template>
@@ -86,6 +103,7 @@
 import { UserRole } from '@bottomtime/api';
 
 import { computed } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { Breadcrumb } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';

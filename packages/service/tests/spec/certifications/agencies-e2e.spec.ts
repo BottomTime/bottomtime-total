@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { AgenciesService } from '../../../src/certifications';
+import { AgenciesService, AgencyFactory } from '../../../src/certifications';
 import { AgenciesController } from '../../../src/certifications/agencies.controller';
 import { AgencyEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
@@ -25,7 +25,7 @@ describe('Agencies E2E tests', () => {
     Agencies = dataSource.getRepository(AgencyEntity);
     app = await createTestApp({
       imports: [TypeOrmModule.forFeature([AgencyEntity])],
-      providers: [AgenciesService],
+      providers: [AgenciesService, AgencyFactory],
       controllers: [AgenciesController],
     });
     await app.init();

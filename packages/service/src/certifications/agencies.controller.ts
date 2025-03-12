@@ -1,17 +1,12 @@
 import { AgencyDTO, ApiList } from '@bottomtime/api';
 
-import {
-  Controller,
-  Get,
-  Inject,
-  NotFoundException,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 
-import { z } from 'zod';
-
-import { ZodParamValidator } from '../zod-validator';
 import { AgenciesService } from './agencies.service';
+import { Agency } from './agency';
+import { AssertTargetAgency, TargetAgency } from './assert-target-agency.guard';
+
+const AgencyIdParam = ':agencyId';
 
 @Controller('api/agencies')
 export class AgenciesController {
@@ -94,16 +89,9 @@ export class AgenciesController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Get(':agencyId')
-  async getAgency(
-    @Param('agencyId', new ZodParamValidator(z.string().uuid())) id: string,
-  ): Promise<AgencyDTO> {
-    const agency = await this.service.getAgency(id);
-
-    if (!agency) {
-      throw new NotFoundException(`Agency with ID "${id}" not found.`);
-    }
-
+  @Get(AgencyIdParam)
+  @UseGuards(AssertTargetAgency)
+  async getAgency(@TargetAgency() agency: Agency): Promise<AgencyDTO> {
     return agency.toJSON();
   }
 }

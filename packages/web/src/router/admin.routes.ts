@@ -1,12 +1,14 @@
 import { RouteRecordRaw } from 'vue-router';
 
 export const AdminRouteNames = {
+  AdminAgencies: 'admin-agencies',
   AdminDashboard: 'admin-dashboard',
   AdminAlerts: 'admin-alerts',
   NewAlert: 'new-alert',
   EditAlert: 'edit-alert',
   AdminTanks: 'admin-tanks',
   AdminNewTank: 'admin-new-tank',
+  AdminOperators: 'admin-operators',
   AdminTank: 'admin-tank',
   AdminUsers: 'admin-users',
   AdminUser: 'admin-user',
@@ -17,6 +19,11 @@ export const AdminRoutes: RouteRecordRaw[] = [
     path: '/admin',
     name: AdminRouteNames.AdminDashboard,
     component: () => import('../views/admin/dashboard-view.vue'),
+  },
+  {
+    path: '/admin/agencies',
+    name: AdminRouteNames.AdminAgencies,
+    component: () => import('../views/admin/agencies-view.vue'),
   },
   {
     path: '/admin/alerts',
@@ -32,6 +39,11 @@ export const AdminRoutes: RouteRecordRaw[] = [
     path: '/admin/alerts/:alertId',
     name: AdminRouteNames.EditAlert,
     component: () => import('../views/admin/alert-view.vue'),
+  },
+  {
+    path: '/admin/shops',
+    name: AdminRouteNames.AdminOperators,
+    component: () => import('../views/admin/operators-view.vue'),
   },
   {
     path: '/admin/tanks',

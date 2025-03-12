@@ -2,7 +2,7 @@
   <DrawerPanel
     :title="state.selectedUser?.username"
     :visible="!!state.selectedUser"
-    :full-screen="`/admin/users/${state.selectedUser?.username}`"
+    :edit="`/admin/users/${state.selectedUser?.username}`"
     @close="onCloseManageUser"
   >
     <ManageUser
@@ -17,9 +17,9 @@
       @save-settings="onSaveSettings"
     />
   </DrawerPanel>
-  <div class="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-8 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
     <!-- Search criteria panel -->
-    <FormBox class="xl:col-start-2 xl:col-span-2">
+    <FormBox>
       <form class="flex flex-col sticky top-20" @submit.prevent="">
         <FormField :responsive="false">
           <FormTextBox
@@ -72,21 +72,28 @@
       </form>
     </FormBox>
 
-    <div class="lg:col-span-3 xl:col-span-4">
+    <div class="lg:col-span-3">
       <!-- Summary bar and sort order select -->
-      <FormBox class="flex flex-row gap-2 items-baseline sticky top-16">
-        <span class="font-bold">Showing Users:</span>
-        <span>{{ state.results.data.length }}</span>
-        <span>of</span>
-        <span class="grow">{{ state.results.totalCount }}</span>
-        <label for="sort-order" class="font-bold">Sort order:</label>
-        <FormSelect
-          v-model="state.searchParams.sortOrder"
-          control-id="sort-order"
-          test-id="sort-order"
-          :options="SortOrderOptions"
-          @change="refreshUsers"
-        />
+      <FormBox
+        class="flex flex-row gap-2 justify-between items-baseline sticky top-16"
+      >
+        <p>
+          <span>Showing </span>
+          <span class="font-bold">{{ state.results.data.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ state.results.totalCount }}</span>
+          <span> users</span>
+        </p>
+        <div class="flex gap-2 items-baseline">
+          <label for="sort-order" class="font-bold">Sort order:</label>
+          <FormSelect
+            v-model="state.searchParams.sortOrder"
+            control-id="sort-order"
+            test-id="sort-order"
+            :options="SortOrderOptions"
+            @change="refreshUsers"
+          />
+        </div>
       </FormBox>
 
       <!-- Loading message -->
@@ -106,35 +113,40 @@
         <span> No users found matching your search criteria.</span>
       </p>
 
-      <ul v-else data-testid="users-list">
+      <TransitionList v-else class="mx-2" data-testid="users-list">
         <UsersListItem
           v-for="user in state.results.data"
           :key="user.id"
           :user="user"
           @user-click="onUserClick"
         />
+      </TransitionList>
+      <div
+        v-if="state.results.data.length < state.results.totalCount"
+        class="text-center text-lg my-4"
+      >
+        <div
+          v-if="state.isLoadingMore"
+          class="mt-4 flex gap-3 justify-center align-middle"
+        >
+          <span>
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+          <span>Loading...</span>
+        </div>
 
-        <li class="text-center text-lg mt-2">
-          <div
-            v-if="state.isLoadingMore"
-            class="mt-4 flex gap-3 justify-center align-middle"
-          >
-            <span>
-              <i class="fas fa-spinner fa-spin"></i>
-            </span>
-            <span>Loading...</span>
-          </div>
-
-          <FormButton
-            v-else-if="state.results.data.length < state.results.totalCount"
-            type="link"
-            test-id="users-list-load-more"
-            @click="onLoadMore"
-          >
-            Load more results
-          </FormButton>
-        </li>
-      </ul>
+        <a
+          v-else
+          data-testid="users-list-load-more"
+          class="space-x-1"
+          @click="onLoadMore"
+        >
+          <span>
+            <i class="fa-solid fa-arrow-down"></i>
+          </span>
+          <span>Load more results...</span>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -163,6 +175,7 @@ import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
+import TransitionList from '../common/transition-list.vue';
 import ManageUser from './manage-user.vue';
 import UsersListItem from './users-list-item.vue';
 

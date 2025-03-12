@@ -63,23 +63,17 @@
  *       default: 100
  *       example: 100
  *   schemas:
- *     Agency:
+ *     CreateOrUpdateAgency:
  *       type: object
  *       required:
- *         - id
  *         - name
  *         - logo
  *         - website
  *       properties:
- *         id:
- *           title: Agency ID
- *           type: string
- *           format: uuid
- *           description: A unique ID used to identify the agency in API calls.
- *           example: 39910b4a-73e8-4155-9b49-5782307c6951
  *         name:
  *           title: Short Name (Abbreviation)
  *           type: string
+ *           pattern: "^[\\w\\s]+$"
  *           maxLength: 200
  *           description: The agency's short name.
  *           example: PADI
@@ -103,6 +97,19 @@
  *           maxLength: 250
  *           description: The URL of the agency's website.
  *           example: https://padidive.com
+ *     Agency:
+ *       allOf:
+ *         - type: object
+ *           required:
+ *             - id
+ *           properties:
+ *             id:
+ *               title: Agency ID
+ *               type: string
+ *               format: uuid
+ *               description: A unique ID used to identify the agency in API calls.
+ *               example: 39910b4a-73e8-4155-9b49-5782307c6951
+ *         - $ref: "#/components/schemas/CreateOrUpdateAgency"
  *     UpdateCertification:
  *       type: object
  *       required:

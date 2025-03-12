@@ -1,3 +1,5 @@
+import { ConflictException } from '@nestjs/common';
+
 import { Repository } from 'typeorm';
 
 import { Agency } from '../../../src/certifications';
@@ -106,5 +108,16 @@ describe('Agency class', () => {
 
   it('will do nothing if deleting an agency that does not exist in the database', async () => {
     await agency.delete();
+  });
+
+  it('will throw a ConflictException if, when saving, the name is already taken by another agency', async () => {
+    await Agencies.save(TestData);
+    const otherAgency = new Agency(Agencies, {
+      ...TestData,
+      id: 'd9c6c5f4-0b0b-4b3d-9e9d-4d1d0b3b6b5d',
+      name: 'test agency',
+    });
+
+    await expect(otherAgency.save()).rejects.toThrow(ConflictException);
   });
 });

@@ -3,7 +3,12 @@ import { z } from 'zod';
 import { FuzzyDateRegex } from './constants';
 
 export const CreateOrUpdateAgencySchema = z.object({
-  name: z.string().trim().min(1).max(200),
+  name: z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .regex(/^[\w\s]+$/),
   longName: z.string().trim().max(200).optional(),
   logo: z.string().trim().min(1).max(250),
   website: z.string().trim().url().max(250),

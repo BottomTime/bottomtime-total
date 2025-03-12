@@ -32,6 +32,26 @@ exports[`Static Views will render Cookie Policy 1`] = `
 </div>"
 `;
 
+exports[`Static Views will render Developers Policy 1`] = `
+"<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
+  <p class="text-6xl mb-3 capitalize">For Developers...</p>
+  <!--v-if-->
+</div>
+<ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
+  <li><a aria-current="page" href="/" class="router-link-active router-link-exact-active">Home</a></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Developers</span></li>
+</ul>
+<section class="flex flex-col gap-4">
+  <p>Howdy fellow developers,</p>
+  <p>Wanna contribute to this project? Awesome! I could use the help! ❤</p>
+  <p><span> For those who want to contribute directly, you can checkout the source code </span><a class="space-x-1" href="https://github.com/BottomTime/bottomtime-total" target="_blank" rel="noopener noreferrer"><span>from GitHub</span><span><i class="fa-solid fa-arrow-up-right-from-square"></i></span></a><span> . There is plenty of documentation in the README files to get started. </span></p>
+  <p> I'm also <span class="italic">very</span> open to developers writing third party software to integrate this platform with the larger diver community! This platform is built on an API-first architecture, so you can build your own front-end, mobile app, or even a CLI tool to interact with the Bottom Time platform. I'm especially interested in importing dive logs from our user's dive computers as well as cataloguing dive sites and dive shops from around the world! Check out our <a href="https://docs.bottomti.me/" target="_blank" rel="noopener noreferrer"> API documentation </a> for more information. </p>
+  <p> Thank you so much for taking an interest in my humble project! I look forward to working with each and every one of you! </p>
+  <p>Happy coding and cheers! 🍻</p>
+  <p class="flex flex-col"><span>Sincerely,</span><span>Chris Carleton,</span><span>Founder and Lead Engineer</span></p>
+</section>"
+`;
+
 exports[`Static Views will render Not Found Error page 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
   <p class="text-6xl mb-3 capitalize">Page Not Found</p>
@@ -45,33 +65,66 @@ exports[`Static Views will render Not Found Error page 1`] = `
 
 exports[`Static Views will render Privacy Policy 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
-  <p class="text-6xl mb-3 capitalize">Cookie Policy</p>
+  <p class="text-6xl mb-3 capitalize">Privacy Policy</p>
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
   <li><a aria-current="page" href="/" class="router-link-active router-link-exact-active">Home</a></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Cookie Policy</span></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Privacy Policy</span></li>
 </ul>
 <div class="flex flex-col gap-4">
   <p class="font-bold">Effective Date: February 14, 2024</p>
-  <p> Thank you for visiting Bottom Time (the "Website"). This Cookie Policy explains how we use cookies and similar tracking technologies on our Website. By using our Website, you consent to the use of cookies in accordance with this policy. </p>
-  <h1 class="text-2xl font-bold font-title">What are cookies?</h1>
-  <p> Cookies are small text files that are stored on your device (computer, tablet, smartphone) when you visit a website. They are widely used to make websites work more efficiently and to provide information to website owners. </p>
-  <h1 class="text-2xl font-bold font-title">Types of Cookies We Use</h1>
+  <p> Thank you for visiting <span class="font-bold">Bottom Time</span> (the "Website"). We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. This Privacy Policy outlines the types of personal information we collect, how it is used, and the choices you have regarding your information. </p>
+  <h1 class="text-2xl font-bold font-title">Information We Collect</h1>
+  <p> We collect personal information that you voluntarily provide to us when you interact with our Website, such as when you register for an account, subscribe to our newsletter, make a purchase, or contact us through our contact form. The types of personal information we may collect include: </p>
   <ul class="list-outside list-disc ml-10">
-    <li><span class="font-bold">Essential Cookies:</span> These cookies are necessary for the functioning of our Website and cannot be disabled in our systems. They are usually set in response to actions made by you, such as setting your privacy preferences, logging in, or filling out forms. You can set your browser to block or alert you about these cookies, but some parts of the Website may not function properly. </li>
-    <li><span class="font-bold">Analytics Cookies:</span> These cookies allow us to track and analyze how users interact with our Website, including which pages are visited most often and how users move around the site. This information helps us improve the performance and design of our Website. These cookies may be set by us or by third-party providers of analytics services. </li>
-    <li><span class="font-bold">Marketing Cookies:</span> These cookies are used to track your browsing habits and activity in order to deliver targeted advertisements that are relevant to your interests. They may be used by advertising networks to build a profile of your interests and show you relevant ads on other sites. These cookies may be set through our Website by our advertising partners. </li>
+    <li>Name</li>
+    <li>Email address</li>
+    <li>Birthdate</li>
+    <li>Location</li>
+    <li>Diving history</li><!-- &lt;li&gt;Mailing address&lt;/li&gt; -->
+    <!-- &lt;li&gt;Phone number&lt;/li&gt; -->
+    <!-- &lt;li&gt;Payment information (such as credit card details)&lt;/li&gt; -->
+    <li> User-generated content (such as comments, reviews, dive logs, etc.) </li>
+    <li>Any other information you choose to provide</li>
   </ul>
-  <h1 class="text-2xl font-bold font-title">Your Cookie Choices</h1>
-  <p> You can choose to accept or decline cookies through your web browser settings. Most web browsers automatically accept cookies, but you can usually modify your browser settings to decline cookies if you prefer. Please note that blocking or deleting cookies may affect the functionality of our Website and your ability to access certain features. </p>
-  <h1 class="text-2xl font-bold font-title">Third-Party Cookies</h1>
-  <p> Some third-party services that we use on our Website, such as social media plugins and embedded content from external websites, may also use cookies to track your interaction with their content. We have no control over these cookies and recommend that you review the privacy policies of these third-party providers for more information about their cookie practices. </p>
-  <h1 class="text-2xl font-bold font-title">Changes to this Cookie Policy</h1>
-  <p> We reserve the right to update or change this Cookie Policy at any time. Any changes will be effective immediately upon posting the revised Cookie Policy on this page. We encourage you to review this Cookie Policy periodically for any changes. </p>
+  <h1 class="text-2xl font-bold font-title">How We Use Your Information</h1>
+  <p> We use the personal information we collect for the following purposes: </p>
+  <ul class="list-outside list-disc ml-10">
+    <!-- <li>To process and fulfill your orders and requests</li> -->
+    <li>To communicate with you about your account</li>
+    <li> To send you promotional emails, newsletters, and marketing communications (you may opt-out at any time) </li>
+    <li>To improve our Website and services</li><!-- <li>To prevent fraud and enhance the security of our Website</li> -->
+    <!-- <li>To comply with legal obligations</li> -->
+  </ul>
+  <h1 class="text-2xl font-bold font-title">Information Sharing</h1>
+  <p> We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described below: </p>
+  <ul class="list-outside list-disc ml-10">
+    <!-- <li>
+        Service Providers: We may share your information with trusted
+        third-party service providers who assist us in operating our Website,
+        conducting our business, or servicing you. These service providers are
+        contractually obligated to use your information only for the purposes of
+        providing services to us and are prohibited from disclosing or using
+        your information for any other purpose.
+      </li> -->
+    <li> Legal Compliance: We may disclose your information if required by law or in response to a lawful request from governmental authorities or law enforcement agencies. </li>
+  </ul>
+  <h1 class="text-2xl font-bold font-title">Your Choices</h1>
+  <p>You have the following choices regarding your personal information:</p>
+  <ul class="list-outside list-disc ml-10">
+    <li> You may opt-out of receiving promotional emails and marketing communications by following the unsubscribe instructions included in these emails. </li>
+    <li> You may update, correct, or delete your account information by logging into your account settings or by contacting us directly. </li>
+  </ul>
+  <h1 class="text-2xl font-bold font-title">Security</h1>
+  <p> We implement reasonable security measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security. </p>
+  <h1 class="text-2xl font-bold font-title">Children's Privacy</h1>
+  <p> Our Website is not directed to children under the age of 13, and we do not knowingly collect personal information from children under the age of 13. If we become aware that we have collected personal information from a child under the age of 13, we will take steps to delete such information from our records. </p>
+  <h1 class="text-2xl font-bold font-title">Changes to this Privacy Policy</h1>
+  <p> We reserve the right to update or change this Privacy Policy at any time. Any changes will be effective immediately upon posting the revised Privacy Policy on this page. We encourage you to review this Privacy Policy periodically for any changes. </p>
   <h1 class="text-2xl font-bold font-title">Contact Us</h1>
-  <p> If you have any questions or concerns about this Cookie Policy or our use of cookies, please contact us at <a href="mailto:mailto:admin@bottomti.me">mailto:admin@bottomti.me</a>. </p>
-  <p> By continuing to use our Website, you consent to the use of cookies as described in this Cookie Policy. </p>
+  <p> If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a href="mailto:admin@bottomti.me">admin@bottomti.me</a>. </p>
+  <p> By using our Website, you consent to the terms of this Privacy Policy. </p>
 </div>"
 `;
 
@@ -85,32 +138,36 @@ exports[`Static Views will render Server Error page 1`] = `
 
 exports[`Static Views will render Terms of Service 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
-  <p class="text-6xl mb-3 capitalize">Cookie Policy</p>
+  <p class="text-6xl mb-3 capitalize">Terms of Service</p>
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
   <li><a aria-current="page" href="/" class="router-link-active router-link-exact-active">Home</a></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Cookie Policy</span></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Terms of Service</span></li>
 </ul>
-<div class="flex flex-col gap-4">
+<div class="space-y-4">
   <p class="font-bold">Effective Date: February 14, 2024</p>
-  <p> Thank you for visiting Bottom Time (the "Website"). This Cookie Policy explains how we use cookies and similar tracking technologies on our Website. By using our Website, you consent to the use of cookies in accordance with this policy. </p>
-  <h1 class="text-2xl font-bold font-title">What are cookies?</h1>
-  <p> Cookies are small text files that are stored on your device (computer, tablet, smartphone) when you visit a website. They are widely used to make websites work more efficiently and to provide information to website owners. </p>
-  <h1 class="text-2xl font-bold font-title">Types of Cookies We Use</h1>
+  <p> Thank you for using Bottom Time (the "Website"). These Terms of Service ("Terms") govern your access to and use of the Website. By accessing or using the Website, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the Website. </p>
+  <h1 class="text-2xl font-bold font-title">Use of the Website</h1>
   <ul class="list-outside list-disc ml-10">
-    <li><span class="font-bold">Essential Cookies:</span> These cookies are necessary for the functioning of our Website and cannot be disabled in our systems. They are usually set in response to actions made by you, such as setting your privacy preferences, logging in, or filling out forms. You can set your browser to block or alert you about these cookies, but some parts of the Website may not function properly. </li>
-    <li><span class="font-bold">Analytics Cookies:</span> These cookies allow us to track and analyze how users interact with our Website, including which pages are visited most often and how users move around the site. This information helps us improve the performance and design of our Website. These cookies may be set by us or by third-party providers of analytics services. </li>
-    <li><span class="font-bold">Marketing Cookies:</span> These cookies are used to track your browsing habits and activity in order to deliver targeted advertisements that are relevant to your interests. They may be used by advertising networks to build a profile of your interests and show you relevant ads on other sites. These cookies may be set through our Website by our advertising partners. </li>
+    <li><span class="font-bold">Content:</span> The content provided on the Website, including but not limited to text, images, videos, and graphics, is for informational purposes only. It is subject to change without notice. </li>
+    <li><span class="font-bold">User Conduct:</span> You agree not to use the Website for any unlawful or prohibited purpose. You may not interfere with the operation of the Website, including but not limited to hacking, scraping, or transmitting viruses or harmful code. </li>
+    <li><span class="font-bold">Intellectual Property:</span> All content and materials on the Website, including trademarks, logos, and copyrightable works, are the property of Bottom Time or its licensors and are protected by intellectual property laws. You may not use, copy, reproduce, modify, or distribute any content from the Website without prior written permission. </li>
+    <li><span class="font-bold">Links to Third-Party Websites:</span> The Website may contain links to third-party websites that are not owned or controlled by Bottom Time. We are not responsible for the content or privacy practices of these websites. Your use of third-party websites is at your own risk. </li>
   </ul>
-  <h1 class="text-2xl font-bold font-title">Your Cookie Choices</h1>
-  <p> You can choose to accept or decline cookies through your web browser settings. Most web browsers automatically accept cookies, but you can usually modify your browser settings to decline cookies if you prefer. Please note that blocking or deleting cookies may affect the functionality of our Website and your ability to access certain features. </p>
-  <h1 class="text-2xl font-bold font-title">Third-Party Cookies</h1>
-  <p> Some third-party services that we use on our Website, such as social media plugins and embedded content from external websites, may also use cookies to track your interaction with their content. We have no control over these cookies and recommend that you review the privacy policies of these third-party providers for more information about their cookie practices. </p>
-  <h1 class="text-2xl font-bold font-title">Changes to this Cookie Policy</h1>
-  <p> We reserve the right to update or change this Cookie Policy at any time. Any changes will be effective immediately upon posting the revised Cookie Policy on this page. We encourage you to review this Cookie Policy periodically for any changes. </p>
+  <h1 class="text-2xl font-bold font-title">Disclaimer of Warranties</h1>
+  <ul class="list-outside list-disc ml-10">
+    <li><span class="font-bold">No Warranty:</span> The Website is provided on an "as is" and "as available" basis, without any warranties of any kind, either express or implied. Bottom Time disclaims all warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement. </li>
+    <li><span class="font-bold">Limitation of Liability:</span> In no event shall Bottom Time or its affiliates, officers, directors, employees, or agents be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in any way connected with your use of the Website. </li>
+  </ul>
+  <h1 class="text-2xl font-bold font-title">Indemnification</h1>
+  <p> You agree to indemnify, defend, and hold harmless Bottom Time and its affiliates, officers, directors, employees, and agents from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or in any way related to your use of the Website or violation of these Terms. </p>
+  <h1 class="text-2xl font-bold font-title">Changes to the Terms</h1>
+  <p>Bottom Time reserves the right to update or change these Terms at any time without notice. Your continued use of the Website after any such changes constitutes your acceptance of the revised Terms. </p>
+  <h1 class="text-2xl font-bold font-title">Governing Law</h1>
+  <p> These Terms shall be governed by and construed in accordance with the laws of Ontario, Canada, without regard to its conflict of law principles. </p>
   <h1 class="text-2xl font-bold font-title">Contact Us</h1>
-  <p> If you have any questions or concerns about this Cookie Policy or our use of cookies, please contact us at <a href="mailto:mailto:admin@bottomti.me">mailto:admin@bottomti.me</a>. </p>
-  <p> By continuing to use our Website, you consent to the use of cookies as described in this Cookie Policy. </p>
+  <p> If you have any questions or concerns about these Terms, please contact us at <a href="mailto:mailto:admin@bottomti.me">mailto:admin@bottomti.me</a>. </p>
+  <p> By using the Website, you agree to be bound by these Terms of Service. </p>
 </div>"
 `;

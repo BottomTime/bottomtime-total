@@ -1,5 +1,9 @@
 import { Alert } from '../../alerts';
-import { Certification, ProfessionalAssociation } from '../../certifications';
+import {
+  Agency,
+  Certification,
+  ProfessionalAssociation,
+} from '../../certifications';
 import { DiveSite, DiveSiteReview } from '../../diveSites';
 import { LogEntry, LogEntryImport } from '../../logEntries';
 import { Notification } from '../../notifications';
@@ -10,6 +14,7 @@ import { User as BTUser } from '../../users';
 declare global {
   namespace Express {
     interface Request {
+      targetAgency: Agency | undefined;
       targetAlert: Alert | undefined;
       targetBuddy: BTUser | undefined;
       targetCertification: Certification | undefined;

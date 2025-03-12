@@ -6,6 +6,7 @@ import { UserEntity } from '../data';
 import { FriendsModule } from '../friends';
 import { TanksModule } from '../tanks';
 import { UsersModule } from '../users';
+import { AdminAgenciesController } from './admin-agencies.controller';
 import { AdminCertificationsController } from './admin-certifications.controller';
 import { AdminFriendsController } from './admin-friends.controller';
 import { AdminTanksController } from './admin-tanks.controller';
@@ -22,6 +23,7 @@ import { AdminService } from './admin.service';
   ],
   providers: [AdminService],
   controllers: [
+    AdminAgenciesController,
     AdminUsersController,
     AdminTanksController,
     AdminCertificationsController,

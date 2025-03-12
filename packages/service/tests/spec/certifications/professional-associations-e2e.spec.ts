@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 
 import {
   AgenciesService,
+  AgencyFactory,
   ProfessionalAssociationsService,
 } from '../../../src/certifications';
 import { ProfessionalAssociationsController } from '../../../src/certifications/professional-associations.controller';
@@ -86,7 +87,11 @@ describe('Professional associations E2E tests', () => {
         ]),
         UsersModule,
       ],
-      providers: [AgenciesService, ProfessionalAssociationsService],
+      providers: [
+        AgenciesService,
+        AgencyFactory,
+        ProfessionalAssociationsService,
+      ],
       controllers: [ProfessionalAssociationsController],
     });
     await app.init();

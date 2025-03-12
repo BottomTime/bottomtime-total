@@ -1,6 +1,8 @@
 import { AgencyDTO } from '@bottomtime/api';
 
-import { Repository } from 'typeorm';
+import { ConflictException } from '@nestjs/common';
+
+import { ILike, Not, Repository } from 'typeorm';
 
 import { AgencyEntity } from '../data';
 
@@ -50,6 +52,16 @@ export class Agency {
   }
 
   async save(): Promise<void> {
+    const conflict = await this.agencies.existsBy({
+      name: ILike(this.data.name),
+      id: Not(this.data.id),
+    });
+    if (conflict) {
+      throw new ConflictException(
+        'An agency with the same name already exists.',
+      );
+    }
+
     await this.agencies.save(this.data);
   }
 
