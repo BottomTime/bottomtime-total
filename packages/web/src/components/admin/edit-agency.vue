@@ -119,7 +119,7 @@ const v$ = useVuelidate(
     name: {
       required: helpers.withMessage('Abbreviation is required', required),
       regex: helpers.withMessage(
-        'Abbreviation must only contain letters, numbers, and whitespace.',
+        'Abbreviation must only contain letters, numbers, and whitespace',
         helpers.regex(/^[\s\w]+$/),
       ),
     },

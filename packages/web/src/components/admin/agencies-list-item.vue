@@ -28,13 +28,18 @@
     </div>
 
     <div>
-      <FormButton rounded="left" @click="$emit('edit', agency)">
+      <FormButton
+        :test-id="`edit-agency-${agency.name}`"
+        rounded="left"
+        @click="$emit('edit', agency)"
+      >
         <span>
           <i class="fa-solid fa-pen"></i>
         </span>
         <span class="sr-only">Edit {{ agency.name }}</span>
       </FormButton>
       <FormButton
+        :test-id="`delete-agency-${agency.name}`"
         type="danger"
         rounded="right"
         @click="$emit('delete', agency)"

@@ -31,16 +31,22 @@
 
   <RequireAuth2 :authorizer="isAuthorized">
     <FormBox class="sticky top-16 flex justify-between items-baseline">
-      <p>
+      <p data-testid="agencies-count">
         <span>Showing </span>
         <span class="font-bold">{{ state.agencies.data.length }}</span>
         <span> of </span>
         <span class="font-bold">{{ state.agencies.totalCount }}</span>
-        <span> agencies.</span>
+        <span> agencies</span>
       </p>
 
       <div>
-        <FormButton type="primary" class="space-x-1" @click="onCreateAgency">
+        <FormButton
+          control-id="btn-create-agency"
+          test-id="btn-create-agency"
+          type="primary"
+          class="space-x-1"
+          @click="onCreateAgency"
+        >
           <span><i class="fa-solid fa-plus"></i></span>
           <span>Add Agency</span>
         </FormButton>
@@ -51,8 +57,8 @@
       <LoadingSpinner message="Fetching agencies..." />
     </div>
 
-    <TransitionList v-else class="mx-2">
-      <li v-if="state.agencies.data.length === 0">
+    <TransitionList v-else class="mx-2" data-testid="agencies-list">
+      <li v-if="state.agencies.data.length === 0" data-testid="msg-no-agencies">
         <p class="text-center my-4 text-lg">
           <span>No agencies have been created yet. Try </span>
           <a @click="onCreateAgency">creating one</a>

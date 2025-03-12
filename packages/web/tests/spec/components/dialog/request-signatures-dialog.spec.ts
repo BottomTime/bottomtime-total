@@ -1,5 +1,10 @@
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
+import QRCode from 'qrcode';
 import RequestSignaturesDialog from 'src/components/dialog/request-signatures-dialog.vue';
 import { MinimalLogEntry } from 'tests/fixtures/log-entries';
 
@@ -7,11 +12,18 @@ const DialogModal = '[data-testid="dialog-modal"]';
 const CloseButton = '[data-testid="btn-close-request-signatures"]';
 const SignatureUrl = '[data-testid="lnk-copy-signature-url"]';
 
+const ExpectedUrl = `http://localhost:4850/logbook/${MinimalLogEntry.creator.username}/${MinimalLogEntry.id}/sign`;
+
 describe('RequestSignaturesDialog component', () => {
   let opts: ComponentMountingOptions<typeof RequestSignaturesDialog>;
+  let qrRenderSpy: jest.SpyInstance;
 
   beforeAll(() => {
     jest.useFakeTimers();
+  });
+
+  beforeEach(() => {
+    qrRenderSpy = jest.spyOn(QRCode, 'toCanvas').mockResolvedValue({} as never);
   });
 
   beforeEach(() => {
@@ -32,11 +44,14 @@ describe('RequestSignaturesDialog component', () => {
     jest.useRealTimers();
   });
 
-  it('will render with QR code and link', () => {
+  it('will render with QR code and link', async () => {
     const wrapper = mount(RequestSignaturesDialog, opts);
+    await flushPromises();
     expect(wrapper.get<HTMLCanvasElement>('canvas').isVisible()).toBe(true);
-    expect(wrapper.get(SignatureUrl).text()).toBe(
-      `http://localhost:4850/logbook/${MinimalLogEntry.creator.username}/${MinimalLogEntry.id}/sign`,
+    expect(wrapper.get(SignatureUrl).text()).toBe(ExpectedUrl);
+    expect(qrRenderSpy).toHaveBeenCalledWith(
+      expect.any(HTMLCanvasElement),
+      ExpectedUrl,
     );
   });
 
@@ -45,9 +60,7 @@ describe('RequestSignaturesDialog component', () => {
     Object.assign(navigator, { clipboard: { writeText } });
     const wrapper = mount(RequestSignaturesDialog, opts);
     await wrapper.get(SignatureUrl).trigger('click');
-    expect(writeText).toHaveBeenCalledWith(
-      `http://localhost:4850/logbook/${MinimalLogEntry.creator.username}/${MinimalLogEntry.id}/sign`,
-    );
+    expect(writeText).toHaveBeenCalledWith(ExpectedUrl);
   });
 
   it('will remain hidden if "visible" property is false', async () => {
