@@ -1,5 +1,4 @@
-import qs from 'querystring';
-import { URL } from 'url';
+import qs from 'fast-querystring';
 import { ZodType, ZodTypeDef } from 'zod';
 
 import { ErrorResponseSchema } from '../types';

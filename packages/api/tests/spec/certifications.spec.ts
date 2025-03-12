@@ -1,6 +1,8 @@
 import mockFetch from 'fetch-mock-jest';
 
 import {
+  AgencyDTO,
+  CreateOrUpdateAgencyDTO,
   CreateOrUpdateProfessionalAssociationParamsDTO,
   Fetcher,
   ProfessionalAssociationDTO,
@@ -10,6 +12,12 @@ import { TestAgencies } from '../fixtures/agencies';
 import { TestAssociations } from '../fixtures/professional-associations';
 
 const Username = 'test-user';
+const Options: CreateOrUpdateAgencyDTO = {
+  logo: 'https://www.agency.com/logo.png',
+  name: 'MTA',
+  longName: 'Mah Test Agency',
+  website: 'https://www.agency.com',
+};
 
 describe('Certifications API Client', () => {
   let fetcher: Fetcher;
@@ -37,6 +45,60 @@ describe('Certifications API Client', () => {
     const actual = await apiClient.listAgencies();
 
     expect(actual).toEqual(expected);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will retrieve a single agency', async () => {
+    mockFetch.get(`/api/agencies/${TestAgencies[0].id}`, TestAgencies[0]);
+    const actual = await apiClient.getAgency(TestAgencies[0].id);
+    expect(actual).toEqual(TestAgencies[0]);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will create an agency', async () => {
+    const expected: AgencyDTO = {
+      ...Options,
+      id: '205025ad-650f-411a-84fe-46266cf8650c',
+    };
+    mockFetch.post(
+      {
+        url: '/api/admin/agencies',
+        body: Options,
+      },
+      {
+        status: 201,
+        body: expected,
+      },
+    );
+    const actual = await apiClient.createAgency(Options);
+    expect(actual).toEqual(expected);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will update an existing agency', async () => {
+    const expected: AgencyDTO = {
+      ...TestAgencies[0],
+      ...Options,
+    };
+    mockFetch.put(
+      {
+        url: `/api/admin/agencies/${TestAgencies[0].id}`,
+        body: Options,
+      },
+      {
+        status: 200,
+        body: expected,
+      },
+    );
+    const actual = await apiClient.updateAgency(TestAgencies[0].id, Options);
+    expect(actual).toEqual(expected);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will delete an agency', async () => {
+    const id = '06dd30d1-ccdb-4b03-8425-fc50883e6538';
+    mockFetch.delete(`/api/admin/agencies/${id}`, 204);
+    await apiClient.deleteAgency(id);
     expect(mockFetch.done()).toBe(true);
   });
 
