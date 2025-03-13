@@ -1,7 +1,7 @@
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import PreviewOperator from 'src/components/operators/preview-operator.vue';
-import { FullOperator } from 'tests/fixtures/operators';
+import { FullOperator, PartialOperator } from 'tests/fixtures/operators';
 import StarRatingStub from 'tests/stubs/star-rating-stub.vue';
 
 describe('PreviewOperatorComponent component', () => {
@@ -17,7 +17,7 @@ describe('PreviewOperatorComponent component', () => {
     };
   });
 
-  it('will render an operator with all props set', () => {
+  it('will render unexpanded', () => {
     const wrapper = mount(PreviewOperator, {
       ...opts,
       props: {
@@ -27,13 +27,29 @@ describe('PreviewOperatorComponent component', () => {
     expect(wrapper.html()).toMatchSnapshot();
   });
 
-  it('will render an operator with some properties omitted', () => {
+  it('will render expanded an operator with all props set', async () => {
     const wrapper = mount(PreviewOperator, {
       ...opts,
       props: {
         operator: FullOperator,
       },
     });
+    await wrapper
+      .get('[data-testid="expand-operator-details"]')
+      .trigger('click');
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will render expanded an operator with some properties omitted', async () => {
+    const wrapper = mount(PreviewOperator, {
+      ...opts,
+      props: {
+        operator: PartialOperator,
+      },
+    });
+    await wrapper
+      .get('[data-testid="expand-operator-details"]')
+      .trigger('click');
     expect(wrapper.html()).toMatchSnapshot();
   });
 });

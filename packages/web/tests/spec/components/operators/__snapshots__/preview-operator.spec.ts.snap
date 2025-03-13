@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PreviewOperatorComponent component will render an operator with all props set 1`] = `
+exports[`PreviewOperatorComponent component will render expanded an operator with all props set 1`] = `
 "<div class="flex flex-col xl:flex-row gap-2 items-center">
-  <figure class="min-w-[64px] min-h-[64px]"><img src="https://loremflickr.com/128/128?lock=1873198725464064" alt="" class="w-[64px] h-[64px] rounded-full shadow-sm shadow-grey-800/60"></figure>
   <article class="grow flex flex-col gap-4">
     <div class="flex flex-col lg:flex-row justify-between items-center">
       <div class="flex gap-2 items-center"><button class="font-title text-xl capitalize hover:text-link-hover">academic, squeaky osmosis</button><a href="/shops/academic-squeaky-osmosis" target="_blank"><span><i class="fa-solid fa-up-right-from-square fa-sm"></i></span><span class="sr-only"> Open dive shop "academic, squeaky osmosis" in new tab </span></a>
@@ -10,37 +9,37 @@ exports[`PreviewOperatorComponent component will render an operator with all pro
       </div>
       <div readonly="">0</div>
     </div>
-    <div class="grid grid-cols-4 gap-1.5 text-sm"><label class="font-bold text-right">Address:</label>
-      <!-- <div class="text-center col-span-2 lg:col-span-2">
+    <transition-stub name="slide-fade" appear="false" persisted="false" css="true">
+      <div class="grid grid-cols-4 gap-1.5 text-sm"><label class="font-bold text-right">Address:</label>
+        <!-- <div class="text-center col-span-2 lg:col-span-2">
           <label class="font-bold">Address</label> -->
-      <div class="text-pretty col-span-3">
-        <div class="inline">
-          <p class="capitalize">6713 Ritchie Key Apt. 697</p>
-          <p class="capitalize">Suffolk</p>
-          <p class="capitalize">LA</p>
-          <p class="capitalize">43097</p>
-        </div><a href="https://www.google.com/maps/search/?api=1&amp;query=13.8568,54.6858" target="_blank" rel="noopener noreferrer">
-          <p class="space-x-1 inline-block"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span>13.85680N, 54.68580E</span></p>
-        </a>
-      </div><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-phone"></i></span><span>Phone:</span></label>
-      <p class="col-span-3"><a href="tel:936.810.0307 x63779">936.810.0307 x63779</a></p><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-envelope"></i></span><span>Email:</span></label>
-      <p class="col-span-3"><a href="mailto:Elizabeth_Ernser@hotmail.com">Elizabeth_Ernser@hotmail.com</a></p><label class="font-bold text-right">Socials:</label>
-      <div class="flex flex-wrap *:mr-3 col-span-3">
-        <p class="space-x-1"><span><i class="fa-brands fa-facebook"></i></span><span class="sr-only">Facebook</span><a href="Nestor34" target="_blank" rel="noopener noreferrer">Nestor34</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-instagram"></i></span><span class="sr-only">Instagram</span><a href="Warren7" target="_blank" rel="noopener noreferrer"> @Warren7</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-tiktok"></i></span><span class="sr-only">TikTok</span><a href="Rickey.Steuber" target="_blank" rel="noopener noreferrer"> @Rickey.Steuber</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-x-twitter"></i></span><span class="sr-only">Twitter / X</span><a href="Pierre_Rogahn" target="_blank" rel="noopener noreferrer">Pierre_Rogahn</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-youtube"></i></span><span class="sr-only">YouTube</span><a href="squeaky_osmosis" target="_blank" rel="noopener noreferrer">squeaky_osmosis</a></p>
+        <div class="text-pretty col-span-3">
+          <div class="inline">
+            <p class="capitalize">6713 Ritchie Key Apt. 697</p>
+            <p class="capitalize">Suffolk</p>
+            <p class="capitalize">LA</p>
+            <p class="capitalize">43097</p>
+          </div><a href="https://www.google.com/maps/search/?api=1&amp;query=13.8568,54.6858" target="_blank" rel="noopener noreferrer">
+            <p class="space-x-1 inline-block"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span>13.85680N, 54.68580E</span></p>
+          </a>
+        </div><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-phone"></i></span><span>Phone:</span></label>
+        <p class="col-span-3"><a href="tel:936.810.0307 x63779">936.810.0307 x63779</a></p><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-envelope"></i></span><span>Email:</span></label>
+        <p class="col-span-3"><a href="mailto:Elizabeth_Ernser@hotmail.com">Elizabeth_Ernser@hotmail.com</a></p><label class="font-bold text-right">Socials:</label>
+        <div class="flex flex-wrap *:mr-3 col-span-3">
+          <p class="space-x-1"><span><i class="fa-brands fa-facebook"></i></span><span class="sr-only">Facebook</span><a href="Nestor34" target="_blank" rel="noopener noreferrer">Nestor34</a></p>
+          <p class="space-x-1"><span><i class="fa-brands fa-instagram"></i></span><span class="sr-only">Instagram</span><a href="Warren7" target="_blank" rel="noopener noreferrer"> @Warren7</a></p>
+          <p class="space-x-1"><span><i class="fa-brands fa-tiktok"></i></span><span class="sr-only">TikTok</span><a href="Rickey.Steuber" target="_blank" rel="noopener noreferrer"> @Rickey.Steuber</a></p>
+          <p class="space-x-1"><span><i class="fa-brands fa-x-twitter"></i></span><span class="sr-only">Twitter / X</span><a href="Pierre_Rogahn" target="_blank" rel="noopener noreferrer">Pierre_Rogahn</a></p>
+          <p class="space-x-1"><span><i class="fa-brands fa-youtube"></i></span><span class="sr-only">YouTube</span><a href="squeaky_osmosis" target="_blank" rel="noopener noreferrer">squeaky_osmosis</a></p>
+        </div>
       </div>
-    </div>
-    <div class="text-center"></div>
+    </transition-stub><a class="text-sm space-x-1" data-testid="expand-operator-details"><span><i class="fa-solid fa-caret-up"></i></span><span>Hide details</span></a>
   </article>
 </div>"
 `;
 
-exports[`PreviewOperatorComponent component will render an operator with some properties omitted 1`] = `
+exports[`PreviewOperatorComponent component will render expanded an operator with some properties omitted 1`] = `
 "<div class="flex flex-col xl:flex-row gap-2 items-center">
-  <figure class="min-w-[64px] min-h-[64px]"><img src="https://loremflickr.com/128/128?lock=1873198725464064" alt="" class="w-[64px] h-[64px] rounded-full shadow-sm shadow-grey-800/60"></figure>
   <article class="grow flex flex-col gap-4">
     <div class="flex flex-col lg:flex-row justify-between items-center">
       <div class="flex gap-2 items-center"><button class="font-title text-xl capitalize hover:text-link-hover">academic, squeaky osmosis</button><a href="/shops/academic-squeaky-osmosis" target="_blank"><span><i class="fa-solid fa-up-right-from-square fa-sm"></i></span><span class="sr-only"> Open dive shop "academic, squeaky osmosis" in new tab </span></a>
@@ -48,30 +47,46 @@ exports[`PreviewOperatorComponent component will render an operator with some pr
       </div>
       <div readonly="">0</div>
     </div>
-    <div class="grid grid-cols-4 gap-1.5 text-sm"><label class="font-bold text-right">Address:</label>
-      <!-- <div class="text-center col-span-2 lg:col-span-2">
+    <transition-stub name="slide-fade" appear="false" persisted="false" css="true">
+      <div class="grid grid-cols-4 gap-1.5 text-sm"><label class="font-bold text-right">Address:</label>
+        <!-- <div class="text-center col-span-2 lg:col-span-2">
           <label class="font-bold">Address</label> -->
-      <div class="text-pretty col-span-3">
-        <div class="inline">
-          <p class="capitalize">6713 Ritchie Key Apt. 697</p>
-          <p class="capitalize">Suffolk</p>
-          <p class="capitalize">LA</p>
-          <p class="capitalize">43097</p>
-        </div><a href="https://www.google.com/maps/search/?api=1&amp;query=13.8568,54.6858" target="_blank" rel="noopener noreferrer">
-          <p class="space-x-1 inline-block"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span>13.85680N, 54.68580E</span></p>
-        </a>
-      </div><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-phone"></i></span><span>Phone:</span></label>
-      <p class="col-span-3"><a href="tel:936.810.0307 x63779">936.810.0307 x63779</a></p><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-envelope"></i></span><span>Email:</span></label>
-      <p class="col-span-3"><a href="mailto:Elizabeth_Ernser@hotmail.com">Elizabeth_Ernser@hotmail.com</a></p><label class="font-bold text-right">Socials:</label>
-      <div class="flex flex-wrap *:mr-3 col-span-3">
-        <p class="space-x-1"><span><i class="fa-brands fa-facebook"></i></span><span class="sr-only">Facebook</span><a href="Nestor34" target="_blank" rel="noopener noreferrer">Nestor34</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-instagram"></i></span><span class="sr-only">Instagram</span><a href="Warren7" target="_blank" rel="noopener noreferrer"> @Warren7</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-tiktok"></i></span><span class="sr-only">TikTok</span><a href="Rickey.Steuber" target="_blank" rel="noopener noreferrer"> @Rickey.Steuber</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-x-twitter"></i></span><span class="sr-only">Twitter / X</span><a href="Pierre_Rogahn" target="_blank" rel="noopener noreferrer">Pierre_Rogahn</a></p>
-        <p class="space-x-1"><span><i class="fa-brands fa-youtube"></i></span><span class="sr-only">YouTube</span><a href="squeaky_osmosis" target="_blank" rel="noopener noreferrer">squeaky_osmosis</a></p>
+        <div class="text-pretty col-span-3">
+          <div class="inline">
+            <p class="capitalize">6713 Ritchie Key Apt. 697</p>
+            <p class="capitalize">Suffolk</p>
+            <p class="capitalize">LA</p>
+            <p class="capitalize">43097</p>
+          </div>
+          <!--v-if-->
+        </div><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-phone"></i></span><span>Phone:</span></label>
+        <p class="col-span-3"><span>Unspecified</span></p><label class="font-bold space-x-1 text-right"><span><i class="fa-solid fa-envelope"></i></span><span>Email:</span></label>
+        <p class="col-span-3"><span>Unspecified</span></p><label class="font-bold text-right">Socials:</label>
+        <div class="flex flex-wrap *:mr-3 col-span-3">
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+        </div>
       </div>
+    </transition-stub><a class="text-sm space-x-1" data-testid="expand-operator-details"><span><i class="fa-solid fa-caret-up"></i></span><span>Hide details</span></a>
+  </article>
+</div>"
+`;
+
+exports[`PreviewOperatorComponent component will render unexpanded 1`] = `
+"<div class="flex flex-col xl:flex-row gap-2 items-center">
+  <article class="grow flex flex-col gap-4">
+    <div class="flex flex-col lg:flex-row justify-between items-center">
+      <div class="flex gap-2 items-center"><button class="font-title text-xl capitalize hover:text-link-hover">academic, squeaky osmosis</button><a href="/shops/academic-squeaky-osmosis" target="_blank"><span><i class="fa-solid fa-up-right-from-square fa-sm"></i></span><span class="sr-only"> Open dive shop "academic, squeaky osmosis" in new tab </span></a>
+        <!--v-if-->
+      </div>
+      <div readonly="">0</div>
     </div>
-    <div class="text-center"></div>
+    <transition-stub name="slide-fade" appear="false" persisted="false" css="true">
+      <!--v-if-->
+    </transition-stub><a class="text-sm space-x-1" data-testid="expand-operator-details"><span><i class="fa-solid fa-caret-down"></i></span><span>Show details</span></a>
   </article>
 </div>"
 `;

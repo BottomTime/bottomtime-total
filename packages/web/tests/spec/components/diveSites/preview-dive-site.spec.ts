@@ -25,16 +25,23 @@ describe('PreviewDiveSite component', () => {
     };
   });
 
-  it('will render with a full dive site', () => {
+  it('will render unexpanded', () => {
     const wrapper = mount(PreviewDiveSite, opts);
     expect(wrapper.html()).toMatchSnapshot();
   });
 
-  it('will render with a partial dive site', async () => {
+  it('will render expanded with a full dive site', async () => {
+    const wrapper = mount(PreviewDiveSite, opts);
+    await wrapper.find('[data-testid="expand-site-details"]').trigger('click');
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will render expanded with a partial dive site', async () => {
     const wrapper = mount(PreviewDiveSite, {
       ...opts,
       props: { site: DiveSiteWithMinimalProperties },
     });
+    await wrapper.find('[data-testid="expand-site-details"]').trigger('click');
     expect(wrapper.html()).toMatchSnapshot();
   });
 });
