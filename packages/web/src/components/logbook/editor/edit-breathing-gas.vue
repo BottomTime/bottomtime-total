@@ -16,13 +16,14 @@
     <TextHeading class="-ml-3" level="h2">Breathing Gas</TextHeading>
 
     <FormField>
-      <TransitionList inverted>
+      <TransitionList>
         <EditEntryAir
           v-for="(airEntry, index) in formData"
           :key="airEntry.id"
           :air="airEntry"
           :tanks="tanks"
           :ordinal="index"
+          :show-remove="formData.length > 1"
           @remove="onRemoveEntry"
           @update="onUpdateAirEntry"
         />

@@ -72,6 +72,7 @@ import { OperatorDTO, VerificationStatus } from '@bottomtime/api';
 
 import { computed, ref, watch } from 'vue';
 
+import { Logger } from '../../../logger';
 import FormButton from '../../common/form-button.vue';
 import PillLabel from '../../common/pill-label.vue';
 import StarRating from '../../common/star-rating.vue';
@@ -112,8 +113,7 @@ watch(
         });
       }
     } catch (error) {
-      /* eslint-disable-next-line no-console */
-      console.warn(error);
+      Logger.warn(error as Error);
     }
   },
 );

@@ -15,20 +15,22 @@
     <p>This cannot be undone.</p>
   </ConfirmDialog>
 
+  <SaveWarning :is-dirty="state.isDirty" :is-saving="isSaving" @save="onSave" />
+
   <form data-testid="edit-log-entry" @submit.prevent="">
     <fieldset class="space-y-4" :disabled="isSaving">
       <!-- Basic Info -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3">
         <EditBasicInfo v-model="formData.basicInfo" />
 
         <!-- Dive Site / Dive Shop -->
-        <EditDiveLocation v-model="formData.location" :entry-id="entry.id" />
-
-        <!-- Dive Conditions -->
-        <EditConditions v-model="formData.conditions" />
+        <EditDiveLocation v-model="formData.location" />
 
         <!-- Breathing Gas -->
         <EditBreathingGas v-model="formData.air" :tanks="tanks" />
+
+        <!-- Dive Conditions -->
+        <EditConditions v-model="formData.conditions" />
 
         <!-- Equipment -->
         <EditEquipment v-model="formData.equipment" />
@@ -93,12 +95,13 @@ import {
 import { useVuelidate } from '@vuelidate/core';
 
 import 'dayjs/plugin/timezone';
-import { onMounted, reactive, watch } from 'vue';
+import { nextTick, onMounted, reactive, watch } from 'vue';
 
 import { useClient } from '../../../api-client';
 import { useOops } from '../../../oops';
 import { useCurrentUser } from '../../../store';
 import FormButton from '../../common/form-button.vue';
+import SaveWarning from '../../common/save-warning.vue';
 import ConfirmDialog from '../../dialog/confirm-dialog.vue';
 import EditBasicInfo from './edit-basic-info.vue';
 import EditBreathingGas from './edit-breathing-gas.vue';
@@ -107,7 +110,12 @@ import EditDiveLocation from './edit-dive-location.vue';
 import EditEquipment from './edit-equipment.vue';
 import EditNotes from './edit-notes.vue';
 import EditSignatures from './edit-signatures.vue';
-import { LogEntryFormData, dtoToFormData, formDataToDTO } from './types';
+import {
+  LogEntryFormData,
+  SaveLogEntryData,
+  dtoToFormData,
+  formDataToDTO,
+} from './types';
 
 interface EditLogbookEntryProps {
   entry: LogEntryDTO;
@@ -116,7 +124,8 @@ interface EditLogbookEntryProps {
 }
 
 interface EditLogbookEntryState {
-  isLoadingSite: boolean;
+  isDirty: boolean;
+  isLoadingAssociated: boolean;
   showConfirmRevert: boolean;
   showSelectDiveSite: boolean;
   showSelectOperator: boolean;
@@ -130,11 +139,12 @@ const props = withDefaults(defineProps<EditLogbookEntryProps>(), {
   isSaving: false,
 });
 const emit = defineEmits<{
-  (e: 'save', data: LogEntryDTO): void;
+  (e: 'save', data: SaveLogEntryData): void;
 }>();
 
 const state = reactive<EditLogbookEntryState>({
-  isLoadingSite: false,
+  isDirty: false,
+  isLoadingAssociated: false,
   showConfirmRevert: false,
   showSelectDiveSite: false,
   showSelectOperator: false,
@@ -156,7 +166,11 @@ async function onSave(): Promise<void> {
   if (!isValid) return;
 
   const dto = formDataToDTO(props.entry, formData);
-  emit('save', dto);
+  emit('save', {
+    entry: dto,
+    siteReview: formData.location.siteReview,
+    operatorReview: formData.location.operatorReview,
+  });
 }
 
 function onRevert() {
@@ -181,31 +195,75 @@ function onConfirmRevert() {
   state.showConfirmRevert = false;
 }
 
-onMounted(async () => {
-  await oops(
-    async () => {
+async function loadAssociatedData(): Promise<void> {
+  // Load data for associated dive site and operator
+  state.isLoadingAssociated = true;
+
+  await Promise.all([
+    oops(async () => {
       if (props.entry.site) {
         formData.location.site = await client.diveSites.getDiveSite(
           props.entry.site.id,
         );
       }
+    }),
+    oops(async () => {
       if (props.entry.operator) {
         formData.location.operator = await client.operators.getOperator(
           props.entry.operator.slug,
         );
       }
-    },
-    {
-      [404]: () => {
-        // Unable to retrieve info on dive site or operator
-      },
-    },
-  );
-});
+    }),
+  ]);
 
+  formData.location.siteReview = undefined;
+  formData.location.operatorReview = undefined;
+
+  // Load reviews for the dive site and operator
+  await Promise.any([
+    oops(
+      async () => {
+        if (props.entry.site) {
+          formData.location.siteReview = await client.logEntries.getSiteReview(
+            props.entry.creator.username,
+            props.entry.id,
+          );
+        }
+      },
+      {
+        [404]: () => {
+          // No review found
+        },
+      },
+    ),
+    oops(
+      async () => {
+        if (props.entry.operator) {
+          formData.location.operatorReview =
+            await client.logEntries.getOperatorReview(
+              props.entry.creator.username,
+              props.entry.id,
+            );
+        }
+      },
+      {
+        [404]: () => {
+          // No review found
+        },
+      },
+    ),
+  ]);
+}
+
+onMounted(async () => {
+  await loadAssociatedData();
+  await nextTick();
+  state.isDirty = false;
+  state.isLoadingAssociated = false;
+});
 watch(
   () => props.entry,
-  (newValue) => {
+  async (newValue): Promise<void> => {
     Object.assign(
       formData,
       dtoToFormData(newValue, {
@@ -216,6 +274,19 @@ watch(
         weight: currentUser.user?.settings.weightUnit || WeightUnit.Kilograms,
       }),
     );
+
+    await loadAssociatedData();
+    await nextTick();
+    state.isDirty = false;
+    state.isLoadingAssociated = false;
+  },
+  { deep: true },
+);
+
+watch(
+  formData,
+  () => {
+    state.isDirty = true;
   },
   { deep: true },
 );

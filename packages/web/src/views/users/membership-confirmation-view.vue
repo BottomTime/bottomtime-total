@@ -75,6 +75,7 @@ import ActiveMembership from '../../components/users/membership/active-membershi
 import MembershipPayment from '../../components/users/membership/membership-payment.vue';
 import PaymentIntentError from '../../components/users/membership/payment-intent-error.vue';
 import PaymentTimeout from '../../components/users/membership/payment-timeout.vue';
+import { Logger } from '../../logger';
 import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
 import { useStripeLoader } from '../../stripe';
@@ -135,8 +136,7 @@ async function getPaymentIntent(clientSecret: string): Promise<void> {
   const paymentIntent = await stripe.retrievePaymentIntent(clientSecret);
 
   if (paymentIntent.error) {
-    // eslint-disable-next-line no-console
-    console.warn(
+    Logger.warn(
       'Failed to retrieve payment intent from Stripe:',
       paymentIntent.error,
     );

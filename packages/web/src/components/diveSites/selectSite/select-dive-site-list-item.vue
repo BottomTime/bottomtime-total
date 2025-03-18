@@ -75,6 +75,7 @@ import { DiveSiteDTO } from '@bottomtime/api';
 
 import { computed, ref, watch } from 'vue';
 
+import { Logger } from '../../../logger';
 import DepthText from '../../common/depth-text.vue';
 import FormButton from '../../common/form-button.vue';
 import FormCheckbox from '../../common/form-checkbox.vue';
@@ -125,8 +126,7 @@ watch(
         });
       }
     } catch (error) {
-      /* eslint-disable-next-line no-console */
-      console.warn(error);
+      Logger.warn(error as Error);
     }
   },
 );

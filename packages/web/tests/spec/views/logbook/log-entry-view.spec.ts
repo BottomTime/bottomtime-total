@@ -22,6 +22,8 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { NavigationObserverKey } from 'src/navigation-observer';
+import { MockNavigationObserver } from 'tests/mock-navigation-observer';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
@@ -72,6 +74,7 @@ describe('Log Entry view', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let navigationObserver: MockNavigationObserver;
   let opts: ComponentMountingOptions<typeof LogEntryView>;
   let fetchSpy: jest.SpyInstance;
 
@@ -94,6 +97,7 @@ describe('Log Entry view', () => {
   beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    navigationObserver = new MockNavigationObserver(router, true);
 
     jest
       .spyOn(client.logEntries, 'getNextAvailableLogNumber')
@@ -107,6 +111,7 @@ describe('Log Entry view', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [NavigationObserverKey as symbol]: navigationObserver,
         },
         stubs: { teleport: true, StarRating: StarRatingStub },
       },

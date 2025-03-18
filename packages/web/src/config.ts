@@ -1,6 +1,18 @@
 /* eslint-disable no-process-env */
 import { BooleanString } from '@bottomtime/api';
 
+import { z } from 'zod';
+
+const LogLevelStringSchema = z.enum([
+  'trace',
+  'debug',
+  'info',
+  'warn',
+  'error',
+  'fatal',
+]);
+export type LogLevelString = z.infer<typeof LogLevelStringSchema>;
+
 export class Config {
   /** Email address for contacting support/admin. */
   static get adminEmail(): string {
@@ -46,6 +58,22 @@ export class Config {
   /** Google API key for accessing the Google Maps API. */
   static get googleApiKey(): string {
     return process.env.BTWEB_VITE_GOOGLE_API_KEY || '';
+  }
+
+  /**
+   * The log level at which log messages should be emitted. Valid values are:
+   * - `trace`
+   * - `debug`
+   * - `info`
+   * - `warn`
+   * - `error`
+   * - `fatal`
+   */
+  static get logLevel(): LogLevelString {
+    const parsed = LogLevelStringSchema.safeParse(
+      process.env.BTWEB_VITE_LOG_LEVEL,
+    );
+    return parsed.success ? parsed.data : 'info';
   }
 
   /**

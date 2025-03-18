@@ -28,15 +28,10 @@
     @close="onCancelReviewOperator"
   >
     <EditOperatorReview
-      v-if="state.operatorReview"
-      :review="state.operatorReview"
-      :is-saving="state.isSavingReview"
+      :review="formData.operatorReview"
       @save="onConfirmReviewOperator"
       @cancel="onCancelReviewOperator"
     />
-    <div v-else class="text-center text-lg">
-      <LoadingSpinner message="Fetching review data..." />
-    </div>
   </DrawerPanel>
 
   <DrawerPanel
@@ -45,15 +40,10 @@
     @close="onCancelReviewSite"
   >
     <EditDiveSiteReview
-      v-if="state.siteReview"
-      :review="state.siteReview"
-      :is-saving="state.isSavingReview"
+      :review="formData.siteReview"
       @save="onConfirmReviewSite"
       @cancel="onCancelReviewSite"
     />
-    <div v-else class="text-center text-lg">
-      <LoadingSpinner message="Fetching review data..." />
-    </div>
   </DrawerPanel>
 
   <section
@@ -108,11 +98,14 @@
             </FormButton>
           </div>
           <div
-            v-if="state.operatorReview"
+            v-if="formData.operatorReview"
             class="flex flex-row gap-1 justify-center items-baseline text-sm"
           >
             <span class="font-bold">Your rating:</span>
-            <StarRating :model-value="state.operatorReview.rating" readonly />
+            <StarRating
+              :model-value="formData.operatorReview.rating"
+              readonly
+            />
           </div>
         </div>
       </div>
@@ -133,11 +126,8 @@
 
     <div class="space-y-2">
       <TextHeading level="h3">Dive Site</TextHeading>
-      <div v-if="state.isLoadingSite">
-        <LoadingSpinner message="Fetching dive site..." />
-      </div>
 
-      <div v-else-if="formData.site" class="space-y-2 ml-4">
+      <div v-if="formData.site" class="space-y-2 ml-4">
         <PreviewDiveSite :site="formData.site" />
         <div class="flex flex-col gap-1 xl:flex-row justify-between">
           <div class="flex justify-center items-baseline">
@@ -182,11 +172,11 @@
             </FormButton>
           </div>
           <div
-            v-if="state.siteReview"
+            v-if="formData.siteReview"
             class="flex flex-row gap-1 justify-center items-baseline text-sm"
           >
             <span class="font-bold">Your rating:</span>
-            <StarRating :model-value="state.siteReview.rating" readonly />
+            <StarRating :model-value="formData.siteReview.rating" readonly />
           </div>
         </div>
       </div>
@@ -200,7 +190,7 @@
           Select Dive Site...
         </FormButton>
         <p class="text-lg">
-          Where did you dive? Pick out the dive site! Or if it's not in our
+          Where did you dive? Pick out the dive site! Or, if it's not in our
           database, you can add it so that you and other users can log dives
           there in the future!
         </p>
@@ -217,15 +207,10 @@ import {
   OperatorReviewDTO,
 } from '@bottomtime/api';
 
-import { onMounted, reactive } from 'vue';
+import { reactive } from 'vue';
 
-import { useClient } from '../../../api-client';
-import { DefaultProfile } from '../../../common';
-import { useOops } from '../../../oops';
-import { useCurrentUser, useToasts } from '../../../store';
 import DrawerPanel from '../../common/drawer-panel.vue';
 import FormButton from '../../common/form-button.vue';
-import LoadingSpinner from '../../common/loading-spinner.vue';
 import StarRating from '../../common/star-rating.vue';
 import TextHeading from '../../common/text-heading.vue';
 import EditDiveSiteReview from '../../diveSites/edit-dive-site-review.vue';
@@ -236,46 +221,15 @@ import PreviewOperator from '../../operators/preview-operator.vue';
 import SelectOperator from '../../operators/selectOperator/select-operator.vue';
 import { LogEntryLocation } from './types';
 
-interface EditDiveLocationProps {
-  entryId: string;
-}
-
 interface EditDiveLocationState {
-  isLoadingSite: boolean;
-  isSavingReview: boolean;
-  operatorReview?: OperatorReviewDTO;
-  siteReview?: DiveSiteReviewDTO;
   showReviewOperator: boolean;
   showReviewSite: boolean;
   showSelectDiveSite: boolean;
   showSelectOperator: boolean;
 }
 
-const client = useClient();
-const oops = useOops();
-const currentUser = useCurrentUser();
-const toasts = useToasts();
-
-const DefaultOperatorReview: OperatorReviewDTO = {
-  createdAt: Date.now(),
-  creator: currentUser.user?.profile ?? DefaultProfile,
-  id: '',
-  rating: 0,
-  updatedAt: Date.now(),
-};
-
-const DefaultSiteReview: DiveSiteReviewDTO = {
-  createdOn: Date.now(),
-  creator: currentUser.user?.profile ?? DefaultProfile,
-  id: '',
-  rating: 0,
-};
-
-const props = defineProps<EditDiveLocationProps>();
 const formData = defineModel<LogEntryLocation>({ required: true });
 const state = reactive<EditDiveLocationState>({
-  isLoadingSite: false,
-  isSavingReview: false,
   showReviewOperator: false,
   showReviewSite: false,
   showSelectDiveSite: false,
@@ -324,32 +278,9 @@ function onCancelReviewOperator() {
   state.showReviewOperator = false;
 }
 
-async function onConfirmReviewOperator(
-  review: OperatorReviewDTO,
-): Promise<void> {
-  state.isSavingReview = true;
-
-  await oops(async () => {
-    if (!currentUser.user) return;
-
-    state.operatorReview = await client.logEntries.reviewOperator(
-      currentUser.user.username,
-      props.entryId,
-      {
-        rating: review.rating,
-        comments: review.comments,
-      },
-    );
-
-    toasts.success(
-      'operator-review-submitted',
-      'Dive shop review has been submitted! Thank you!',
-    );
-
-    state.showReviewOperator = false;
-  });
-
-  state.isSavingReview = false;
+function onConfirmReviewOperator(review: OperatorReviewDTO) {
+  formData.value.operatorReview = review;
+  state.showReviewOperator = false;
 }
 
 function onReviewSite() {
@@ -360,71 +291,8 @@ function onCancelReviewSite() {
   state.showReviewSite = false;
 }
 
-async function onConfirmReviewSite(review: DiveSiteReviewDTO): Promise<void> {
-  state.isSavingReview = true;
-
-  await oops(async () => {
-    if (!currentUser.user) return;
-
-    state.siteReview = await client.logEntries.reviewSite(
-      currentUser.user.username,
-      props.entryId,
-      {
-        rating: review.rating,
-        difficulty: review.difficulty,
-        comments: review.comments,
-      },
-    );
-
-    toasts.success(
-      'site-review-submitted',
-      'Dive site review has been submitted! Thank you!',
-    );
-
-    state.showReviewSite = false;
-  });
-
-  state.isSavingReview = false;
+function onConfirmReviewSite(review: DiveSiteReviewDTO) {
+  formData.value.siteReview = review;
+  state.showReviewSite = false;
 }
-
-onMounted(async () => {
-  await Promise.any([
-    oops(
-      async () => {
-        if (!currentUser.user) return;
-        state.operatorReview = await client.logEntries.getOperatorReview(
-          currentUser.user.username,
-          props.entryId,
-        );
-      },
-      {
-        [404]: () => {
-          state.operatorReview = DefaultOperatorReview;
-        },
-      },
-    ),
-    oops(
-      async () => {
-        if (!currentUser.user) return;
-        state.siteReview = await client.logEntries.getSiteReview(
-          currentUser.user.username,
-          props.entryId,
-        );
-      },
-      {
-        [404]: () => {
-          state.siteReview = DefaultSiteReview;
-        },
-      },
-    ),
-  ]);
-
-  if (!state.operatorReview) {
-    state.operatorReview = DefaultOperatorReview;
-  }
-
-  if (!state.siteReview) {
-    state.siteReview = DefaultSiteReview;
-  }
-});
 </script>

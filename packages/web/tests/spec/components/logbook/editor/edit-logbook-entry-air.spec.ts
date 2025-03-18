@@ -12,10 +12,10 @@ import {
   mount,
 } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import tz from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
+import { NavigationObserverKey } from 'src/navigation-observer';
+import 'tests/dayjs';
+import { MockNavigationObserver } from 'tests/mock-navigation-observer';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../../src/api-client';
@@ -30,9 +30,6 @@ import {
 import TankData from '../../../../fixtures/tanks.json';
 import { BasicUser } from '../../../../fixtures/users';
 import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
-
-dayjs.extend(utc);
-dayjs.extend(tz);
 
 const AddTankButton = '#btn-add-tank';
 const SaveButton = '#btnSave';
@@ -92,6 +89,7 @@ describe('Log entry editor - air management', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let navigationObserver: MockNavigationObserver;
   let opts: ComponentMountingOptions<typeof EditLogbookEntry>;
 
   beforeAll(() => {
@@ -112,11 +110,13 @@ describe('Log entry editor - air management', () => {
 
     currentUser.user = { ...BasicUser };
 
+    navigationObserver = new MockNavigationObserver(router, true);
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [NavigationObserverKey as symbol]: navigationObserver,
         },
         stubs: {
           StarRating: StarRatingStub,

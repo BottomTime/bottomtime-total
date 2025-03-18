@@ -18,6 +18,10 @@ import { clickOutside } from './click-outside';
 import { Config } from './config';
 import { FeaturesServiceKey } from './featrues';
 import { Geolocation, GeolocationKey } from './geolocation';
+import {
+  NavigationObserver,
+  NavigationObserverKey,
+} from './navigation-observer';
 import { router } from './router';
 import { StripeLoader, StripeLoaderKey } from './stripe';
 
@@ -46,6 +50,7 @@ const app = createApp(AppComponent)
   .provide(ApiClientKey, client)
   .provide(FeaturesServiceKey, configCat)
   .provide(GeolocationKey, new Geolocation())
+  .provide(NavigationObserverKey, new NavigationObserver(router))
   .provide(StripeLoaderKey, StripeLoader);
 
 app.mount('#app');

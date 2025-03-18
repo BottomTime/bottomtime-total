@@ -42,6 +42,7 @@ import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import EditLogbookEntry from '../../components/logbook/editor/edit-logbook-entry.vue';
+import { SaveLogEntryData } from '../../components/logbook/editor/types';
 import ViewLogbookEntry from '../../components/logbook/view-logbook-entry.vue';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
@@ -151,13 +152,18 @@ onMounted(async () => {
   state.isLoading = false;
 });
 
-async function onSave(data: LogEntryDTO): Promise<void> {
+async function onSave({
+  entry,
+  siteReview,
+  operatorReview,
+}: SaveLogEntryData): Promise<void> {
   state.isSaving = true;
   await oops(async () => {
+    let redirect = false;
     const options = CreateOrUpdateLogEntryParamsSchema.parse({
-      ...data,
-      site: data.site?.id,
-      operator: data.operator?.id,
+      ...entry,
+      site: entry.site?.id,
+      operator: entry.operator?.id,
     });
 
     if (entryId.value) {
@@ -173,6 +179,26 @@ async function onSave(data: LogEntryDTO): Promise<void> {
         username.value,
         options,
       );
+      redirect = true;
+    }
+
+    if (siteReview) {
+      await client.logEntries.reviewSite(
+        state.currentEntry.creator.username,
+        state.currentEntry.id,
+        siteReview,
+      );
+    }
+
+    if (operatorReview) {
+      await client.logEntries.reviewOperator(
+        state.currentEntry.creator.username,
+        state.currentEntry.id,
+        operatorReview,
+      );
+    }
+
+    if (redirect) {
       await router.push(`/logbook/${username.value}/${state.currentEntry.id}`);
     }
 

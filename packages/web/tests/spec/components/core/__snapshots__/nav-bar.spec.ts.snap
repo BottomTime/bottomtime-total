@@ -35,11 +35,11 @@ exports[`Nav Bar component will render correctly for admins 1`] = `
       </div><!-- Collapsable Links (collapse to hamburger menu on small screens) -->
       <div id="navbar-user" class="items-center justify-between grow w-full md:w-auto px-0 md:px-4 md:flex md:order-1 fixed top-16 left-0 md:static hidden" data-testid="hamburger-menu">
         <ul class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md">
-          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/">Home</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/logbook/andy_admin">Log Book</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/diveSites">Dive Sites</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/shops">Dive Shops</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/admin">Admin</a></li>
+          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold"><a aria-current="page" href="/" class="router-link-active router-link-exact-active no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Home</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/logbook/andy_admin" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Log Book</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/diveSites" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Dive Sites</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/shops" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Dive Shops</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/admin" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Admin</a></li>
           <!--v-if-->
           <!--v-if-->
           <!--v-if-->
@@ -68,7 +68,7 @@ exports[`Nav Bar component will render correctly for anonymous users 1`] = `
           <div class="flex space-x-2 items-center align-middle ring-1 ring-offset-1 h-5 px-1 pt-0.5 ring-blue-400 shadow-sm rounded-full bg-gradient-to-t from-blue-400 to-blue-200 dark:from-blue-800 dark:to-blue-950 hover:shadow-md"><span class="text-warn dark:text-grey-500"><i class="fas fa-sun fa-xs"></i></span><span class="text-grey-500 dark:text-blue-300"><i class="fas fa-moon fa-xs"></i></span></div>
         </label><!-- Login/register links for anonymous users -->
         <ul class="hidden md:flex flex-row ml-4 gap-3 justify-end items-baseline">
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/register">Register</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/register" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Register</a></li>
           <li><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary font-bold" data-testid="login-button" type="button">
               <!--v-if--> Sign in
             </button></li>
@@ -79,12 +79,12 @@ exports[`Nav Bar component will render correctly for anonymous users 1`] = `
       </div><!-- Collapsable Links (collapse to hamburger menu on small screens) -->
       <div id="navbar-user" class="items-center justify-between grow w-full md:w-auto px-0 md:px-4 md:flex md:order-1 fixed top-16 left-0 md:static hidden" data-testid="hamburger-menu">
         <ul class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md">
-          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/">Home</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/diveSites">Dive Sites</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/shops">Dive Shops</a></li>
+          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold"><a href="/" class="router-link-active router-link-exact-active no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" aria-current="page">Home</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/diveSites" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Dive Sites</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/shops" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Dive Shops</a></li>
           <hr class="block md:hidden my-2 align-middle">
-          <li class="text-lg hover:text-blue-300 block md:hidden"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" data-testid="login-link" href="#">Login</a></li>
-          <li class="text-lg hover:text-blue-300 block md:hidden"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/register">Register</a></li>
+          <li class="text-lg hover:text-blue-300 block md:hidden"><a href="/#" class="router-link-active router-link-exact-active no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" data-testid="login-link" aria-current="page">Login</a></li>
+          <li class="text-lg hover:text-blue-300 block md:hidden"><a href="/register" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Register</a></li>
         </ul>
       </div>
     </div>
@@ -127,10 +127,10 @@ exports[`Nav Bar component will render correctly for authenticated users 1`] = `
       </div><!-- Collapsable Links (collapse to hamburger menu on small screens) -->
       <div id="navbar-user" class="items-center justify-between grow w-full md:w-auto px-0 md:px-4 md:flex md:order-1 fixed top-16 left-0 md:static hidden" data-testid="hamburger-menu">
         <ul class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md">
-          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/">Home</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/logbook/sam_smith">Log Book</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/diveSites">Dive Sites</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50" href="/shops">Dive Shops</a></li>
+          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold"><a aria-current="page" href="/" class="router-link-active router-link-exact-active no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Home</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/logbook/sam_smith" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Log Book</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/diveSites" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Dive Sites</a></li>
+          <li class="text-lg hover:text-blue-300"><a href="/shops" class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50">Dive Shops</a></li>
           <!--v-if-->
           <!--v-if-->
           <!--v-if-->

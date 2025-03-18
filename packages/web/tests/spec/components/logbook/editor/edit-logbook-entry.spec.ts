@@ -18,10 +18,10 @@ import {
   mount,
 } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import tz from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
+import { NavigationObserverKey } from 'src/navigation-observer';
+import dayjs from 'tests/dayjs';
+import { MockNavigationObserver } from 'tests/mock-navigation-observer';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../../src/api-client';
@@ -40,9 +40,6 @@ import {
 import TankData from '../../../../fixtures/tanks.json';
 import { BasicUser } from '../../../../fixtures/users';
 import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
-
-dayjs.extend(utc);
-dayjs.extend(tz);
 
 const LogNumberInput = '#logNumber';
 const TimezoneSelect = '#entryTimeTimezone';
@@ -226,6 +223,7 @@ describe('Log entry editor', () => {
   let tankData: TankDTO[];
 
   let pinia: Pinia;
+  let navigationObserver: MockNavigationObserver;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof EditLogbookEntry>;
 
@@ -255,6 +253,7 @@ describe('Log entry editor', () => {
 
     currentUser.user = { ...BasicUser };
 
+    navigationObserver = new MockNavigationObserver(router);
     opts = {
       props: {
         entry: { ...FullLogEntry },
@@ -263,6 +262,7 @@ describe('Log entry editor', () => {
       global: {
         provide: {
           [ApiClientKey as symbol]: client,
+          [NavigationObserverKey as symbol]: navigationObserver,
         },
         plugins: [pinia, router],
         stubs: {
@@ -472,6 +472,8 @@ describe('Log entry editor', () => {
         operator: undefined,
         site: undefined,
       };
+      expected.air![0].name = tankData[0].name;
+      expected.air![0].volume = tankData[0].volume;
 
       const wrapper = mount(EditLogbookEntry, opts);
 
@@ -529,10 +531,32 @@ describe('Log entry editor', () => {
       await wrapper.get(NotesInput).setValue(expected.notes);
       await wrapper.getComponent(StarRatingStub).setValue(expected.rating);
 
+      await wrapper
+        .get('[data-testid="tanks-select-0"]')
+        .setValue(tankData[0].id);
+      await wrapper
+        .get('[data-testid="start-pressure-0"]')
+        .setValue(FullLogEntry.air![0].startPressure);
+      await wrapper
+        .get('[data-testid="end-pressure-0"]')
+        .setValue(FullLogEntry.air![0].endPressure);
+      await wrapper
+        .get('[data-testid="o2-0"]')
+        .setValue(FullLogEntry.air![0].o2Percent);
+      await wrapper
+        .get('[data-testid="he-0"]')
+        .setValue(FullLogEntry.air![0].hePercent);
+
       await wrapper.get(SaveButton).trigger('click');
       await flushPromises();
 
-      expect(wrapper.emitted('save')).toEqual([[expected]]);
+      expect(wrapper.emitted('save')).toEqual([
+        [
+          {
+            entry: expected,
+          },
+        ],
+      ]);
     });
   });
 });

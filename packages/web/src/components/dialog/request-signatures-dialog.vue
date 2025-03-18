@@ -56,6 +56,7 @@ import QRCode from 'qrcode';
 import { computed, nextTick, ref, watch } from 'vue';
 
 import { Config } from '../../config';
+import { Logger } from '../../logger';
 import FormButton from '../common/form-button.vue';
 import DialogBase from './dialog-base.vue';
 
@@ -96,8 +97,7 @@ watch(
       await nextTick();
       await QRCode.toCanvas(qrCanvas.value, signUrl.value);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.warn('Failed to render QR code.', err);
+      Logger.warn('Failed to render QR code.', err);
     }
   },
   { immediate: true },

@@ -488,6 +488,7 @@ import { computed, reactive, watch } from 'vue';
 import { useClient } from '../../../api-client';
 import { Coordinates, ToastType } from '../../../common';
 import { Config } from '../../../config';
+import { Logger } from '../../../logger';
 import { useOops } from '../../../oops';
 import { useToasts } from '../../../store';
 import { phone } from '../../../validators';
@@ -602,8 +603,7 @@ async function isSlugAvailable(slug: string): Promise<boolean> {
     },
     {
       default: (error) => {
-        /* eslint-disable-next-line no-console */
-        console.error(error);
+        Logger.error(error as Error);
       },
     },
   );
