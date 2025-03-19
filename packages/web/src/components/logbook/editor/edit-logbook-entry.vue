@@ -98,6 +98,7 @@ import 'dayjs/plugin/timezone';
 import { nextTick, onMounted, reactive, watch } from 'vue';
 
 import { useClient } from '../../../api-client';
+import { Logger } from '../../../logger';
 import { useOops } from '../../../oops';
 import { useCurrentUser } from '../../../store';
 import FormButton from '../../common/form-button.vue';
@@ -165,6 +166,8 @@ async function onSave(): Promise<void> {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
 
+  Logger.debug('Saving changes to log entry...');
+  Logger.trace(JSON.stringify(formData, null, 2));
   const dto = formDataToDTO(props.entry, formData);
   emit('save', {
     entry: dto,
@@ -256,6 +259,8 @@ async function loadAssociatedData(): Promise<void> {
 }
 
 onMounted(async () => {
+  Logger.debug('Mounting log entry editor...');
+  Logger.trace(JSON.stringify(props.entry, null, 2));
   await loadAssociatedData();
   await nextTick();
   state.isDirty = false;
@@ -264,6 +269,8 @@ onMounted(async () => {
 watch(
   () => props.entry,
   async (newValue): Promise<void> => {
+    Logger.debug('Entry changed. Updating form...');
+    Logger.trace(JSON.stringify(formData, null, 2));
     Object.assign(
       formData,
       dtoToFormData(newValue, {

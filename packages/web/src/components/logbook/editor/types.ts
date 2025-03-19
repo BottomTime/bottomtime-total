@@ -243,7 +243,6 @@ function formDataAirToDTOs(
   const dtos: LogEntryAirDTO[] = elements
     .filter(
       (air) =>
-        air.tankId !== '' &&
         typeof air.startPressure === 'number' &&
         typeof air.endPressure === 'number',
     )

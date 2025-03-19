@@ -1,6 +1,7 @@
 export const ConfirmDialog = {
   Confirm: '[data-testid="dialog-confirm-button"]',
   Cancel: '[data-testid="dialog-cancel-button"]',
+  DialogModal: '[data-testid="dialog-modal"]',
 } as const;
 
 export const DrawerPanel = {

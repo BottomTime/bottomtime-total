@@ -68,6 +68,7 @@ export class Config {
    * - `warn`
    * - `error`
    * - `fatal`
+   * The default is `debug`.
    */
   static get logLevel(): LogLevelString {
     const parsed = LogLevelStringSchema.safeParse(
