@@ -31,7 +31,7 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 

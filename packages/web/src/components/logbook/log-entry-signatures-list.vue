@@ -70,7 +70,7 @@
 <script lang="ts" setup>
 import { ApiList, BuddyType, LogEntrySignatureDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 
 import FormButton from '../common/form-button.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';

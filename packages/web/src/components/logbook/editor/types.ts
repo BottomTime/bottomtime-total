@@ -16,7 +16,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { v7 as uuid } from 'uuid';
 import { computed } from 'vue';
 

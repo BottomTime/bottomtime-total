@@ -130,6 +130,9 @@ services:
         - action: sync
           path: packages/web/src
           target: /app/packages/web/src
+        - action: sync+restart
+          path: packages/web/.env.local
+          target: /app/packages/web/.env.local
 
   # API documentation
   docs:

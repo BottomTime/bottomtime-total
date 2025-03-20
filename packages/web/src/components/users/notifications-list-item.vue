@@ -89,7 +89,7 @@
 <script lang="ts" setup>
 import { NotificationCallToActionType } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed, ref, watch } from 'vue';
 
 import FormButton from '../common/form-button.vue';

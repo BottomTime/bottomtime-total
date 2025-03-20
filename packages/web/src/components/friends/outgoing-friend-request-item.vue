@@ -88,7 +88,7 @@
 <script lang="ts" setup>
 import { FriendRequestDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 
 import FormButton from '../common/form-button.vue';
 import UserAvatar from '../users/user-avatar.vue';

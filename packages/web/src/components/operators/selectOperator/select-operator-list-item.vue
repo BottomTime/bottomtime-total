@@ -70,9 +70,9 @@
 <script lang="ts" setup>
 import { OperatorDTO, VerificationStatus } from '@bottomtime/api';
 
+import { useLogger } from 'src/logger';
 import { computed, ref, watch } from 'vue';
 
-import { Logger } from '../../../logger';
 import FormButton from '../../common/form-button.vue';
 import PillLabel from '../../common/pill-label.vue';
 import StarRating from '../../common/star-rating.vue';
@@ -81,6 +81,8 @@ interface SelectOperatorListItemProps {
   operator: OperatorDTO;
   selected?: boolean;
 }
+
+const log = useLogger('SelectOperatorListItem');
 
 const props = withDefaults(defineProps<SelectOperatorListItemProps>(), {
   selected: false,
@@ -113,7 +115,7 @@ watch(
         });
       }
     } catch (error) {
-      Logger.warn(error as Error);
+      log.warn(error as Error);
     }
   },
 );

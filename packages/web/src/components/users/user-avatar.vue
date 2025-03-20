@@ -73,7 +73,7 @@ import {
   SuccinctProfileDTO,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed, ref } from 'vue';
 
 import { useClient } from '../../api-client';

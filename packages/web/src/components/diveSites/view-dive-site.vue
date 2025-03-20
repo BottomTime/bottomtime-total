@@ -231,8 +231,7 @@ import {
   WaterType,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import dayjs from 'src/dayjs';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { useClient } from '../../api-client';
@@ -254,8 +253,6 @@ import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import DiveSiteReviewsListItem from './dive-site-reviews-list-item.vue';
 import EditDiveSiteReview from './edit-dive-site-review.vue';
-
-dayjs.extend(relativeTime);
 
 type ViewDiveSiteProps = {
   columns?: boolean;

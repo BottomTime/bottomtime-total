@@ -1,7 +1,9 @@
 import { InjectionKey, inject } from 'vue';
 import { RouteLocationNormalized, Router } from 'vue-router';
 
-import { Logger } from './logger';
+import { useLogger } from './logger';
+
+const log = useLogger('NavigationObserver');
 
 export type CanNavigateGuard = (
   to: RouteLocationNormalized,
@@ -30,7 +32,7 @@ export class NavigationObserver implements INavigationObserver {
       return;
     }
 
-    Logger.debug(
+    log.debug(
       'Attempting to navigate from',
       from.fullPath,
       'to',
@@ -46,7 +48,7 @@ export class NavigationObserver implements INavigationObserver {
       if (!canNavigate) break;
     }
 
-    Logger.debug('Navigation guards passed.');
+    log.debug('Navigation guards passed.');
     next(canNavigate);
   }
 
@@ -55,7 +57,7 @@ export class NavigationObserver implements INavigationObserver {
   }
 
   subscribe(guard: CanNavigateGuard) {
-    Logger.debug('Subscribing to navigation guard');
+    log.debug('Subscribing to navigation guard');
     this.guards.push(guard);
   }
 

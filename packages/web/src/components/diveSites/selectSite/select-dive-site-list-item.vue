@@ -73,9 +73,9 @@
 <script lang="ts" setup>
 import { DiveSiteDTO } from '@bottomtime/api';
 
+import { useLogger } from 'src/logger';
 import { computed, ref, watch } from 'vue';
 
-import { Logger } from '../../../logger';
 import DepthText from '../../common/depth-text.vue';
 import FormButton from '../../common/form-button.vue';
 import FormCheckbox from '../../common/form-checkbox.vue';
@@ -86,6 +86,8 @@ interface SelectDiveSiteListItemProps {
   selected?: boolean;
   site: DiveSiteDTO & { selected?: boolean };
 }
+
+const log = useLogger('SelectDiveSiteListItem');
 
 const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
   multiSelect: false,
@@ -126,7 +128,7 @@ watch(
         });
       }
     } catch (error) {
-      Logger.warn(error as Error);
+      log.warn(error as Error);
     }
   },
 );

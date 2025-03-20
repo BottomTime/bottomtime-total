@@ -15,13 +15,20 @@
     <p>This cannot be undone.</p>
   </ConfirmDialog>
 
-  <SaveWarning :is-dirty="state.isDirty" :is-saving="isSaving" @save="onSave" />
+  <SaveWarning
+    :is-dirty="!state.isLoading && state.isDirty"
+    :is-saving="isSaving"
+    @save="onSave"
+  />
 
   <form data-testid="edit-log-entry" @submit.prevent="">
     <fieldset class="space-y-4" :disabled="isSaving">
       <!-- Basic Info -->
       <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3">
-        <EditBasicInfo v-model="formData.basicInfo" />
+        <EditBasicInfo
+          v-model="formData.basicInfo"
+          @next-log-number="getNextAvailableLogNumber"
+        />
 
         <!-- Dive Site / Dive Shop -->
         <EditDiveLocation v-model="formData.location" />
@@ -94,11 +101,10 @@ import {
 
 import { useVuelidate } from '@vuelidate/core';
 
-import 'dayjs/plugin/timezone';
+import { useLogger } from 'src/logger';
 import { nextTick, onMounted, reactive, watch } from 'vue';
 
 import { useClient } from '../../../api-client';
-import { Logger } from '../../../logger';
 import { useOops } from '../../../oops';
 import { useCurrentUser } from '../../../store';
 import FormButton from '../../common/form-button.vue';
@@ -126,6 +132,7 @@ interface EditLogbookEntryProps {
 
 interface EditLogbookEntryState {
   isDirty: boolean;
+  isLoading: boolean;
   isLoadingAssociated: boolean;
   showConfirmRevert: boolean;
   showSelectDiveSite: boolean;
@@ -133,6 +140,7 @@ interface EditLogbookEntryState {
 }
 
 const client = useClient();
+const log = useLogger('EditLogbookEntry');
 const oops = useOops();
 const currentUser = useCurrentUser();
 
@@ -145,6 +153,7 @@ const emit = defineEmits<{
 
 const state = reactive<EditLogbookEntryState>({
   isDirty: false,
+  isLoading: true,
   isLoadingAssociated: false,
   showConfirmRevert: false,
   showSelectDiveSite: false,
@@ -166,14 +175,16 @@ async function onSave(): Promise<void> {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
 
-  Logger.debug('Saving changes to log entry...');
-  Logger.trace(JSON.stringify(formData, null, 2));
+  log.debug('Saving changes to log entry...');
+  log.trace(JSON.stringify(formData, null, 2));
   const dto = formDataToDTO(props.entry, formData);
   emit('save', {
     entry: dto,
     siteReview: formData.location.siteReview,
     operatorReview: formData.location.operatorReview,
   });
+
+  state.isDirty = false;
 }
 
 function onRevert() {
@@ -196,6 +207,15 @@ function onConfirmRevert() {
     }),
   );
   state.showConfirmRevert = false;
+}
+
+async function getNextAvailableLogNumber(): Promise<void> {
+  await oops(async () => {
+    formData.basicInfo.logNumber =
+      await client.logEntries.getNextAvailableLogNumber(
+        props.entry.creator.username,
+      );
+  });
 }
 
 async function loadAssociatedData(): Promise<void> {
@@ -259,18 +279,26 @@ async function loadAssociatedData(): Promise<void> {
 }
 
 onMounted(async () => {
-  Logger.debug('Mounting log entry editor...');
-  Logger.trace(JSON.stringify(props.entry, null, 2));
+  log.debug('Mounting log entry editor...');
+  log.trace(JSON.stringify(props.entry, null, 2));
+
   await loadAssociatedData();
+  if (props.entry.id === '') await getNextAvailableLogNumber();
   await nextTick();
+
+  log.debug('Finished mounting.');
+
   state.isDirty = false;
+  state.isLoading = false;
   state.isLoadingAssociated = false;
 });
+
 watch(
   () => props.entry,
   async (newValue): Promise<void> => {
-    Logger.debug('Entry changed. Updating form...');
-    Logger.trace(JSON.stringify(formData, null, 2));
+    log.debug('Entry changed. Updating form...');
+    log.trace(JSON.stringify(formData, null, 2));
+
     Object.assign(
       formData,
       dtoToFormData(newValue, {
@@ -284,6 +312,7 @@ watch(
 
     await loadAssociatedData();
     await nextTick();
+
     state.isDirty = false;
     state.isLoadingAssociated = false;
   },
@@ -293,6 +322,8 @@ watch(
 watch(
   formData,
   () => {
+    log.debug('Form data changed. Marking as dirty...');
+    log.trace(JSON.stringify(formData, null, 2));
     state.isDirty = true;
   },
   { deep: true },

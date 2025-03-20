@@ -55,7 +55,7 @@
 <script lang="ts" setup>
 import { AlertDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 
 import FormButton from '../common/form-button.vue';
 import NavLink from '../common/nav-link.vue';

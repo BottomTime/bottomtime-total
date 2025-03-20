@@ -3,8 +3,10 @@ import { Feature } from '@bottomtime/common';
 import { User as ConfigCatUser, IConfigCatClient } from 'configcat-common';
 import { InjectionKey, Reactive, inject, reactive } from 'vue';
 
-import { Logger } from './logger';
+import { useLogger } from './logger';
 import { useCurrentUser } from './store';
+
+const log = useLogger('features');
 
 export const FeaturesServiceKey: InjectionKey<IConfigCatClient> =
   Symbol('FeaturesService');
@@ -38,7 +40,7 @@ export function useFeatureToggle(feature: Feature<boolean>): FeatureValue {
       instance.value = flag;
     })
     .catch((err) => {
-      Logger.error(err);
+      log.error(err);
     })
     .finally(() => {
       instance.isLoading = false;

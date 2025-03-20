@@ -69,7 +69,7 @@
 <script lang="ts" setup>
 import { LogBookSharing, ProfileDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed } from 'vue';
 
 import { Selectable } from '../../../common';

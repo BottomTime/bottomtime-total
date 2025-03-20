@@ -64,7 +64,7 @@
 <script lang="ts" setup>
 import { DiveSiteReviewDTO, UserRole } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed } from 'vue';
 
 import { useCurrentUser } from '../../store';

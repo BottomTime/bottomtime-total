@@ -375,7 +375,7 @@ import {
   WeightCorrectness,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed, onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';

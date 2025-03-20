@@ -483,12 +483,12 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required, url } from '@vuelidate/validators';
 
 import slugify from 'slugify';
+import { useLogger } from 'src/logger';
 import { computed, reactive, watch } from 'vue';
 
 import { useClient } from '../../../api-client';
 import { Coordinates, ToastType } from '../../../common';
 import { Config } from '../../../config';
-import { Logger } from '../../../logger';
 import { useOops } from '../../../oops';
 import { useToasts } from '../../../store';
 import { phone } from '../../../validators';
@@ -538,6 +538,7 @@ interface EditOperatorInfoFormData {
 }
 
 const client = useClient();
+const log = useLogger('EditOperatorInfo');
 const oops = useOops();
 const toasts = useToasts();
 
@@ -603,7 +604,7 @@ async function isSlugAvailable(slug: string): Promise<boolean> {
     },
     {
       default: (error) => {
-        Logger.error(error as Error);
+        log.error(error as Error);
       },
     },
   );

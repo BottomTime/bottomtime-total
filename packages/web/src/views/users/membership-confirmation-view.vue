@@ -61,6 +61,7 @@ import {
   MembershipStatusDTO,
 } from '@bottomtime/api';
 
+import { useLogger } from 'src/logger';
 import { onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -75,7 +76,6 @@ import ActiveMembership from '../../components/users/membership/active-membershi
 import MembershipPayment from '../../components/users/membership/membership-payment.vue';
 import PaymentIntentError from '../../components/users/membership/payment-intent-error.vue';
 import PaymentTimeout from '../../components/users/membership/payment-timeout.vue';
-import { Logger } from '../../logger';
 import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
 import { useStripeLoader } from '../../stripe';
@@ -108,6 +108,7 @@ const Breadcrumbs: Breadcrumb[] = [
 
 const client = useClient();
 const currentUser = useCurrentUser();
+const log = useLogger('MembershipConfirmationView');
 const oops = useOops();
 const route = useRoute();
 const stripeLoader = useStripeLoader();
@@ -136,7 +137,7 @@ async function getPaymentIntent(clientSecret: string): Promise<void> {
   const paymentIntent = await stripe.retrievePaymentIntent(clientSecret);
 
   if (paymentIntent.error) {
-    Logger.warn(
+    log.warn(
       'Failed to retrieve payment intent from Stripe:',
       paymentIntent.error,
     );

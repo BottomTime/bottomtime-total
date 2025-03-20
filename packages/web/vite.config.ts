@@ -3,6 +3,7 @@
 /* eslint-disable no-process-env */
 import vue from '@vitejs/plugin-vue';
 
+import { URL, fileURLToPath } from 'url';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import vueDevTools from 'vite-plugin-vue-devtools';
@@ -56,6 +57,7 @@ export default defineConfig(({ mode }) => {
       preserveSymlinks: true,
       alias: {
         url: 'url/',
+        src: fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
     ...(mode === 'production'

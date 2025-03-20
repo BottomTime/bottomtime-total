@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import DatePicker from '@vuepic/vue-datepicker';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed } from 'vue';
 
 import { DateTimeFormat } from '../../common';

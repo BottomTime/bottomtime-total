@@ -116,7 +116,7 @@ import { AlertDTO } from '@bottomtime/api';
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { reactive, ref } from 'vue';
 
 import FormButton from '../common/form-button.vue';

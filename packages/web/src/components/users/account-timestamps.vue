@@ -29,9 +29,7 @@
 <script lang="ts" setup>
 import { UserDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/relativeTime';
-import 'dayjs/plugin/utc';
+import dayjs from 'src/dayjs';
 
 type AccountTimestampsProps = {
   user: UserDTO;

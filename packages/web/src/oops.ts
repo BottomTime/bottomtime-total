@@ -8,8 +8,10 @@ import { ZodError } from 'zod';
 
 import { Toast, ToastType } from './common';
 import { Config } from './config';
-import { Logger } from './logger';
+import { useLogger } from './logger';
 import { useCurrentUser, useErrors, useToasts } from './store';
+
+const log = useLogger('oops');
 
 export function isErrorResponse(e: unknown): e is ErrorResponseDTO {
   const validation = ErrorResponseSchema.safeParse(e);
@@ -39,9 +41,9 @@ async function oops<T>(
     return await f();
   } catch (error) {
     if (!Config.isProduction && Config.env !== 'test') {
-      Logger.error(error as Error);
+      log.error(error as Error);
       if (isZodError(error)) {
-        Logger.error(error.issues, (error as Error).message);
+        log.error(error.issues, (error as Error).message);
       }
     }
 

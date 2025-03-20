@@ -80,8 +80,7 @@
 <script lang="ts" setup>
 import { FriendDTO, LogBookSharing } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/relativeTime';
+import dayjs from 'src/dayjs';
 import { RouterLink } from 'vue-router';
 
 import FormButton from '../common/form-button.vue';

@@ -74,7 +74,7 @@
 <script lang="ts" setup>
 import { TeamMemberDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed } from 'vue';
 
 import FormButton from '../common/form-button.vue';
