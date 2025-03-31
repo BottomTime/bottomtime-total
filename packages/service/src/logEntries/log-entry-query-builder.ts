@@ -2,7 +2,13 @@ import { GpsCoordinates, LogEntrySortBy, SortOrder } from '@bottomtime/api';
 
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { LogEntryEntity } from '../data';
+import {
+  DiveSiteEntity,
+  LogEntryAirEntity,
+  LogEntryEntity,
+  OperatorEntity,
+  UserEntity,
+} from '../data';
 
 export const LogEntryAirSelectFields = [
   'site_air.ordinal',
@@ -21,57 +27,86 @@ export const LogEntryAirSelectFields = [
 export class LogEntryQueryBuilder {
   private query: SelectQueryBuilder<LogEntryEntity>;
 
-  constructor(entries: Repository<LogEntryEntity>) {
-    this.query = entries
-      .createQueryBuilder('entries')
-      .innerJoin('entries.owner', 'owners')
-      .leftJoin('entries.site', 'sites')
-      .leftJoin('entries.operator', 'operators')
-      .select([
-        'entries.id',
-        'entries.createdAt',
-        'entries.updatedAt',
-        'entries.logNumber',
-        'entries.tags',
+  constructor(entries: Repository<LogEntryEntity>, forExport = false) {
+    this.query = entries.createQueryBuilder('entries');
 
-        'entries.entryTime',
-        'entries.timezone',
-        'entries.bottomTime',
-        'entries.duration',
+    if (forExport) {
+      this.query = this.query
+        .innerJoinAndMapOne(
+          'entries.owner',
+          UserEntity,
+          'owners',
+          'entries.ownerId = owners.id',
+        )
+        .leftJoinAndMapOne(
+          'entries.site',
+          DiveSiteEntity,
+          'sites',
+          'entries.siteId = sites.id',
+        )
+        .leftJoinAndMapOne(
+          'entries.operator',
+          OperatorEntity,
+          'operators',
+          'entries.operatorId = operators.id',
+        )
+        .leftJoinAndMapMany(
+          'entries.air',
+          LogEntryAirEntity,
+          'air',
+          'entries.id = air.logEntryId',
+        );
+    } else {
+      this.query = this.query
+        .innerJoin('entries.owner', 'owners')
+        .leftJoin('entries.site', 'sites')
+        .leftJoin('entries.operator', 'operators')
+        .select([
+          'entries.id',
+          'entries.createdAt',
+          'entries.updatedAt',
+          'entries.logNumber',
+          'entries.tags',
 
-        'entries.averageDepth',
-        'entries.maxDepth',
-        'entries.depthUnit',
+          'entries.entryTime',
+          'entries.timezone',
+          'entries.bottomTime',
+          'entries.duration',
 
-        'entries.notes',
-        'entries.rating',
+          'entries.averageDepth',
+          'entries.maxDepth',
+          'entries.depthUnit',
 
-        'owners.id',
-        'owners.accountTier',
-        'owners.username',
-        'owners.memberSince',
-        'owners.logBookSharing',
-        'owners.name',
-        'owners.location',
-        'owners.avatar',
+          'entries.notes',
+          'entries.rating',
 
-        'operators.address',
-        'operators.averageRating',
-        'operators.id',
-        'operators.gps',
-        'operators.logo',
-        'operators.name',
-        'operators.slug',
-        'operators.phone',
-        'operators.website',
+          'owners.id',
+          'owners.accountTier',
+          'owners.username',
+          'owners.memberSince',
+          'owners.logBookSharing',
+          'owners.name',
+          'owners.location',
+          'owners.avatar',
 
-        'sites.averageRating',
-        'sites.id',
-        'sites.name',
-        'sites.description',
-        'sites.location',
-        'sites.gps',
-      ]);
+          'operators.address',
+          'operators.averageRating',
+          'operators.id',
+          'operators.gps',
+          'operators.logo',
+          'operators.name',
+          'operators.slug',
+          'operators.phone',
+          'operators.website',
+
+          'sites.averageRating',
+          'sites.id',
+          'sites.name',
+          'sites.description',
+          'sites.location',
+          'sites.gps',
+        ]);
+    }
   }
 
   build(): SelectQueryBuilder<LogEntryEntity> {

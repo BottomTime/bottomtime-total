@@ -6,7 +6,7 @@
     <LoadingSpinner message="Fetching log entry..." />
   </div>
 
-  <div v-else-if="state.currentEntry">
+  <RequireAuth2 v-else-if="state.currentEntry" :authorizer="isAuthorized">
     <EditLogbookEntry
       v-if="editMode"
       :entry="state.currentEntry"
@@ -15,7 +15,7 @@
       @save="onSave"
     />
     <ViewLogbookEntry v-else :entry="state.currentEntry" />
-  </div>
+  </RequireAuth2>
 
   <NotFound v-else />
 </template>
@@ -31,6 +31,7 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
+import RequireAuth2 from 'src/components/common/require-auth2.vue';
 import dayjs from 'src/dayjs';
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -94,11 +95,17 @@ const logbookPath = computed(() =>
     ? `/logbook/${route.params.username}`
     : '/logbook',
 );
+
 const editMode = computed(() => {
   if (!currentUser.user) return false;
   else if (currentUser.user.role === UserRole.Admin) return true;
   else return route.params.username === currentUser.user.username;
 });
+
+function isAuthorized(): boolean {
+  if (entryId.value) return true;
+  return editMode.value;
+}
 
 const items: Breadcrumb[] = [
   { label: 'Logbook', to: logbookPath },

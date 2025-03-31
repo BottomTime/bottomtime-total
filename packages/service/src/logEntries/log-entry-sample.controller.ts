@@ -17,13 +17,14 @@ import {
 } from '@nestjs/common';
 
 import { Observable, from, toArray } from 'rxjs';
+import { UuidRegex } from 'src/common';
 
 import { AssertAccountOwner, AssertAuth, AssertTargetUser } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertLogEntry, TargetLogEntry } from './assert-log-entry.guard';
 import { LogEntry } from './log-entry';
 
-@Controller('api/users/:username/logbook/:entryId/samples')
+@Controller(`api/users/:username/logbook/:entryId(${UuidRegex})/samples`)
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner, AssertLogEntry)
 export class LogEntrySampleController {
   private readonly log = new Logger(LogEntrySampleController.name);

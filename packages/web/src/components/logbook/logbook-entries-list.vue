@@ -42,13 +42,13 @@
 
         <div class="flex gap-2">
           <div v-if="importEnabled.value">
-            <RouterLink :to="`/exportLogs/${currentUser.user.username}`">
+            <RouterLink :to="`/logbook/${currentUser.user.username}/export`">
               <FormButton size="sm" rounded="left">
                 Export Logbook...
               </FormButton>
             </RouterLink>
             <RouterLink
-              :to="`/importLogs/${currentUser.user.username}`"
+              :to="`/logbook/${currentUser.user.username}/import`"
               data-testid="import-entries"
             >
               <FormButton size="sm" rounded="right">

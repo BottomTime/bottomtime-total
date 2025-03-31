@@ -12,6 +12,7 @@ import {
   SuccinctProfileDTO,
   TemperatureUnit,
   TrimCorrectness,
+  VerySuccinctLogEntryDTO,
   WeightCorrectness,
   WeightUnit,
 } from '@bottomtime/api';
@@ -460,6 +461,17 @@ export class LogEntry {
       rating: this.rating,
       tags: this.tags,
       updatedAt: this.updatedAt?.valueOf(),
+    };
+  }
+
+  toVerySuccinctJSON(): VerySuccinctLogEntryDTO {
+    return {
+      id: this.id,
+      logNumber: this.logNumber,
+      timing: this.timing.toJSON(),
+      depths: this.depths.toJSON(),
+      site: this.site?.toSuccinctJSON(),
+      tags: this.tags,
     };
   }
 

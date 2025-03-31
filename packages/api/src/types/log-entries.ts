@@ -190,20 +190,35 @@ export const SuccinctLogEntrySchema = LogEntrySchema.pick({
 });
 export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 
-export const ListLogEntriesParamsSchema = z
-  .object({
-    query: z.string().max(500),
-    startDate: z.coerce.number().optional(),
-    endDate: z.coerce.number().optional(),
-    location: GpsCoordinatesSchema,
-    radius: z.coerce.number().positive().max(500),
-    minRating: z.coerce.number().min(0).max(5),
-    maxRating: z.coerce.number().min(0).max(5),
-    skip: z.coerce.number().int().min(0),
-    limit: z.coerce.number().int().min(1).max(500),
-    sortBy: z.nativeEnum(LogEntrySortBy),
-    sortOrder: z.nativeEnum(SortOrder),
-  })
+export const VerySuccinctLogEntrySchema = SuccinctLogEntrySchema.pick({
+  id: true,
+  depths: true,
+  logNumber: true,
+  site: true,
+  tags: true,
+  timing: true,
+});
+export type VerySuccinctLogEntryDTO = z.infer<
+  typeof VerySuccinctLogEntrySchema
+>;
+
+const ListLogEntriesBase = z.object({
+  query: z.string().max(500),
+  startDate: z.coerce.number().optional(),
+  endDate: z.coerce.number().optional(),
+  location: GpsCoordinatesSchema,
+  radius: z.coerce.number().positive().max(500),
+  minRating: z.coerce.number().min(0).max(5),
+  maxRating: z.coerce.number().min(0).max(5),
+  sortBy: z.nativeEnum(LogEntrySortBy),
+  sortOrder: z.nativeEnum(SortOrder),
+});
+
+export const ListLogEntriesParamsSchema = ListLogEntriesBase.extend({
+  skip: z.coerce.number().int().min(0),
+  limit: z.coerce.number().int().min(1).max(500),
+  succinct: BooleanString,
+})
   .partial()
   .refine((params) => {
     if (params.startDate && params.endDate) {
@@ -223,8 +238,35 @@ export type ListLogEntriesParamsDTO = z.infer<
   typeof ListLogEntriesParamsSchema
 >;
 
+export const ExportLogEntriesParamsSchema = ListLogEntriesBase.extend({
+  include: z.string().uuid().array(),
+  omit: z.string().uuid().array(),
+})
+  .partial()
+  .refine((params) => {
+    if (params.startDate && params.endDate) {
+      return params.startDate < params.endDate;
+    }
+
+    return true;
+  }, 'Start date must be before end date.')
+  .refine((params) => {
+    if (params.minRating && params.maxRating) {
+      return params.minRating < params.maxRating;
+    }
+
+    return true;
+  }, 'Minimum rating must be less than maximum rating.');
+export type ExportLogEntriesParamsDTO = z.infer<
+  typeof ExportLogEntriesParamsSchema
+>;
+
 export const ListLogEntriesResponseSchema = z.object({
-  data: z.array(SuccinctLogEntrySchema),
+  data: SuccinctLogEntrySchema.array(),
+  totalCount: z.number().int(),
+});
+export const ListSuccinctLogEntriesResponseSchema = z.object({
+  data: VerySuccinctLogEntrySchema.array(),
   totalCount: z.number().int(),
 });
 
