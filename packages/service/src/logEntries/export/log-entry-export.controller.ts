@@ -4,19 +4,27 @@ import {
 } from '@bottomtime/api';
 
 import {
-  Body,
   Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
   Inject,
   InternalServerErrorException,
   Logger,
-  Post,
+  Query,
   StreamableFile,
   UseGuards,
 } from '@nestjs/common';
 
 import dayjs from 'dayjs';
-import { Duplex } from 'node:stream';
-import { AssertTargetUser, TargetUser, User } from 'src/users';
+import { PassThrough } from 'node:stream';
+import {
+  AssertAccountOwner,
+  AssertAuth,
+  AssertTargetUser,
+  TargetUser,
+  User,
+} from 'src/users';
 import { bodyValidator } from 'src/zod-validator';
 
 import { LogEntryExportService } from './log-entry-export.service';
@@ -27,29 +35,37 @@ const Preamble = `{
 `;
 const Postamble = `  ],
   "totalCount": $1
-}`;
+}
+`;
 
 @Controller('api/users/:username/logbook/export')
-@UseGuards(AssertTargetUser)
-export class LogEntriesExportController {
-  private readonly log = new Logger(LogEntriesExportController.name);
+@UseGuards(AssertTargetUser, AssertAuth, AssertAccountOwner)
+export class LogEntryExportController {
+  private readonly log = new Logger(LogEntryExportController.name);
 
   constructor(
     @Inject(LogEntryExportService)
     private readonly service: LogEntryExportService,
   ) {}
 
-  @Post('json')
+  @Get('json')
+  @HttpCode(HttpStatus.OK)
   exportJSON(
     @TargetUser() owner: User,
-    @Body(bodyValidator(ExportLogEntriesParamsSchema))
+    @Query(bodyValidator(ExportLogEntriesParamsSchema))
     options: ExportLogEntriesParamsDTO,
   ): StreamableFile {
-    const stream = new Duplex({ encoding: 'utf-8' });
-    const metadata = {};
+    const stream = new PassThrough({ encoding: 'utf-8' });
+    const metadata = {
+      exported: dayjs().toISOString(),
+      logbookOwner: owner.profile.toSuccinctJSON(),
+    };
     let totalCount = 0;
 
-    this.log.debug('Starting export...', options);
+    this.log.log(
+      `Starting export of log entries for user "${owner.username}"...`,
+      options,
+    );
     stream.write(Preamble.replace('$1', JSON.stringify(metadata, null, 2)));
 
     this.service
@@ -59,14 +75,18 @@ export class LogEntriesExportController {
       })
       .subscribe({
         next: (entry) => {
-          stream.write(`${JSON.stringify(entry.toJSON(), null, 2)},\n`);
+          if (totalCount === 0) {
+            stream.write(JSON.stringify(entry.toJSON(), null, 2));
+          } else {
+            stream.write(`,\n${JSON.stringify(entry.toJSON(), null, 2)}`);
+          }
           totalCount++;
         },
         complete: () => {
-          this.log.debug(
-            `Export complete. ${totalCount} entries exported. Closing file stream...`,
-          );
           stream.end(Postamble.replace('$1', totalCount.toString()));
+          this.log.debug(
+            `Export completed for user "${owner.username}". Stream has been closed. ${totalCount} entries exported.`,
+          );
         },
         error: (err) => {
           // If there is a failure, log the error and destroy the stream to emit an error and clean up resources.
@@ -77,10 +97,9 @@ export class LogEntriesExportController {
 
     return new StreamableFile(stream, {
       type: 'application/json',
-      // disposition: `attachment; filename=${dayjs().format(
-      //   'YYYY-MM-DD',
-      // )}-logbook.json`,
-      disposition: 'inline',
+      disposition: `attachment; filename=${dayjs().format(
+        'YYYY-MM-DD',
+      )}-logbook.json`,
     });
   }
 }

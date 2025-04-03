@@ -45,8 +45,11 @@ export class LogEntryExportService {
         .withRatingRange(options.minRating, options.maxRating)
         .withSortOrder(options.sortBy, options.sortOrder)
         .withPagination(skip, limit)
+        .withInclude(options.include)
+        .withOmit(options.omit)
         .build();
       this.log.verbose(query.getSql());
+
       let results: LogEntryEntity[] = [];
       [results, totalCount] = await query.getManyAndCount();
 

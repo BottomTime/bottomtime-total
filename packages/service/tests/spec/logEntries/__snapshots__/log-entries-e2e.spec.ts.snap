@@ -1345,28 +1345,6 @@ exports[`Log entries E2E tests when searching log entries will return a 400 resp
       "received": "nan",
     },
     {
-      "code": "too_small",
-      "exact": false,
-      "inclusive": true,
-      "message": "Number must be greater than or equal to 0",
-      "minimum": 0,
-      "path": [
-        "skip",
-      ],
-      "type": "number",
-    },
-    {
-      "code": "too_big",
-      "exact": false,
-      "inclusive": true,
-      "maximum": 500,
-      "message": "Number must be less than or equal to 500",
-      "path": [
-        "limit",
-      ],
-      "type": "number",
-    },
-    {
       "code": "invalid_enum_value",
       "message": "Invalid enum value. Expected 'entryTime' | 'logNumber' | 'rating', received 'wetness'",
       "options": [
@@ -1390,6 +1368,28 @@ exports[`Log entries E2E tests when searching log entries will return a 400 resp
         "sortOrder",
       ],
       "received": "backwards",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "skip",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 500,
+      "message": "Number must be less than or equal to 500",
+      "path": [
+        "limit",
+      ],
+      "type": "number",
     },
   ],
 }

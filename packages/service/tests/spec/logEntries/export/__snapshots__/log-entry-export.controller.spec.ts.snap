@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Log Entry Export E2E tests will return a 400 response if the query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "startDate",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "endDate",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received object",
+      "path": [
+        "location",
+      ],
+      "received": "object",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": false,
+      "message": "Number must be greater than 0",
+      "minimum": 0,
+      "path": [
+        "radius",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "minRating",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 5,
+      "message": "Number must be less than or equal to 5",
+      "path": [
+        "maxRating",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'entryTime' | 'logNumber' | 'rating', received 'time'",
+      "options": [
+        "entryTime",
+        "logNumber",
+        "rating",
+      ],
+      "path": [
+        "sortBy",
+      ],
+      "received": "time",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'asc' | 'desc', received 'backward'",
+      "options": [
+        "asc",
+        "desc",
+      ],
+      "path": [
+        "sortOrder",
+      ],
+      "received": "backward",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received string",
+      "path": [
+        "include",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received string",
+      "path": [
+        "omit",
+      ],
+      "received": "string",
+    },
+  ],
+}
+`;

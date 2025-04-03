@@ -1,6 +1,6 @@
 import { GpsCoordinates, LogEntrySortBy, SortOrder } from '@bottomtime/api';
 
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { In, Not, Repository, SelectQueryBuilder } from 'typeorm';
 
 import {
   DiveSiteEntity,
@@ -135,6 +135,15 @@ export class LogEntryQueryBuilder {
     return this;
   }
 
+  withInclude(includedIds?: string[]): this {
+    if (includedIds?.length) {
+      this.query = this.query.andWhere({
+        id: In(includedIds),
+      });
+    }
+    return this;
+  }
+
   withLocation(location?: GpsCoordinates, radius?: number): this {
     if (location) {
       this.query = this.query.andWhere(
@@ -145,6 +154,15 @@ export class LogEntryQueryBuilder {
           distance: (radius ?? 50) * 1000,
         },
       );
+    }
+    return this;
+  }
+
+  withOmit(omittedIds?: string[]): this {
+    if (omittedIds?.length) {
+      this.query = this.query.andWhere({
+        id: Not(In(omittedIds)),
+      });
     }
     return this;
   }

@@ -17,6 +17,7 @@ import { FeaturesModule } from '../features';
 import { FriendsModule } from '../friends';
 import { OperatorsModule } from '../operators';
 import { UsersModule } from '../users';
+import { LogEntryExportController } from './export/log-entry-export.controller';
 import { LogEntryExportService } from './export/log-entry-export.service';
 import { Importer } from './import/importer';
 import { LogEntryImportFactory } from './import/log-entry-import-factory';
@@ -68,6 +69,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     LogEntrySampleController,
     LogEntryImportsController,
     LogEntryImportController,
+    LogEntryExportController,
     LogEntryReviewsController,
     LogEntrySignaturesController,
   ],
