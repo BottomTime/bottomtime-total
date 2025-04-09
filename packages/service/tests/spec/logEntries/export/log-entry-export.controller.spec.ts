@@ -1,4 +1,9 @@
-import { UserRole } from '@bottomtime/api';
+import {
+  LogEntryDTO,
+  LogEntrySortBy,
+  SortOrder,
+  UserRole,
+} from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -23,6 +28,7 @@ import {
   createTestLogEntry,
   createTestUser,
 } from 'tests/utils';
+import { createLogEntryFactory } from 'tests/utils/create-log-entry-factory';
 import { Repository } from 'typeorm';
 
 const Username = 'ExportyMcExportface_theThird';
@@ -39,6 +45,8 @@ describe('Log Entry Export E2E tests', () => {
   let Entries: Repository<LogEntryEntity>;
   let Air: Repository<LogEntryAirEntity>;
 
+  let entryFactory: LogEntryFactory;
+
   let owner: UserEntity;
   let otherUser: UserEntity;
   let admin: UserEntity;
@@ -54,6 +62,8 @@ describe('Log Entry Export E2E tests', () => {
     Users = dataSource.getRepository(UserEntity);
     Entries = dataSource.getRepository(LogEntryEntity);
     Air = dataSource.getRepository(LogEntryAirEntity);
+
+    entryFactory = createLogEntryFactory();
 
     app = await createTestApp({
       imports: [
@@ -78,7 +88,7 @@ describe('Log Entry Export E2E tests', () => {
     admin = createTestUser({ role: UserRole.Admin });
 
     entries = Array.from({ length: 450 }, () => createTestLogEntry(owner)).sort(
-      (a, b) => a.entryTime.valueOf() - b.entryTime.valueOf(),
+      (a, b) => b.entryTime.valueOf() - a.entryTime.valueOf(),
     );
     air = entries.reduce<LogEntryAirEntity[]>((acc, entry) => {
       if (entry.air) acc.push(...entry.air);
@@ -113,13 +123,101 @@ describe('Log Entry Export E2E tests', () => {
     expect(body.totalCount).toBe(entries.length);
   });
 
-  it('will export with a few filters', async () => {});
+  it('will export with a few filters', async () => {
+    const OneHundredDaysAgo = Date.now() - 1000 * 60 * 60 * 24 * 100;
+    const expected = entries.filter(
+      (entry) =>
+        entry.entryTime.valueOf() >= OneHundredDaysAgo &&
+        (entry.rating ?? 0) >= 2 &&
+        (entry.rating ?? 0) <= 5,
+    );
+    const { body } = await request(server)
+      .get(getUrl())
+      .set(...authHeader)
+      .query({
+        startDate: OneHundredDaysAgo,
+        endDate: Date.now(),
+        minRating: 2,
+        maxRating: 5,
+      })
+      .expect(200);
 
-  it('will export with an alternate sort order', async () => {});
+    expect(body.data.length).toBe(expected.length);
+    expect(body.totalCount).toBe(expected.length);
+    body.data.forEach((entry: LogEntryDTO, index: number) => {
+      expect(entry).toEqual(
+        entryFactory.createLogEntry(expected[index]).toJSON(),
+      );
+    });
+  });
 
-  it('will allow specific entries to be omitted', async () => {});
+  it('will export with an alternate sort order', async () => {
+    const expected = entries.sort(
+      (a, b) => a.entryTime.valueOf() - b.entryTime.valueOf(),
+    );
+    const { body } = await request(server)
+      .get(getUrl())
+      .set(...authHeader)
+      .query({
+        sortBy: LogEntrySortBy.EntryTime,
+        sortOrder: SortOrder.Ascending,
+      })
+      .expect(200);
 
-  it('will allow specific entries to be included', async () => {});
+    expect(body.data.length).toBe(expected.length);
+    expect(body.totalCount).toBe(expected.length);
+    expected.forEach((entry, index) => {
+      expect(body.data[index]).toEqual(
+        entryFactory.createLogEntry(entry).toJSON(),
+      );
+    });
+  });
+
+  it('will allow specific entries to be omitted', async () => {
+    const ids = [
+      entries[0].id,
+      entries[13].id,
+      entries[26].id,
+      entries[303].id,
+      entries[411].id,
+    ];
+    const idSet = new Set(ids);
+    const { body } = await request(server)
+      .get(getUrl())
+      .set(...authHeader)
+      .query({
+        omit: ids,
+      })
+      .expect(200);
+
+    expect(body.data.length).toBe(entries.length - ids.length);
+    body.data.forEach((entry: LogEntryDTO) => {
+      expect(idSet.has(entry.id)).toBe(false);
+    });
+  });
+
+  it('will allow specific entries to be included', async () => {
+    const ids = [
+      entries[0].id,
+      entries[13].id,
+      entries[26].id,
+      entries[303].id,
+      entries[411].id,
+    ];
+    const idSet = new Set(ids);
+    const { body } = await request(server)
+      .get(getUrl())
+      .set(...authHeader)
+      .query({
+        include: ids,
+      })
+      .expect(200);
+
+    expect(body.data.length).toBe(ids.length);
+    body.data.forEach((entry: LogEntryDTO) => {
+      expect(idSet.has(entry.id)).toBe(true);
+    });
+  });
 
   it('will return a 400 response if the query string is invalid', async () => {
     const { body } = await request(server)
