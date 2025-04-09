@@ -71,8 +71,7 @@
 <script lang="ts" setup>
 import { LogBookSharing, ProfileDTO, UserRole } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/relativeTime';
+import dayjs from 'src/dayjs';
 import { ref, watch } from 'vue';
 
 import { useClient } from '../../api-client';

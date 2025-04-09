@@ -61,6 +61,7 @@ import {
   MembershipStatusDTO,
 } from '@bottomtime/api';
 
+import { useLogger } from 'src/logger';
 import { onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -107,6 +108,7 @@ const Breadcrumbs: Breadcrumb[] = [
 
 const client = useClient();
 const currentUser = useCurrentUser();
+const log = useLogger('MembershipConfirmationView');
 const oops = useOops();
 const route = useRoute();
 const stripeLoader = useStripeLoader();
@@ -135,8 +137,7 @@ async function getPaymentIntent(clientSecret: string): Promise<void> {
   const paymentIntent = await stripe.retrievePaymentIntent(clientSecret);
 
   if (paymentIntent.error) {
-    // eslint-disable-next-line no-console
-    console.warn(
+    log.warn(
       'Failed to retrieve payment intent from Stripe:',
       paymentIntent.error,
     );

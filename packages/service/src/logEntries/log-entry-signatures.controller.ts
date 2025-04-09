@@ -19,6 +19,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { UuidRegex } from 'src/common';
+
 import { AgenciesService, Agency } from '../certifications';
 import { AssertAccountOwner, AssertTargetUser, User } from '../users';
 import { bodyValidator } from '../zod-validator';
@@ -32,7 +34,7 @@ import { LogEntrySignaturesService } from './log-entry-signatures.service';
 const BuddyNameKey = 'buddyUsername';
 const BuddyNameParam = `:${BuddyNameKey}`;
 
-@Controller('api/users/:username/logbook/:entryId/signatures')
+@Controller(`api/users/:username/logbook/:entryId(${UuidRegex})/signatures`)
 @UseGuards(AssertTargetUser, AssertLogEntry)
 export class LogEntrySignaturesController {
   constructor(

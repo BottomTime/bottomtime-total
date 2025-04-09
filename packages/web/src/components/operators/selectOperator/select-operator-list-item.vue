@@ -70,6 +70,7 @@
 <script lang="ts" setup>
 import { OperatorDTO, VerificationStatus } from '@bottomtime/api';
 
+import { useLogger } from 'src/logger';
 import { computed, ref, watch } from 'vue';
 
 import FormButton from '../../common/form-button.vue';
@@ -80,6 +81,8 @@ interface SelectOperatorListItemProps {
   operator: OperatorDTO;
   selected?: boolean;
 }
+
+const log = useLogger('SelectOperatorListItem');
 
 const props = withDefaults(defineProps<SelectOperatorListItemProps>(), {
   selected: false,
@@ -112,8 +115,7 @@ watch(
         });
       }
     } catch (error) {
-      /* eslint-disable-next-line no-console */
-      console.warn(error);
+      log.warn(error as Error);
     }
   },
 );

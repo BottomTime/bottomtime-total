@@ -55,13 +55,14 @@ import { helpers, minValue } from '@vuelidate/validators';
 
 import { reactive, watch } from 'vue';
 
+import { DefaultProfile } from '../../common';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import StarRating from '../common/star-rating.vue';
 
 interface EditOperatorReviewProps {
-  review: OperatorReviewDTO;
+  review?: OperatorReviewDTO;
   isSaving?: boolean;
 }
 
@@ -74,8 +75,8 @@ const props = withDefaults(defineProps<EditOperatorReviewProps>(), {
   isSaving: false,
 });
 const state = reactive<EditOperatorReviewState>({
-  rating: props.review.rating,
-  comments: props.review.comments ?? '',
+  rating: props.review?.rating ?? 0,
+  comments: props.review?.comments ?? '',
 });
 const emit = defineEmits<{
   (e: 'save', review: OperatorReviewDTO): void;
@@ -96,7 +97,12 @@ async function onSave(): Promise<void> {
   if (!isValid) return;
 
   emit('save', {
-    ...props.review,
+    ...(props.review ?? {
+      createdAt: Date.now(),
+      creator: DefaultProfile,
+      id: '',
+      updatedAt: Date.now(),
+    }),
     rating: state.rating,
     comments: state.comments,
   });
@@ -105,8 +111,8 @@ async function onSave(): Promise<void> {
 watch(
   () => props.review,
   (review) => {
-    state.rating = review.rating;
-    state.comments = review.comments ?? '';
+    state.rating = review?.rating ?? 0;
+    state.comments = review?.comments ?? '';
   },
 );
 </script>

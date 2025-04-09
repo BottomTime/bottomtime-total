@@ -3759,7 +3759,6 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/vue": "npm:^8.1.0"
     "@types/aws-lambda": "npm:^8.10.140"
-    "@types/bunyan": "npm:^1.8.8"
     "@types/compression": "npm:^1.7.5"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/cors": "npm:^2"
@@ -3783,7 +3782,7 @@ __metadata:
     autoprefixer: "npm:^10.4.17"
     aws-lambda: "npm:^1.0.7"
     babel-jest: "npm:^29.7.0"
-    bunyan: "npm:^1.8.15"
+    browser-bunyan: "npm:^1.8.0"
     chart.js: "npm:^4.4.7"
     compression: "npm:^1.7.4"
     configcat-common: "npm:^9.3.0"
@@ -3833,6 +3832,40 @@ __metadata:
     zod: "npm:^3.22.4"
   languageName: unknown
   linkType: soft
+
+"@browser-bunyan/console-formatted-stream@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@browser-bunyan/console-formatted-stream@npm:1.8.0"
+  dependencies:
+    "@browser-bunyan/levels": "npm:^1.8.0"
+  checksum: 10c0/2ffce75c111cf8fdd7775c0ac5c8a1d53583fe68e810662c33ba42daa40f69d1272450ac2b8c7d77184de27f9946324cc6f062e5b54fab5573cd9ae148a6a6b8
+  languageName: node
+  linkType: hard
+
+"@browser-bunyan/console-plain-stream@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@browser-bunyan/console-plain-stream@npm:1.8.0"
+  dependencies:
+    "@browser-bunyan/levels": "npm:^1.8.0"
+  checksum: 10c0/c1daa818ebfd5fefed3727ea27228f162b0756b5ababffa8c79c0963daa1af5e9b5ba7b4a2789ef267189995aa55c5dfea930107a8112e4ec65a7d135f843b5e
+  languageName: node
+  linkType: hard
+
+"@browser-bunyan/console-raw-stream@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@browser-bunyan/console-raw-stream@npm:1.8.0"
+  dependencies:
+    "@browser-bunyan/levels": "npm:^1.8.0"
+  checksum: 10c0/9b5dfd53c4f6ee7f2a770a90bf3151cb31d5ee3c734e8a7b748734397815930e3438869b8118b0f2e4d2b5404dede35409d9fc28655873ee9196894e91bfef37
+  languageName: node
+  linkType: hard
+
+"@browser-bunyan/levels@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "@browser-bunyan/levels@npm:1.8.0"
+  checksum: 10c0/be039ba8eaa4eb5dc5027a96ffc3203825aab8589270814b804ec567fc420325ab3971b74fd28f9b49dfc9ca15323e70ccf111756757d4289ed43cb8f561ee34
+  languageName: node
+  linkType: hard
 
 "@codegenie/serverless-express@npm:^4.14.1":
   version: 4.14.1
@@ -10623,6 +10656,18 @@ __metadata:
   version: 1.1.0
   resolution: "brorand@npm:1.1.0"
   checksum: 10c0/6f366d7c4990f82c366e3878492ba9a372a73163c09871e80d82fb4ae0d23f9f8924cb8a662330308206e6b3b76ba1d528b4601c9ef73c2166b440b2ea3b7571
+  languageName: node
+  linkType: hard
+
+"browser-bunyan@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "browser-bunyan@npm:1.8.0"
+  dependencies:
+    "@browser-bunyan/console-formatted-stream": "npm:^1.8.0"
+    "@browser-bunyan/console-plain-stream": "npm:^1.8.0"
+    "@browser-bunyan/console-raw-stream": "npm:^1.8.0"
+    "@browser-bunyan/levels": "npm:^1.8.0"
+  checksum: 10c0/1692dd84a650bcaaf547c03cc2c2d00c7ca7b713ee711b7f6d98c3e66890888173d4c0c9fd31c6ec9a0bab417caa1a5572cbec5c7e571e8e7779a0d01eb7118e
   languageName: node
   linkType: hard
 

@@ -53,6 +53,7 @@
 import { LogEntryDTO } from '@bottomtime/api';
 
 import QRCode from 'qrcode';
+import { useLogger } from 'src/logger';
 import { computed, nextTick, ref, watch } from 'vue';
 
 import { Config } from '../../config';
@@ -63,6 +64,8 @@ interface RequestSignaturesDialogProps {
   logEntry: LogEntryDTO;
   visible?: boolean;
 }
+
+const log = useLogger('RequestSignaturesDialog');
 
 const props = withDefaults(defineProps<RequestSignaturesDialogProps>(), {
   visible: false,
@@ -96,8 +99,7 @@ watch(
       await nextTick();
       await QRCode.toCanvas(qrCanvas.value, signUrl.value);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.warn('Failed to render QR code.', err);
+      log.warn('Failed to render QR code.', err);
     }
   },
   { immediate: true },

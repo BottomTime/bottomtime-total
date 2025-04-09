@@ -3,6 +3,7 @@
     <div class="flex items-center justify-between">
       <p class="text-2xl">#{{ ordinal + 1 }}</p>
       <CloseButton
+        v-if="showRemove"
         class="min-w-6"
         :test-id="`remove-tank-${ordinal}`"
         dangerous
@@ -163,7 +164,7 @@
 import { PressureUnit, TankDTO, TankMaterial } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
-import { between, helpers, required } from '@vuelidate/validators';
+import { between, helpers, requiredIf } from '@vuelidate/validators';
 
 import { computed, reactive, watch } from 'vue';
 
@@ -180,10 +181,13 @@ import { LogEntryAir } from './types';
 interface EditEntryAirProps {
   air: LogEntryAir;
   ordinal: number;
+  showRemove?: boolean;
   tanks: TankDTO[];
 }
 
-const props = defineProps<EditEntryAirProps>();
+const props = withDefaults(defineProps<EditEntryAirProps>(), {
+  showRemove: true,
+});
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
   (e: 'update', air: LogEntryAir): void;
@@ -211,13 +215,28 @@ const tankMaterialString = computed(() => {
     : 'Steel';
 });
 
+const hasAnyFieldsFilled = computed(
+  () =>
+    formData.tankId !== '' ||
+    formData.startPressure !== '' ||
+    formData.endPressure !== '' ||
+    formData.o2Percent !== '' ||
+    formData.hePercent !== '',
+);
+
 const v$ = useVuelidate(
   {
     tankId: {
-      required: helpers.withMessage('Please select a tank', required),
+      required: helpers.withMessage(
+        'Please select a tank',
+        requiredIf(hasAnyFieldsFilled),
+      ),
     },
     startPressure: {
-      required: helpers.withMessage('Start pressure is required', required),
+      required: helpers.withMessage(
+        'Start pressure is required',
+        requiredIf(hasAnyFieldsFilled),
+      ),
       valid: helpers.withMessage(
         'Start pressure must be greater than 0 and less than 300bar / 4400psi',
         (startPressure, { pressureUnit }) => {
@@ -231,7 +250,10 @@ const v$ = useVuelidate(
       ),
     },
     endPressure: {
-      required: helpers.withMessage('End pressure is required', required),
+      required: helpers.withMessage(
+        'End pressure is required',
+        requiredIf(hasAnyFieldsFilled),
+      ),
       valid: helpers.withMessage(
         'End pressure must be greater than 0 and cannot be greater than the start pressure',
         (endPressure, { startPressure }) => {

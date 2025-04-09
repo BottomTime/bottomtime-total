@@ -1,12 +1,13 @@
 <template>
   <li :class="classes">
-    <a
+    <RouterLink
       class="no-style w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50"
       :data-testid="testId"
-      :href="to"
+      :to="to"
       @click="$emit('click')"
-      >{{ title }}</a
     >
+      {{ title }}
+    </RouterLink>
   </li>
 </template>
 

@@ -11,6 +11,7 @@ import {
   LogEntryDTO,
   OperatorDTO,
   SuccinctLogEntryDTO,
+  VerySuccinctLogEntryDTO,
 } from '@bottomtime/api';
 
 import {
@@ -28,6 +29,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { UuidRegex } from 'src/common';
+
 import { DiveSite, DiveSitesService } from '../diveSites';
 import { OperatorsService } from '../operators';
 import { Operator } from '../operators';
@@ -38,7 +41,6 @@ import {
   TargetUser,
   User,
 } from '../users';
-import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertLogEntry, TargetLogEntry } from './assert-log-entry.guard';
 import { AssertLogbookRead } from './assert-logbook-read.guard';
@@ -46,7 +48,7 @@ import { LogEntriesService } from './log-entries.service';
 import { LogEntry } from './log-entry';
 
 const LogEntryIdParamName = 'entryId';
-const LogEntryIdParam = `:${LogEntryIdParamName}`;
+const LogEntryIdParam = `:${LogEntryIdParamName}(${UuidRegex})`;
 
 @Controller('api/users/:username/logbook')
 @UseGuards(AssertTargetUser)
@@ -190,17 +192,20 @@ export class UserLogEntriesController {
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
     options?: ListLogEntriesParamsDTO,
-  ): Promise<ApiList<SuccinctLogEntryDTO>> {
-    this.log.debug('Searching for log entries...', options);
+  ): Promise<ApiList<SuccinctLogEntryDTO | VerySuccinctLogEntryDTO>> {
+    this.log.debug('Searching for log entries...');
+    this.log.verbose('Search options:', options);
     const { data, totalCount } = await this.service.listLogEntries({
       ...options,
       ownerId: user.id,
     });
 
-    this.log.debug('Got some log entries', data.length, user.username);
+    this.log.debug(`Got ${data.length} log entries for ${user.username}`);
 
     return {
-      data: data.map((entry) => entry.toSuccinctJSON()),
+      data: options?.succinct
+        ? data.map((entry) => entry.toVerySuccinctJSON())
+        : data.map((entry) => entry.toSuccinctJSON()),
       totalCount,
     };
   }
@@ -489,11 +494,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(LogEntryIdParam)
-  @UseGuards(
-    ValidateIds(LogEntryIdParamName),
-    AssertLogbookRead,
-    AssertLogEntry,
-  )
+  @UseGuards(AssertLogbookRead, AssertLogEntry)
   getLog(@TargetLogEntry() logEntry: LogEntry): LogEntryDTO {
     return logEntry.toJSON();
   }
@@ -556,12 +557,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(LogEntryIdParam)
-  @UseGuards(
-    ValidateIds(LogEntryIdParamName),
-    AssertAuth,
-    AssertAccountOwner,
-    AssertLogEntry,
-  )
+  @UseGuards(AssertAuth, AssertAccountOwner, AssertLogEntry)
   async updateLog(
     @TargetLogEntry() logEntry: LogEntry,
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
@@ -681,12 +677,7 @@ export class UserLogEntriesController {
    */
   @Delete(LogEntryIdParam)
   @HttpCode(204)
-  @UseGuards(
-    ValidateIds(LogEntryIdParamName),
-    AssertAuth,
-    AssertAccountOwner,
-    AssertLogEntry,
-  )
+  @UseGuards(AssertAuth, AssertAccountOwner, AssertLogEntry)
   async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {
     await logEntry.delete();
   }

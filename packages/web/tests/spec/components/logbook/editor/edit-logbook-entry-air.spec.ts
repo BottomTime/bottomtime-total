@@ -12,10 +12,11 @@ import {
   mount,
 } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import tz from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
+import { NavigationObserverKey } from 'src/navigation-observer';
+import { ConfirmDialog } from 'tests/constants';
+import 'tests/dayjs';
+import { MockNavigationObserver } from 'tests/mock-navigation-observer';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../../src/api-client';
@@ -30,9 +31,6 @@ import {
 import TankData from '../../../../fixtures/tanks.json';
 import { BasicUser } from '../../../../fixtures/users';
 import StarRatingStub from '../../../../stubs/star-rating-stub.vue';
-
-dayjs.extend(utc);
-dayjs.extend(tz);
 
 const AddTankButton = '#btn-add-tank';
 const SaveButton = '#btnSave';
@@ -92,6 +90,7 @@ describe('Log entry editor - air management', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let navigationObserver: MockNavigationObserver;
   let opts: ComponentMountingOptions<typeof EditLogbookEntry>;
 
   beforeAll(() => {
@@ -112,11 +111,13 @@ describe('Log entry editor - air management', () => {
 
     currentUser.user = { ...BasicUser };
 
+    navigationObserver = new MockNavigationObserver(router, true);
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [NavigationObserverKey as symbol]: navigationObserver,
         },
         stubs: {
           StarRating: StarRatingStub,
@@ -130,19 +131,26 @@ describe('Log entry editor - air management', () => {
     };
   });
 
-  it('will validate for missing fields', async () => {
+  it('will validate for missing fields if one or more fields is filled', async () => {
     const wrapper = mount(EditLogbookEntry, opts);
 
     await wrapper.get(AddTankButton).trigger('click');
+    await wrapper.get(startPressure(1)).setValue(3000);
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
     expect(wrapper.get(tankSelectError(1)).text()).toBe('Please select a tank');
-    expect(wrapper.get(startPressureError(1)).text()).toBe(
-      'Start pressure is required',
-    );
     expect(wrapper.get(endPressureError(1)).text()).toBe(
       'End pressure is required',
+    );
+
+    await wrapper.get(tankSelect(1)).setValue(tanks[0].id);
+    await wrapper.get(startPressure(1)).setValue('');
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get(startPressureError(1)).text()).toBe(
+      'Start pressure is required',
     );
 
     expect(wrapper.emitted('save')).toBeUndefined();
@@ -218,7 +226,7 @@ describe('Log entry editor - air management', () => {
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
-    expect(wrapper.emitted('save')).toEqual([[expected]]);
+    expect(wrapper.emitted('save')).toEqual([[{ entry: expected }]]);
   });
 
   it('will allow a user to remove an air entry', async () => {
@@ -256,54 +264,54 @@ describe('Log entry editor - air management', () => {
     expect(wrapper.emitted('save')).toEqual([
       [
         {
-          ...FullLogEntry,
-          air: [...FullLogEntry.air!],
-          site: undefined,
-          operator: undefined,
+          entry: {
+            ...FullLogEntry,
+            site: undefined,
+            air: [...FullLogEntry.air!],
+          },
         },
       ],
     ]);
   });
 
   it('will allow a user to change their mind about removing an air tank', async () => {
-    const wrapper = mount(EditLogbookEntry, opts);
-    await wrapper.setProps({
-      entry: {
-        ...FullLogEntry,
-        site: undefined,
-        operator: undefined,
-        air: [
-          ...FullLogEntry.air!,
-          {
-            count: 1,
-            endPressure: 800,
-            hePercent: 20,
-            material: tanks[1].material,
-            name: tanks[1].name,
-            pressureUnit: PressureUnit.PSI,
-            startPressure: 3000,
-            volume: tanks[1].volume,
-            workingPressure: tanks[1].workingPressure,
-            o2Percent: 32,
-          },
-        ],
+    const wrapper = mount(EditLogbookEntry, {
+      ...opts,
+      props: {
+        entry: {
+          ...FullLogEntry,
+          site: undefined,
+          operator: undefined,
+          air: [
+            ...FullLogEntry.air!,
+            {
+              count: 1,
+              endPressure: 800,
+              hePercent: 20,
+              material: tanks[1].material,
+              name: tanks[1].name,
+              pressureUnit: PressureUnit.PSI,
+              startPressure: 3000,
+              volume: tanks[1].volume,
+              workingPressure: tanks[1].workingPressure,
+              o2Percent: 32,
+            },
+          ],
+        },
+        tanks,
       },
     });
+    await flushPromises();
 
     await wrapper.get(removeTankButton(1)).trigger('click');
-    await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
-    expect(wrapper.find('[data-testid="dialog-modal"]').exists()).toBe(false);
+    await wrapper.get(ConfirmDialog.Cancel).trigger('click');
+    expect(wrapper.find(ConfirmDialog.DialogModal).exists()).toBe(false);
     expect(wrapper.find(startPressure(1)).isVisible()).toBe(true);
   });
 
-  it('will replace the last remaining list item with a blank one when it is removed', async () => {
+  it('will not show remove tank button if there is only one entry', async () => {
     const wrapper = mount(EditLogbookEntry, opts);
     await wrapper.setProps({ entry: { ...FullLogEntry } });
-    await wrapper.get(removeTankButton(0)).trigger('click');
-    await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
-    expect(wrapper.find(startPressure(0)).isVisible()).toBe(true);
-    expect(wrapper.find<HTMLInputElement>(startPressure(0)).element.value).toBe(
-      '',
-    );
+    expect(wrapper.find(removeTankButton(0)).exists()).toBe(false);
   });
 });

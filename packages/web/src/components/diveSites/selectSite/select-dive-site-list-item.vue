@@ -73,6 +73,7 @@
 <script lang="ts" setup>
 import { DiveSiteDTO } from '@bottomtime/api';
 
+import { useLogger } from 'src/logger';
 import { computed, ref, watch } from 'vue';
 
 import DepthText from '../../common/depth-text.vue';
@@ -85,6 +86,8 @@ interface SelectDiveSiteListItemProps {
   selected?: boolean;
   site: DiveSiteDTO & { selected?: boolean };
 }
+
+const log = useLogger('SelectDiveSiteListItem');
 
 const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
   multiSelect: false,
@@ -125,8 +128,7 @@ watch(
         });
       }
     } catch (error) {
-      /* eslint-disable-next-line no-console */
-      console.warn(error);
+      log.warn(error as Error);
     }
   },
 );

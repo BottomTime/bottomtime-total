@@ -124,7 +124,7 @@
 <script lang="ts" setup>
 import { DepthUnit, LogEntryDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 
 import { Selectable } from '../../common';
 import DepthText from '../common/depth-text.vue';

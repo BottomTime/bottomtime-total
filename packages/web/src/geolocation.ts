@@ -2,6 +2,10 @@ import { GpsCoordinates } from '@bottomtime/api';
 
 import { InjectionKey, inject } from 'vue';
 
+import { useLogger } from './logger';
+
+const log = useLogger('Geolocation');
+
 export interface IGeolocation {
   getCurrentLocation(): Promise<GpsCoordinates | undefined>;
 }
@@ -33,8 +37,7 @@ export class Geolocation implements IGeolocation {
         lon: position.coords.longitude,
       };
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('Failed to lookup current location', error);
+      log.warn('Failed to lookup current location', error);
       return undefined;
     }
   }

@@ -483,6 +483,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required, url } from '@vuelidate/validators';
 
 import slugify from 'slugify';
+import { useLogger } from 'src/logger';
 import { computed, reactive, watch } from 'vue';
 
 import { useClient } from '../../../api-client';
@@ -537,6 +538,7 @@ interface EditOperatorInfoFormData {
 }
 
 const client = useClient();
+const log = useLogger('EditOperatorInfo');
 const oops = useOops();
 const toasts = useToasts();
 
@@ -602,8 +604,7 @@ async function isSlugAvailable(slug: string): Promise<boolean> {
     },
     {
       default: (error) => {
-        /* eslint-disable-next-line no-console */
-        console.error(error);
+        log.error(error as Error);
       },
     },
   );

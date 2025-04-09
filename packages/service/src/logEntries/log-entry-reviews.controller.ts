@@ -22,6 +22,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { UuidRegex } from 'src/common';
+
 import { DiveSitesService } from '../diveSites';
 import { OperatorsService } from '../operators';
 import {
@@ -38,7 +40,7 @@ import { LogEntry } from './log-entry';
 const ReviewOperatorKey = 'reviewOperator';
 const ReviewSiteKey = 'reviewSite';
 
-@Controller('api/users/:username/logbook/:entryId')
+@Controller(`api/users/:username/logbook/:entryId(${UuidRegex})`)
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner, AssertLogEntry)
 export class LogEntryReviewsController {
   private readonly log = new Logger(LogEntryReviewsController.name);

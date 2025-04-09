@@ -48,7 +48,7 @@ import {
   NotificationDTO,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 

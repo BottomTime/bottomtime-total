@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { computed, reactive, watch } from 'vue';
 
 import { SelectOption } from '../../common';

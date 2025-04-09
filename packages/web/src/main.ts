@@ -4,11 +4,6 @@ import '@stripe/stripe-js';
 
 import { IConfigCatClient, PollingMode } from 'configcat-common';
 import { getClient } from 'configcat-js-ssr';
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import tz from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
@@ -18,13 +13,12 @@ import { clickOutside } from './click-outside';
 import { Config } from './config';
 import { FeaturesServiceKey } from './featrues';
 import { Geolocation, GeolocationKey } from './geolocation';
+import {
+  NavigationObserver,
+  NavigationObserverKey,
+} from './navigation-observer';
 import { router } from './router';
 import { StripeLoader, StripeLoaderKey } from './stripe';
-
-dayjs.extend(localizedFormat);
-dayjs.extend(relativeTime);
-dayjs.extend(tz);
-dayjs.extend(utc);
 
 // API Client
 const client = new ApiClient();
@@ -46,6 +40,7 @@ const app = createApp(AppComponent)
   .provide(ApiClientKey, client)
   .provide(FeaturesServiceKey, configCat)
   .provide(GeolocationKey, new Geolocation())
+  .provide(NavigationObserverKey, new NavigationObserver(router))
   .provide(StripeLoaderKey, StripeLoader);
 
 app.mount('#app');

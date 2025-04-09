@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   ErrorResponseDTO,
   ErrorResponseSchema,
@@ -9,7 +8,10 @@ import { ZodError } from 'zod';
 
 import { Toast, ToastType } from './common';
 import { Config } from './config';
+import { useLogger } from './logger';
 import { useCurrentUser, useErrors, useToasts } from './store';
+
+const log = useLogger('oops');
 
 export function isErrorResponse(e: unknown): e is ErrorResponseDTO {
   const validation = ErrorResponseSchema.safeParse(e);
@@ -39,9 +41,9 @@ async function oops<T>(
     return await f();
   } catch (error) {
     if (!Config.isProduction && Config.env !== 'test') {
-      console.error(error);
+      log.error(error as Error);
       if (isZodError(error)) {
-        console.error(error.issues);
+        log.error(error.issues, (error as Error).message);
       }
     }
 

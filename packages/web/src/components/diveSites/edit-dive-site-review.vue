@@ -66,6 +66,7 @@ import { between, helpers } from '@vuelidate/validators';
 
 import { reactive, watch } from 'vue';
 
+import { DefaultProfile } from '../../common';
 import DifficultyInput from '../common/difficulty-input.vue';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
@@ -73,7 +74,7 @@ import FormTextArea from '../common/form-text-area.vue';
 import StarRating from '../common/star-rating.vue';
 
 interface EditDiveSiteReviewProps {
-  review: DiveSiteReviewDTO;
+  review?: DiveSiteReviewDTO;
   isSaving?: boolean;
 }
 
@@ -110,7 +111,11 @@ async function onSave(): Promise<void> {
   if (!isValid) return;
 
   emit('save', {
-    ...props.review,
+    ...(props.review ?? {
+      createdOn: Date.now(),
+      creator: DefaultProfile,
+      id: '',
+    }),
     rating: state.rating,
     difficulty: state.difficulty === 0 ? undefined : state.difficulty,
     comments: state.comments,
@@ -120,7 +125,7 @@ async function onSave(): Promise<void> {
 watch(
   () => props.review,
   (review) => {
-    state.rating = review?.rating ?? -1;
+    state.rating = review?.rating ?? 0;
     state.difficulty = review?.difficulty ?? 0;
     state.comments = review?.comments ?? '';
   },

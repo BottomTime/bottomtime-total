@@ -25,6 +25,8 @@ export const DefaultProfile: ProfileDTO = {
   userId: '',
 };
 
+export type Selectable<T> = T & { selected?: boolean };
+
 export type SelectOption = {
   disabled?: boolean;
   label?: string;
@@ -51,4 +53,4 @@ export type Toast = {
   type: ToastType;
 };
 
-export type Selectable<T> = T & { selected?: boolean };
+export const FortyEightHoursInSeconds = 48 * 60 * 60 * 1000;

@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import { LogEntryDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 
 import DepthText from '../common/depth-text.vue';
 import DurationText from '../common/duration-text.vue';

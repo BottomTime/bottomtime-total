@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SaveWarning component will render if dirty flag is set 1`] = `
+"<div class="w-full fixed left-0 bottom-0 font-bold text-lg" data-testid="save-warning">
+  <div class="bg-warn-dark container mx-auto rounded-t-lg px-3 py-1 flex justify-between items-baseline shadow-md shadow-grey-800/60">
+    <p>Your changes have not yet been saved!</p><button id="btn-save-warning-save" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-save-warning-save" type="button">
+      <!--v-if--> Save Changes
+    </button>
+  </div>
+</div>"
+`;

@@ -300,8 +300,8 @@ import {
   VerificationStatus,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
 import { parsePhoneNumber } from 'libphonenumber-js';
+import dayjs from 'src/dayjs';
 import { computed, onMounted, reactive, watch } from 'vue';
 
 import { useClient } from '../../api-client';

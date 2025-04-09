@@ -71,8 +71,7 @@
 <script setup lang="ts">
 import { UserDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/relativeTime';
+import dayjs from 'src/dayjs';
 
 import FormButton from '../common/form-button.vue';
 import NavLink from '../common/nav-link.vue';

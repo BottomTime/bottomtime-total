@@ -13,6 +13,7 @@ import {
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   ListLogEntrySignaturesResponseSchema,
+  ListSuccinctLogEntriesResponseSchema,
   LogEntryDTO,
   LogEntrySampleDTO,
   LogEntrySampleSchema,
@@ -23,6 +24,7 @@ import {
   OperatorReviewDTO,
   OperatorReviewSchema,
   OperatorSchema,
+  VerySuccinctLogEntryDTO,
 } from '../types';
 import { Fetcher } from './fetcher';
 
@@ -67,18 +69,33 @@ export class LogEntriesApiClient {
     if (params.startDate) {
       query.startDate = params.startDate.valueOf().toString();
     }
+    if (typeof params.succinct === 'boolean') {
+      query.succinct = params.succinct.toString();
+    }
 
     return query;
   }
 
   async listLogEntries(
     username: string,
-    params?: ListLogEntriesParamsDTO,
+    params?: Omit<ListLogEntriesParamsDTO, 'succinct'>,
   ): Promise<ApiList<LogEntryDTO>> {
     const { data: results } = await this.apiClient.get(
       this.getLogbookUrl(username),
       this.searchQueryString(params),
       ListLogEntriesResponseSchema,
+    );
+    return results;
+  }
+
+  async listLogEntriesSuccinct(
+    username: string,
+    params?: Omit<ListLogEntriesParamsDTO, 'succinct'>,
+  ): Promise<ApiList<VerySuccinctLogEntryDTO>> {
+    const { data: results } = await this.apiClient.get(
+      this.getLogbookUrl(username),
+      this.searchQueryString({ ...params, succinct: true }),
+      ListSuccinctLogEntriesResponseSchema,
     );
     return results;
   }

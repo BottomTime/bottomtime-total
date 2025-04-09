@@ -44,8 +44,7 @@
 <script lang="ts" setup>
 import { SuccinctProfileDTO } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/relativeTime';
+import dayjs from 'src/dayjs';
 
 import FormButton from '../common/form-button.vue';
 import UserAvatar from '../users/user-avatar.vue';

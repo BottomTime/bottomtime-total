@@ -22,7 +22,7 @@
         <button
           class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 flex justify-center items-center px-2 text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover text-sm"
           data-testid="get-next-log-number"
-          @click="getNextAvailableLogNumber"
+          @click="$emit('next-log-number')"
         >
           Next Available Number
         </button>
@@ -156,12 +156,8 @@ import { DepthUnit } from '@bottomtime/api';
 import useVuelidate from '@vuelidate/core';
 import { helpers, integer, minValue, required } from '@vuelidate/validators';
 
-import dayjs from 'dayjs';
-import { onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import dayjs from 'src/dayjs';
 
-import { useClient } from '../../../api-client';
-import { useOops } from '../../../oops';
 import { depth, greaterThan, lessThan } from '../../../validators';
 import DepthInput from '../../common/depth-input.vue';
 import DurationInput from '../../common/duration-input.vue';
@@ -173,10 +169,7 @@ import FormTextBox from '../../common/form-text-box.vue';
 import TextHeading from '../../common/text-heading.vue';
 import { LogEntryBasicInfo, Timezones } from './types';
 
-const client = useClient();
-const oops = useOops();
-const route = useRoute();
-
+// TODO: This should come from the database...
 const tags = {
   'night dive': 'Night dive',
   'reef dive': 'Reef dive',
@@ -185,6 +178,10 @@ const tags = {
   'deep dive': 'Deep dive',
   'ice dive': 'Ice dive',
 };
+
+defineEmits<{
+  (e: 'next-log-number'): void;
+}>();
 
 const formData = defineModel<LogEntryBasicInfo>({ required: true });
 const v$ = useVuelidate<LogEntryBasicInfo>(
@@ -247,16 +244,6 @@ const v$ = useVuelidate<LogEntryBasicInfo>(
   formData,
 );
 
-async function getNextAvailableLogNumber(): Promise<void> {
-  await oops(async () => {
-    const username = route.params.username;
-    if (!username || typeof username !== 'string') return;
-
-    formData.value.logNumber =
-      await client.logEntries.getNextAvailableLogNumber(username);
-  });
-}
-
 function onToggleDepthUnit(newUnit: DepthUnit) {
   formData.value.depthUnit = newUnit;
 }
@@ -266,13 +253,4 @@ function getTagAutoCompleteOptions(prefix: string): string[] {
     .filter(([key]) => key.startsWith(prefix.toLowerCase()))
     .map(([, value]) => value);
 }
-
-onMounted(async () => {
-  await oops(async () => {
-    const entryId = route.params.entryId;
-    if (formData.value.logNumber === '' && !entryId) {
-      await getNextAvailableLogNumber();
-    }
-  });
-});
 </script>

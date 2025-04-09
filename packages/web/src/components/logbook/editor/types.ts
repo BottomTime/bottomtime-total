@@ -1,9 +1,12 @@
 import {
   DepthUnit,
   DiveSiteDTO,
+  DiveSiteReviewDTO,
   ExposureSuit,
+  LogEntryAirDTO,
   LogEntryDTO,
   OperatorDTO,
+  OperatorReviewDTO,
   PressureUnit,
   TankDTO,
   TankMaterial,
@@ -13,7 +16,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
+import dayjs from 'src/dayjs';
 import { v7 as uuid } from 'uuid';
 import { computed } from 'vue';
 
@@ -73,7 +76,9 @@ export interface LogEntryAir {
 
 export interface LogEntryLocation {
   site?: DiveSiteDTO;
+  siteReview?: DiveSiteReviewDTO;
   operator?: OperatorDTO;
+  operatorReview?: OperatorReviewDTO;
 }
 
 export interface LogEntryNotes {
@@ -88,6 +93,12 @@ export interface LogEntryFormData {
   equipment: LogEntryEquipment;
   location: LogEntryLocation;
   notes: LogEntryNotes;
+}
+
+export interface SaveLogEntryData {
+  entry: LogEntryDTO;
+  siteReview?: DiveSiteReviewDTO;
+  operatorReview?: OperatorReviewDTO;
 }
 
 export const Timezones = computed<SelectOption[]>(() =>
@@ -226,26 +237,38 @@ function getNullableEnumValue<T>(value: T | ''): T | undefined {
   return value === '' ? undefined : value;
 }
 
+function formDataAirToDTOs(
+  elements: LogEntryAir[],
+): LogEntryAirDTO[] | undefined {
+  const dtos: LogEntryAirDTO[] = elements
+    .filter(
+      (air) =>
+        typeof air.startPressure === 'number' &&
+        typeof air.endPressure === 'number',
+    )
+    .map((air) => ({
+      count: air.doubles ? 2 : 1,
+      endPressure: getNumericValue(air.endPressure) ?? 0,
+      material: air.tankInfo?.material ?? TankMaterial.Aluminum,
+      name: air.tankInfo?.name || '',
+      volume: air.tankInfo?.volume ?? 0,
+      workingPressure: air.tankInfo?.workingPressure ?? 0,
+      hePercent: getNumericValue(air.hePercent),
+      o2Percent: getNumericValue(air.o2Percent),
+      pressureUnit: air.pressureUnit,
+      startPressure: getNumericValue(air.startPressure) ?? 0,
+    }));
+
+  return dtos.length ? dtos : undefined;
+}
+
 export function formDataToDTO(
   original: LogEntryDTO,
   data: LogEntryFormData,
 ): LogEntryDTO {
   return {
     ...original,
-    air: data.air.length
-      ? data.air.map((air) => ({
-          count: air.doubles ? 2 : 1,
-          endPressure: getNumericValue(air.endPressure) ?? 0,
-          material: air.tankInfo?.material ?? TankMaterial.Aluminum,
-          name: air.tankInfo?.name || '',
-          volume: air.tankInfo?.volume ?? 0,
-          workingPressure: air.tankInfo?.workingPressure ?? 0,
-          hePercent: getNumericValue(air.hePercent),
-          o2Percent: getNumericValue(air.o2Percent),
-          pressureUnit: air.pressureUnit,
-          startPressure: getNumericValue(air.startPressure) ?? 0,
-        }))
-      : undefined,
+    air: formDataAirToDTOs(data.air),
     conditions: {
       airTemperature: getNumericValue(data.conditions.airTemp),
       bottomTemperature: getNumericValue(data.conditions.thermocline),
