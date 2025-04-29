@@ -286,11 +286,9 @@ jobs:
   test_e2e:
     docker:
       - image: cimg/node:22.13-browsers
-      - image: redis:7.4-alpine3.20
     resource_class: medium
     environment:
       BT_POSTGRES_REQUIRE_SSL: 'true'
-      BT_REDIS_URI: 'redis://redis:6379/0'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
