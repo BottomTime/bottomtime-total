@@ -3681,6 +3681,7 @@ __metadata:
     "@types/request-stats": "npm:^3.0.3"
     "@types/supertest": "npm:^2.0.12"
     "@types/uuid": "npm:^10.0.0"
+    "@types/xml2js": "npm:^0"
     aws-lambda: "npm:^1.0.7"
     axios: "npm:^1.7.9"
     bcryptjs: "npm:^2.4.3"
@@ -3735,6 +3736,7 @@ __metadata:
     webpack: "npm:^5.92.0"
     webpack-cli: "npm:^5.1.4"
     webpack-node-externals: "npm:^3.0.0"
+    xml2js: "npm:^0.6.2"
     yargs: "npm:^17.7.2"
     zod: "npm:3.22.4"
   languageName: unknown
@@ -8748,6 +8750,15 @@ __metadata:
     "@types/node": "npm:*"
     webpack: "npm:^5"
   checksum: 10c0/07a324c0130fb5b49ae31010ecee2690330e9f397b13dd7e826f8b9adeb2be415c57261f5b39c20350aeb53c972d36cea38c6feed9414487c2bbdc3ae41429f4
+  languageName: node
+  linkType: hard
+
+"@types/xml2js@npm:^0":
+  version: 0.4.14
+  resolution: "@types/xml2js@npm:0.4.14"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/06776e7f7aec55a698795e60425417caa7d7db3ff680a7b4ccaae1567c5fec28ff49b9975e9a0d74ff4acb8f4a43730501bbe64f9f761d784c6476ba4db12e13
   languageName: node
   linkType: hard
 
@@ -26442,7 +26453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xml2js@npm:0.6.2":
+"xml2js@npm:0.6.2, xml2js@npm:^0.6.2":
   version: 0.6.2
   resolution: "xml2js@npm:0.6.2"
   dependencies:

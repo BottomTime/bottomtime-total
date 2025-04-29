@@ -14,6 +14,7 @@ import {
   Inject,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
 } from '@nestjs/common';
 
@@ -25,6 +26,7 @@ import {
 } from '../../users';
 import { ZodValidator } from '../../zod-validator';
 import { AssertImportFeature } from './assert-import-feature.guard';
+import { ImportFileParser } from './import-file-parser';
 import { LogEntryImportService } from './log-entry-import.service';
 
 @Controller('api/users/:username/logImports')
@@ -33,6 +35,9 @@ export class LogEntryImportsController {
   constructor(
     @Inject(LogEntryImportService)
     private readonly service: LogEntryImportService,
+
+    @Inject(ImportFileParser)
+    private readonly fileParser: ImportFileParser,
   ) {}
 
   /**
@@ -217,5 +222,15 @@ export class LogEntryImportsController {
   ): Promise<LogsImportDTO> {
     const newImport = await this.service.createImport(owner, params);
     return newImport.toJSON();
+  }
+
+  @Post('upload')
+  async uploadImport(
+    @TargetUser() owner: User,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<LogsImportDTO> {
+    const result = await new ImportFileParser().parseFile(file, owner);
+    if (result.success) return result.import.toJSON();
+    else throw result.error;
   }
 }

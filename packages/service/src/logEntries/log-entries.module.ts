@@ -19,6 +19,7 @@ import { OperatorsModule } from '../operators';
 import { UsersModule } from '../users';
 import { LogEntryExportController } from './export/log-entry-export.controller';
 import { LogEntryExportService } from './export/log-entry-export.service';
+import { ImportFileParser } from './import/import-file-parser';
 import { Importer } from './import/importer';
 import { LogEntryImportFactory } from './import/log-entry-import-factory';
 import { LogEntryImportController } from './import/log-entry-import.controller';
@@ -63,6 +64,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     LogEntryImportService,
     LogEntryExportService,
     Importer,
+    ImportFileParser,
   ],
   controllers: [
     UserLogEntriesController,
