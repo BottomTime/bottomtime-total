@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@5.2.0
+  aws-cli: circleci/aws-cli@5.3.2
   terraform: circleci/terraform@3.6.0
 
 commands:
@@ -286,9 +286,11 @@ jobs:
   test_e2e:
     docker:
       - image: cimg/node:22.13-browsers
+      - image: redis:7.4-alpine3.20
     resource_class: medium
     environment:
       BT_POSTGRES_REQUIRE_SSL: 'true'
+      BT_REDIS_URI: 'redis://redis:6379/0'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
