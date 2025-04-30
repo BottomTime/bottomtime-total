@@ -5,21 +5,18 @@ import {
   Inject,
   Injectable,
   Logger,
-  NotImplementedException,
 } from '@nestjs/common';
 
 import {
-  buffer,
   bufferCount,
   catchError,
   concatMap,
   from,
   lastValueFrom,
   map,
-  of,
-  tap,
 } from 'rxjs';
 import { DiveSite } from 'src/diveSites';
+import { Tank, TanksService } from 'src/tanks';
 import { User } from 'src/users';
 import { parseStringPromise } from 'xml2js';
 import { z } from 'zod';
@@ -169,6 +166,9 @@ export class SubsurfaceXMLParser implements IImportFileParser {
   constructor(
     @Inject(LogEntryImportService)
     private readonly importService: LogEntryImportService,
+
+    @Inject(TanksService)
+    private readonly tanksService: TanksService,
   ) {}
 
   private async findSites(): Promise<Record<string, DiveSite>> {
@@ -207,6 +207,11 @@ export class SubsurfaceXMLParser implements IImportFileParser {
     owner: User,
   ): Promise<ImportFileResult> {
     let rawData: string;
+
+    const { data: tanks } = await this.tanksService.listTanks({
+      userId: owner.id,
+      includeSystem: true,
+    });
 
     try {
       this.log.debug('Attempting to parse Subsurface XML file...');
