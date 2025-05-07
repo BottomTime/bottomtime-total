@@ -10,4 +10,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    <string name="pref_api_url_title">API Endpoint URL</string>
+    <string name="pref_api_url_summary">Set the base URL at which the backend APIs can be reached.</string>
 </resources>

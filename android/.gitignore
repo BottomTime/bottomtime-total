@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Not sure if this is necessary.. still learning here...
+.idea/
