@@ -1,13 +1,16 @@
 package com.bottomtime.android.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bottomtime.android.BottomTimeApp
 import com.bottomtime.android.databinding.FragmentHomeBinding
+import kotlinx.coroutines.*
 
 class HomeFragment : Fragment() {
 
@@ -32,6 +35,19 @@ class HomeFragment : Fragment() {
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+      runBlocking {
+        Log.d("HomeFragment", "Gonna do an async")
+        try {
+          val user = async {
+            BottomTimeApp.apiClient.auth.getCurrentUser()
+          }
+          user.await().toString()
+        } catch (error: Throwable) {
+          Log.e("HomeFragment", error.toString())
+        }
+      }
+
         return root
     }
 
