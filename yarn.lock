@@ -3759,6 +3759,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/vue": "npm:^8.1.0"
     "@types/aws-lambda": "npm:^8.10.140"
+    "@types/caniuse-lite": "npm:^1"
     "@types/compression": "npm:^1.7.5"
     "@types/cookie-parser": "npm:^1.4.6"
     "@types/cors": "npm:^2"
@@ -3783,6 +3784,7 @@ __metadata:
     aws-lambda: "npm:^1.0.7"
     babel-jest: "npm:^29.7.0"
     browser-bunyan: "npm:^1.8.0"
+    caniuse-lite: "npm:^1.0.30001718"
     chart.js: "npm:^4.4.7"
     compression: "npm:^1.7.4"
     configcat-common: "npm:^9.3.0"
@@ -8086,6 +8088,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/caniuse-lite@npm:^1":
+  version: 1.0.5
+  resolution: "@types/caniuse-lite@npm:1.0.5"
+  checksum: 10c0/510f06241bc8274dbf41abf7658e2a72aec519f120b1ad89552a1d76d52a96fd549318d63120c89190d48ed831896b444d7ce773d1c042627cae504cf9a65023
+  languageName: node
+  linkType: hard
+
 "@types/compression@npm:^1.7.5":
   version: 1.7.5
   resolution: "@types/compression@npm:1.7.5"
@@ -11142,6 +11151,13 @@ __metadata:
   version: 7.0.1
   resolution: "camelcase@npm:7.0.1"
   checksum: 10c0/3adfc9a0e96d51b3a2f4efe90a84dad3e206aaa81dfc664f1bd568270e1bf3b010aad31f01db16345b4ffe1910e16ab411c7273a19a859addd1b98ef7cf4cfbd
+  languageName: node
+  linkType: hard
+
+"caniuse-lite@npm:^1.0.30001718":
+  version: 1.0.30001718
+  resolution: "caniuse-lite@npm:1.0.30001718"
+  checksum: 10c0/67f9ad09bc16443e28d14f265d6e468480cd8dc1900d0d8b982222de80c699c4f2306599c3da8a3fa7139f110d4b30d49dbac78f215470f479abb6ffe141d5d3
   languageName: node
   linkType: hard
 
